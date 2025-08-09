@@ -211,6 +211,25 @@
   }
 }
 
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .container {
+    --belt-height: clamp(24px, 2.5vw, 32px);
+    --belt-font-size: clamp(9px, 1.1vw, 12px);
+    --belt-letter-spacing: 0.1em;
+    --belt-gap: clamp(1.5rem, 2vw, 2rem);
+  }
+  
+  .belt {
+    /* Disable hover effects on mobile for better performance */
+    pointer-events: none;
+  }
+  
+  .item {
+    opacity: 0.9; /* Higher base opacity on mobile */
+  }
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .track {

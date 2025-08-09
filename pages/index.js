@@ -153,6 +153,8 @@ export default function Home() {
   const [navVisible, setNavVisible] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [unicornStudioVisible, setUnicornStudioVisible] = useState(true)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const videoRef = useRef()
   const heroSectionRef = useRef()
   const observerRef = useRef()
@@ -669,6 +671,18 @@ export default function Home() {
 
   // UnicornStudio is now always visible - no lazy loading
 
+  // Mobile detection and responsive handler
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   // Project Box Hover Animation Handler
   const handleProjectHover = (index, isHovering) => {
     const projectBox = projectItemsRef.current[index]
@@ -1045,7 +1059,7 @@ export default function Home() {
           left: 0,
           right: 0,
           zIndex: 1000,
-          padding: '1rem 2rem',
+          padding: isMobile ? '0.75rem 1rem' : '1rem 2rem',
           background: navVisible ? 'rgba(255,255,255,0.95)' : 'transparent',
           backdropFilter: navVisible ? 'blur(20px)' : 'none',
           borderBottom: navVisible ? '1px solid rgba(0,0,0,0.1)' : 'none',
@@ -1084,9 +1098,56 @@ export default function Home() {
           {/* Navigation Links */}
           <div style={{
             display: 'flex',
-            gap: '3rem',
+            gap: isMobile ? '1rem' : '3rem',
             alignItems: 'center'
           }}>
+            {/* Mobile Menu Button */}
+            {isMobile && (
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  width: '30px',
+                  height: '30px'
+                }}
+                aria-label="Toggle mobile menu"
+              >
+                <span style={{
+                  width: '20px',
+                  height: '2px',
+                  backgroundColor: '#000000',
+                  margin: '2px 0',
+                  transition: 'all 0.3s ease',
+                  transform: mobileMenuOpen ? 'rotate(45deg) translate(3px, 3px)' : 'none'
+                }} />
+                <span style={{
+                  width: '20px',
+                  height: '2px',
+                  backgroundColor: '#000000',
+                  margin: '2px 0',
+                  transition: 'all 0.3s ease',
+                  opacity: mobileMenuOpen ? 0 : 1
+                }} />
+                <span style={{
+                  width: '20px',
+                  height: '2px',
+                  backgroundColor: '#000000',
+                  margin: '2px 0',
+                  transition: 'all 0.3s ease',
+                  transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none'
+                }} />
+              </button>
+            )}
+            
+            {/* Desktop Navigation */}
+            {!isMobile && (
+              <>
             {[
               { name: 'Home', key: 'home', ref: heroSectionRef },
               { name: 'Services', key: 'services', ref: servicesRef },
@@ -1174,8 +1235,100 @@ export default function Home() {
                 Contact
               </button>
             </Link>
+            </>
+            )}
           </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && isMobile && (
+          <div style={{
+            position: 'fixed',
+            top: '70px',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(255, 255, 255, 0.98)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '2rem',
+            zIndex: 999,
+            animation: 'fadeIn 0.3s ease-in-out'
+          }}>
+            {[
+              { name: 'Home', key: 'home', ref: heroSectionRef },
+              { name: 'Services', key: 'services', ref: servicesRef },
+              { name: 'Projects', key: 'projects', ref: projectsRef }
+            ].map((item) => (
+              <button
+                key={item.key}
+                onClick={() => {
+                  scrollToSection(item.ref)
+                  setMobileMenuOpen(false)
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#000000',
+                  cursor: 'pointer',
+                  padding: '1rem 2rem',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit'
+                }}
+              >
+                {item.name}
+              </button>
+            ))}
+            
+            <Link href="/blogs">
+              <button 
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#000000',
+                  cursor: 'pointer',
+                  padding: '1rem 2rem',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit'
+                }}
+              >
+                Blogs
+              </button>
+            </Link>
+
+            <Link href="/contact">
+              <button 
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  background: '#000000',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '1rem 2rem',
+                  borderRadius: '6px',
+                  fontSize: '1.25rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  marginTop: '1rem'
+                }}
+              >
+                Contact
+              </button>
+            </Link>
+          </div>
+        )}
       </nav>
       
       {/* Hero Section with Scroll-Controlled Video */}
@@ -1225,11 +1378,11 @@ export default function Home() {
         {/* Progress Indicator */}
         <div style={{
           position: 'absolute',
-          bottom: '2rem',
-          left: '2rem',
+          bottom: isMobile ? '1rem' : '2rem',
+          left: isMobile ? '1rem' : '2rem',
           zIndex: 4,
           color: '#ffffff',
-          fontSize: '0.875rem',
+          fontSize: isMobile ? '0.75rem' : '0.875rem',
           fontWeight: '300',
           opacity: showFullText ? 0 : 0.8,
           transition: 'opacity 1s ease'
@@ -1293,12 +1446,12 @@ export default function Home() {
             transitionDelay: '0.3s'
           }}>
             <div style={{
-              fontSize: '0.75rem',
+              fontSize: isMobile ? '0.65rem' : '0.75rem',
               fontWeight: '400',
-              letterSpacing: '0.2em',
+              letterSpacing: isMobile ? '0.15em' : '0.2em',
               textTransform: 'uppercase',
-              marginTop: '2rem',
-              marginBottom: '2rem',
+              marginTop: isMobile ? '1.5rem' : '2rem',
+              marginBottom: isMobile ? '1.5rem' : '2rem',
               color: '#ffffff',
               textShadow: '0 2px 20px rgba(0,0,0,0.8)'
             }}>
@@ -1465,7 +1618,7 @@ export default function Home() {
                     backdropFilter: 'blur(20px)',
                     border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '12px',
-                    padding: '3rem',
+                    padding: isMobile ? '2rem' : '3rem',
                     cursor: 'pointer',
                     transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
                     position: 'relative',
@@ -1908,7 +2061,7 @@ export default function Home() {
       <section 
         ref={projectsRef}
         style={{
-          padding: '10rem 2rem',
+          padding: isMobile ? '5rem 1rem' : '10rem 2rem',
           background: '#000000',
           color: '#ffffff',
           position: 'relative',
@@ -1973,7 +2126,7 @@ export default function Home() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(350px, 1fr))',
             gap: '4rem',
             overflow: 'visible'
           }}>
@@ -2539,6 +2692,83 @@ Extraordinary Together&nbsp;&nbsp;&nbsp;
         /* Enhanced dot visibility */
         .project-item:hover [id^="project-dot-"] {
           animation: dotGlow 1s ease-in-out infinite;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+          /* Prevent horizontal scroll */
+          body {
+            overflow-x: hidden;
+          }
+          
+          /* Mobile typography adjustments */
+          h1 {
+            font-size: clamp(2rem, 8vw, 3rem) !important;
+          }
+          
+          h2 {
+            font-size: clamp(1.5rem, 6vw, 2.5rem) !important;
+          }
+          
+          h3 {
+            font-size: clamp(1.25rem, 5vw, 2rem) !important;
+          }
+          
+          p {
+            font-size: clamp(0.875rem, 4vw, 1.125rem) !important;
+            line-height: 1.6 !important;
+          }
+          
+          /* Mobile spacing */
+          section {
+            padding: 3rem 1rem !important;
+          }
+          
+          /* Mobile grid improvements */
+          .mobile-single-column {
+            grid-template-columns: 1fr !important;
+          }
+          
+          /* Touch-friendly buttons */
+          button, a {
+            min-height: 44px;
+            min-width: 44px;
+            padding: 0.75rem 1rem !important;
+          }
+          
+          /* Mobile video optimizations */
+          video {
+            object-position: center !important;
+          }
+          
+          /* Disable complex animations on mobile for performance */
+          @media (max-width: 480px) {
+            .complex-animation {
+              animation: none !important;
+              transform: none !important;
+            }
+          }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+          section {
+            padding: 6rem 2rem !important;
+          }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+          /* Remove hover effects on touch devices */
+          *:hover {
+            transform: none !important;
+          }
+          
+          /* Make buttons more touch-friendly */
+          button {
+            padding: 1rem 1.5rem !important;
+            border-radius: 8px !important;
+          }
         }
       `}</style>
       </div>
