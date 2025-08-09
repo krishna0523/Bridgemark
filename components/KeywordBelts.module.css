@@ -1,0 +1,241 @@
+/* CSS Variables for easy theming - defined on container */
+
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: 2; /* Above testimonial content but below navigation */
+  
+  /* CSS Variables for easy theming */
+  --belt-height: clamp(28px, 3vw, 44px);
+  --belt-font-size: clamp(10px, 1.2vw, 14px);
+  --belt-letter-spacing: 0.12em;
+  --belt-gap: clamp(2rem, 2.5vw, 3rem);
+  --belt-border: 1px;
+  --belt-curve: 2px; /* Subtle curve effect */
+}
+
+.belt {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--belt-height);
+  overflow: hidden;
+  pointer-events: auto; /* Enable hover on belts */
+  border-top: var(--belt-border) solid rgba(0, 0, 0, 0.1);
+  border-bottom: var(--belt-border) solid rgba(0, 0, 0, 0.1);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.02),
+    rgba(0, 0, 0, 0.02)
+  );
+  backdrop-filter: blur(2px);
+}
+
+.beltTop {
+  top: 0;
+  transform: translateY(-1px); /* Subtle curve hint */
+}
+
+.beltBottom {
+  bottom: 0;
+  transform: translateY(1px); /* Subtle curve hint */
+}
+
+.maskTop,
+.maskBottom {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.maskTop {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 0.8) 30%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black,
+    black 30%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    black,
+    black 30%,
+    transparent 100%
+  );
+}
+
+.maskBottom {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 0.8) 30%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to left,
+    black,
+    black 30%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to left,
+    black,
+    black 30%,
+    transparent 100%
+  );
+}
+
+/* Apply masks to create fade effect */
+.belt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    transparent 8%,
+    transparent 92%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    black 0%,
+    transparent 8%,
+    transparent 92%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    black 0%,
+    transparent 8%,
+    transparent 92%,
+    black 100%
+  );
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: max-content;
+  animation: scroll linear infinite;
+  animation-duration: var(--duration, 20s);
+  transform: translateX(calc(-50% * var(--direction, 1)));
+}
+
+.beltTop .track {
+  animation-name: scrollLeft;
+}
+
+.beltBottom .track {
+  animation-name: scrollRight;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--belt-gap);
+  padding: 0 var(--belt-gap);
+  white-space: nowrap;
+}
+
+.item {
+  font-family: var(--font-sans, inherit);
+  font-size: var(--belt-font-size);
+  font-weight: 500;
+  letter-spacing: var(--belt-letter-spacing);
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
+}
+
+.sep {
+  font-family: var(--font-sans, inherit);
+  font-size: var(--belt-font-size);
+  color: inherit;
+  opacity: 0.4;
+  margin: 0 0.5rem;
+}
+
+/* Hover effects */
+.belt:hover .item {
+  opacity: 1;
+}
+
+.belt:hover .sep {
+  opacity: 0.6;
+}
+
+/* Pause on hover */
+.paused .track {
+  animation-play-state: paused;
+}
+
+/* Keyframes */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(-33.333%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+    transform: translateX(-16.666%); /* Show middle portion of triple content */
+  }
+  
+  .belt:hover .track {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .belt {
+    border-top-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.02),
+      rgba(255, 255, 255, 0.02)
+    );
+  }
+  
+  .item {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
+  }
+}

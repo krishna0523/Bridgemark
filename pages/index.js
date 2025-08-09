@@ -7,6 +7,7 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 import { useInView } from 'react-intersection-observer'
 import Lenis from 'lenis'
 import SEO from '../components/SEO'
+import KeywordBelts from '../components/KeywordBelts'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -151,6 +152,7 @@ export default function Home() {
   const [processVisible, setProcessVisible] = useState(false)
   const [navVisible, setNavVisible] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const [unicornStudioVisible, setUnicornStudioVisible] = useState(true)
   const videoRef = useRef()
   const heroSectionRef = useRef()
   const observerRef = useRef()
@@ -163,6 +165,7 @@ export default function Home() {
   const processRef = useRef()
   const lenisRef = useRef()
   const navRef = useRef()
+  const unicornStudioRef = useRef()
 
   // Check if user came from blog and skip slides, or if slides have been shown this session
   useEffect(() => {
@@ -184,7 +187,7 @@ export default function Home() {
     }
   }, [])
 
-  // Initialize Lenis smooth scrolling
+  // Initialize Lenis smooth scrolling and UnicornStudio
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const lenis = new Lenis({
@@ -205,6 +208,23 @@ export default function Home() {
       })
 
       gsap.ticker.lagSmoothing(0)
+
+      // Simple UnicornStudio initialization - no performance optimizations
+      if (!window.UnicornStudio) {
+        window.UnicornStudio = { isInitialized: false }
+        const script = document.createElement('script')
+        script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js'
+        
+        script.onload = function() {
+          if (typeof UnicornStudio !== 'undefined' && !window.UnicornStudio.isInitialized) {
+            UnicornStudio.init()
+            window.UnicornStudio.isInitialized = true
+            console.log('UnicornStudio loaded and initialized')
+          }
+        }
+        
+        document.head.appendChild(script)
+      }
 
       return () => {
         lenis.destroy()
@@ -598,6 +618,8 @@ export default function Home() {
       }
     }
   }, [ctaVisible, ctaScrollOffset, showMainContent, isVerticalScroll])
+
+  // UnicornStudio is now always visible - no lazy loading
 
   // Project Box Hover Animation Handler
   const handleProjectHover = (index, isHovering) => {
@@ -1620,8 +1642,28 @@ export default function Home() {
         padding: '10rem 2rem',
         background: '#000000',
         color: '#ffffff',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        position: 'relative'
       }}>
+        {/* Keyword Belts */}
+        <KeywordBelts 
+          topKeywords={[
+            "#BRAND STRATEGY", "#SEO", "#WEB DESIGN", "#REACT", "#GSAP", "#THREE.JS", 
+            "#NEXT.JS", "#TYPESCRIPT", "#TAILWIND", "#FIGMA", "#ADOBE", "#SKETCH",
+            "#JAVASCRIPT", "#CSS", "#HTML", "#NODE.JS", "#MONGODB", "#POSTGRESQL",
+            "#RESPONSIVE", "#ANIMATION", "#INTERACTION", "#PROTOTYPE", "#WIREFRAME"
+          ]}
+          bottomKeywords={[
+            "#PERFORMANCE", "#ACCESSIBILITY", "#ANALYTICS", "#UI/UX", "#CONTENT", "#OPTIMIZATION",
+            "#LIGHTHOUSE", "#CORE WEB VITALS", "#PAGESPEED", "#MOBILE FIRST", "#PWA", "#SPA",
+            "#API", "#MICROSERVICES", "#CLOUD", "#DEVOPS", "#CI/CD", "#TESTING",
+            "#CONVERSION", "#ENGAGEMENT", "#RETENTION", "#GROWTH", "#METRICS", "#ROI"
+          ]}
+          speedTop={70}
+          speedBottom={55}
+          pauseOnHover={true}
+        />
+        
         <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
           <div style={{
             fontSize: '0.75rem',
@@ -1820,10 +1862,44 @@ export default function Home() {
         style={{
           padding: '10rem 2rem',
           background: '#000000',
-          color: '#ffffff'
+          color: '#ffffff',
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* UnicornStudio Animation Background - Extended Coverage */}
+        <div 
+          ref={unicornStudioRef}
+          style={{
+            position: 'absolute',
+            top: '-100px',
+            left: '-100px',
+            width: 'calc(100% + 200px)',
+            height: 'calc(100% + 200px)',
+            opacity: 0.4,
+            zIndex: 1,
+            pointerEvents: 'none',
+            overflow: 'hidden'
+          }}
+        >
+          <div 
+            data-us-project="FKIFfdeRTLKLSyqqQE08" 
+            style={{
+              width: '100%', 
+              height: '100%',
+              minWidth: '1640px',
+              minHeight: '1100px',
+              transform: 'scale(1.1)',
+              transformOrigin: 'center center'
+            }}
+          />
+        </div>
+        <div style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto',
+          position: 'relative',
+          zIndex: 2
+        }}>
           <div style={{
             textAlign: 'center',
             marginBottom: '6rem'
