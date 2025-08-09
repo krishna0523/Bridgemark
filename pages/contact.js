@@ -4,20 +4,11 @@ import Link from 'next/link'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
+import Web3ContactForm from '../components/Web3ContactForm'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    project: '',
-    budget: '',
-    message: ''
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState('')
   const [navVisible, setNavVisible] = useState(true) // Always visible on contact page
   
   const lenisRef = useRef()
@@ -127,36 +118,6 @@ export default function Contact() {
     }
   }, [])
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitStatus('')
-
-    // Simulate form submission
-    setTimeout(() => {
-      setSubmitStatus('success')
-      setIsSubmitting(false)
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        project: '',
-        budget: '',
-        message: ''
-      })
-      
-      setTimeout(() => {
-        setSubmitStatus('')
-      }, 5000)
-    }, 2000)
-  }
 
   const contactMethods = [
     {
@@ -189,25 +150,6 @@ export default function Contact() {
     }
   ]
 
-  const projectTypes = [
-    'Web Development',
-    'Mobile App Development',
-    'Brand Identity Design',
-    'E-commerce Platform',
-    'SaaS Application',
-    'Digital Marketing',
-    'UI/UX Design',
-    'Other'
-  ]
-
-  const budgetRanges = [
-    '$5K - $15K',
-    '$15K - $30K',
-    '$30K - $50K',
-    '$50K - $100K',
-    '$100K+',
-    'Let\'s discuss'
-  ]
 
   return (
     <div style={{ 
@@ -575,266 +517,9 @@ export default function Contact() {
             alignItems: 'start'
           }}>
             
-            {/* Contact Form */}
+            {/* Contact Form with Web3Forms */}
             <div ref={formRef} style={{ opacity: 0, transform: 'translateX(50px)' }}>
-              <div style={{
-                marginBottom: '3rem'
-              }}>
-                <h2 style={{
-                  fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
-                  fontWeight: '200',
-                  marginBottom: '1rem',
-                  margin: 0
-                }}>
-                  Start Your Project
-                </h2>
-                <p style={{
-                  fontSize: '1.125rem',
-                  fontWeight: '300',
-                  lineHeight: '1.6',
-                  opacity: 0.8
-                }}>
-                  Tell us about your project and we'll get back to you within 24 hours.
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                  gap: '2rem',
-                  marginBottom: '2rem'
-                }}>
-                  <div>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      marginBottom: '0.5rem',
-                      color: '#000000'
-                    }}>
-                      Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '1px solid rgba(0,0,0,0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.3s ease',
-                        background: '#ffffff',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      marginBottom: '0.5rem',
-                      color: '#000000'
-                    }}>
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '1px solid rgba(0,0,0,0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.3s ease',
-                        background: '#ffffff',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                  gap: '2rem',
-                  marginBottom: '2rem'
-                }}>
-                  <div>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      marginBottom: '0.5rem',
-                      color: '#000000'
-                    }}>
-                      Company
-                    </label>
-                    <input
-                      type="text"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleInputChange}
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '1px solid rgba(0,0,0,0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.3s ease',
-                        background: '#ffffff',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      marginBottom: '0.5rem',
-                      color: '#000000'
-                    }}>
-                      Project Type
-                    </label>
-                    <select
-                      name="project"
-                      value={formData.project}
-                      onChange={handleInputChange}
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '1px solid rgba(0,0,0,0.2)',
-                        borderRadius: '8px',
-                        fontSize: '1rem',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.3s ease',
-                        background: '#ffffff',
-                        outline: 'none'
-                      }}
-                    >
-                      <option value="">Select a project type</option>
-                      {projectTypes.map((type, index) => (
-                        <option key={index} value={type}>{type}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '2rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    color: '#000000'
-                  }}>
-                    Budget Range
-                  </label>
-                  <select
-                    name="budget"
-                    value={formData.budget}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      border: '1px solid rgba(0,0,0,0.2)',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      fontFamily: 'inherit',
-                      transition: 'all 0.3s ease',
-                      background: '#ffffff',
-                      outline: 'none'
-                    }}
-                  >
-                    <option value="">Select budget range</option>
-                    {budgetRanges.map((range, index) => (
-                      <option key={index} value={range}>{range}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div style={{ marginBottom: '3rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    color: '#000000'
-                  }}>
-                    Project Details *
-                  </label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows="6"
-                    placeholder="Tell us about your project, goals, and requirements..."
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      border: '1px solid rgba(0,0,0,0.2)',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      fontFamily: 'inherit',
-                      transition: 'all 0.3s ease',
-                      background: '#ffffff',
-                      outline: 'none',
-                      resize: 'vertical'
-                    }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  style={{
-                    width: '100%',
-                    padding: '1.25rem 2rem',
-                    background: isSubmitting ? '#cccccc' : '#000000',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    fontWeight: '500',
-                    fontFamily: 'inherit',
-                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.3s ease',
-                    letterSpacing: '0.05em'
-                  }}
-                >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                </button>
-
-                {submitStatus === 'success' && (
-                  <div style={{
-                    marginTop: '1rem',
-                    padding: '1rem',
-                    background: '#d4edda',
-                    border: '1px solid #c3e6cb',
-                    borderRadius: '8px',
-                    color: '#155724',
-                    fontSize: '0.875rem'
-                  }}>
-                    ✓ Message sent successfully! We'll get back to you within 24 hours.
-                  </div>
-                )}
-              </form>
+              <Web3ContactForm />
             </div>
 
             {/* Map & Location Info */}
