@@ -366,8 +366,11 @@ export default function Home() {
     return () => clearInterval(testimonialInterval)
   }, [testimonials.length])
 
-  // Handle scroll navigation through intro slides
+  // Handle scroll navigation through intro slides (desktop and mobile)
   useEffect(() => {
+    let touchStartY = 0
+    let touchEndY = 0
+    
     const handleScroll = (e) => {
       if (!showMainContent && !isTransitioning) {
         e.preventDefault()
@@ -390,12 +393,57 @@ export default function Home() {
       }
     }
 
+    // Mobile touch handlers
+    const handleTouchStart = (e) => {
+      if (!showMainContent && !isTransitioning) {
+        touchStartY = e.changedTouches[0].screenY
+      }
+    }
+
+    const handleTouchEnd = (e) => {
+      if (!showMainContent && !isTransitioning) {
+        touchEndY = e.changedTouches[0].screenY
+        handleSwipe()
+      }
+    }
+
+    const handleSwipe = () => {
+      const swipeThreshold = 50 // minimum distance for swipe
+      const swipeDistance = touchStartY - touchEndY
+      
+      if (Math.abs(swipeDistance) > swipeThreshold) {
+        setIsTransitioning(true)
+        
+        if (swipeDistance > 0 && currentSlide < heroStatements.length - 1) {
+          // Swipe up - next slide
+          setCurrentSlide(prev => prev + 1)
+        } else if (swipeDistance < 0 && currentSlide > 0) {
+          // Swipe down - previous slide
+          setCurrentSlide(prev => prev - 1)
+        } else if (swipeDistance > 0 && currentSlide === heroStatements.length - 1) {
+          // Swipe up on last slide - show main content
+          sessionStorage.setItem('slidesShown', 'true')
+          setShowMainContent(true)
+        }
+        
+        setTimeout(() => {
+          setIsTransitioning(false)
+        }, 1400)
+      }
+    }
+
     if (!showMainContent) {
+      // Desktop scroll
       window.addEventListener('wheel', handleScroll, { passive: false })
+      // Mobile touch
+      window.addEventListener('touchstart', handleTouchStart, { passive: false })
+      window.addEventListener('touchend', handleTouchEnd, { passive: false })
     }
 
     return () => {
       window.removeEventListener('wheel', handleScroll)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchend', handleTouchEnd)
     }
   }, [showMainContent, isTransitioning, currentSlide, heroStatements.length])
 
