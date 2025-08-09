@@ -13,12 +13,24 @@ gsap.registerPlugin(ScrollTrigger)
 
 
 // Clean Process Card Component with Hover Effects
-function ProcessCard({ number, title, description }) {
+function ProcessCard({ number, title, description, isMobile = false }) {
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef()
   
-  // Determine border style based on card number
+  // Determine border style based on card number and mobile state
   const getBorderStyle = () => {
+    if (isMobile) {
+      // Mobile: All cards have top and bottom borders only
+      return {
+        borderTop: '1px solid #000000',
+        borderBottom: '1px solid #000000',
+        borderLeft: 'none',
+        borderRight: 'none',
+        marginBottom: '1rem'
+      }
+    }
+    
+    // Desktop: Original side-by-side layout
     if (number === 1) {
       return {
         borderTop: '1px solid #000000',
@@ -1060,8 +1072,10 @@ export default function Home() {
           right: 0,
           zIndex: 1000,
           padding: isMobile ? '0.75rem 1rem' : '1rem 2rem',
-          background: navVisible ? 'rgba(255,255,255,0.95)' : 'transparent',
+          background: navVisible ? 'rgba(255,255,255,0.1)' : 'transparent',
           backdropFilter: navVisible ? 'blur(20px)' : 'none',
+          WebkitBackdropFilter: navVisible ? 'blur(20px)' : 'none',
+          boxShadow: navVisible ? 'inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 32px rgba(0,0,0,0.1)' : 'none',
           borderBottom: navVisible ? '1px solid rgba(0,0,0,0.1)' : 'none',
           transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
           transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
@@ -1162,7 +1176,7 @@ export default function Home() {
                   fontSize: '0.875rem',
                   fontWeight: activeSection === item.key ? '500' : '400',
                   letterSpacing: '0.05em',
-                  color: activeSection === item.key ? '#000000' : '#666666',
+                  color: activeSection === item.key ? '#000000' : navVisible ? '#333333' : '#666666',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   fontFamily: 'inherit',
@@ -1248,8 +1262,10 @@ export default function Home() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(255, 255, 255, 0.98)',
-            backdropFilter: 'blur(10px)',
+            background: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(30px)',
+            WebkitBackdropFilter: 'blur(30px)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 32px rgba(0,0,0,0.1)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -1343,7 +1359,7 @@ export default function Home() {
           overflow: 'hidden'
         }}
       >
-        {/* Video Background */}
+        {/* Video Background for Desktop, Image for Mobile */}
         <div style={{
           position: 'absolute',
           top: 0,
@@ -1352,27 +1368,41 @@ export default function Home() {
           height: '100%',
           zIndex: 1
         }}>
-          <video
-            ref={videoRef}
-            muted
-            autoplay
-            preload="metadata"
-            controls={false}
-            onLoadStart={() => console.log('Hero video loading started')}
-            onCanPlay={() => console.log('Hero video can play')}
-            onError={(e) => console.error('Hero video error:', e)}
-            onLoadedData={() => console.log('Hero video data loaded')}
-            onTimeUpdate={(e) => setVideoTime(e.target.currentTime)}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-              display: 'block'
-            }}
-          >
-            <source src="/videos/Bridge%20Video.mp4" type="video/mp4" />
-          </video>
+          {!isMobile ? (
+            <video
+              ref={videoRef}
+              muted
+              autoplay
+              preload="metadata"
+              controls={false}
+              onLoadStart={() => console.log('Hero video loading started')}
+              onCanPlay={() => console.log('Hero video can play')}
+              onError={(e) => console.error('Hero video error:', e)}
+              onLoadedData={() => console.log('Hero video data loaded')}
+              onTimeUpdate={(e) => setVideoTime(e.target.currentTime)}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block'
+              }}
+            >
+              <source src="/videos/Bridge%20Video.mp4" type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src="/mobile bridge.png"
+              alt="Bridge Software Solutions Mobile Hero"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block'
+              }}
+            />
+          )}
         </div>
 
         {/* Progress Indicator */}
@@ -2020,13 +2050,14 @@ export default function Home() {
             </h2>
           </div>
 
-          {/* Single Line Process Timeline */}
+          {/* Process Timeline - Responsive Layout */}
           <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'stretch',
-            gap: '1.5rem',
+            gap: isMobile ? '0' : '1.5rem',
             flexWrap: 'nowrap',
+            flexDirection: isMobile ? 'column' : 'row',
             position: 'relative',
             overflow: 'hidden'
           }}>
@@ -2034,24 +2065,28 @@ export default function Home() {
               number={1}
               title="Discovery"
               description="We dive deep into your brand, understanding your vision, challenges, and goals. Every great project starts with listening."
+              isMobile={isMobile}
             />
             
             <ProcessCard 
               number={2}
               title="Strategy"
               description="Strategic thinking meets creative vision. We craft roadmaps that transform your ideas into digital excellence."
+              isMobile={isMobile}
             />
             
             <ProcessCard 
               number={3}
               title="Design"
               description="Where aesthetics meet functionality. Every pixel is purposefully placed to create experiences that captivate and convert."
+              isMobile={isMobile}
             />
             
             <ProcessCard 
               number={4}
               title="Development"
               description="Cutting-edge technology brings designs to life. We build robust, scalable solutions that perform beautifully across all devices."
+              isMobile={isMobile}
             />
           </div>
         </div>
@@ -2263,87 +2298,121 @@ export default function Home() {
           marginBottom: '3rem',
           zIndex: 2
         }}>
-          {/* First Line: "Let's Create Something" - Right to Left */}
-          <div style={{
-            position: 'relative',
-            height: '90px',
-            width: '100vw',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            overflow: 'visible',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+          {isMobile ? (
+            /* Mobile: Single centered text */
             <div style={{
-              position: 'absolute',
-              whiteSpace: 'nowrap',
-              fontSize: 'clamp(3rem, 8vw, 6rem)',
-              fontWeight: '900',
-              fontStyle: 'italic',
-              color: '#cccccc',
-              letterSpacing: '-0.02em',
-              textTransform: 'uppercase',
-              // Scroll from right to left, stop at center
-              transform: `translateX(${ctaVisible ? 
-                Math.max(-25, 75 - ((scrollY - ctaScrollOffset) * 0.12)) : 75}%) translateZ(0)`,
-              transition: ctaVisible ? 'none' : 'transform 2.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
-              opacity: ctaVisible ? 0.8 : 0,
-              transitionDelay: '0.3s',
-              transformOrigin: 'left center',
-              textShadow: '0 2px 10px rgba(0,0,0,0.3)',
-              // Anti-aliasing and performance optimizations
-              WebkitFontSmoothing: 'antialiased',
-              MozOsxFontSmoothing: 'grayscale',
-              textRendering: 'optimizeLegibility',
-              willChange: 'transform',
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden'
+              position: 'relative',
+              width: '100%',
+              padding: '0 1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center'
             }}>
-              Let's Create Something&nbsp;&nbsp;&nbsp;
+              <div style={{
+                fontSize: 'clamp(1.5rem, 8vw, 2.5rem)',
+                fontWeight: '900',
+                fontStyle: 'italic',
+                color: '#ffffff',
+                letterSpacing: '-0.01em',
+                textTransform: 'uppercase',
+                lineHeight: '1.2',
+                opacity: ctaVisible ? 1 : 0,
+                transform: `translateY(${ctaVisible ? 0 : 30}px)`,
+                transition: 'all 2s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                transitionDelay: '0.3s',
+                textShadow: '0 4px 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.05)',
+                WebkitFontSmoothing: 'antialiased',
+                MozOsxFontSmoothing: 'grayscale',
+                textRendering: 'optimizeLegibility'
+              }}>
+                LET'S CREATE SOMETHING<br />EXTRAORDINARY TOGETHER
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Desktop: Original animated text */
+            <>
+              {/* First Line: "Let's Create Something" - Right to Left */}
+              <div style={{
+                position: 'relative',
+                height: '90px',
+                width: '100vw',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                overflow: 'visible',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  whiteSpace: 'nowrap',
+                  fontSize: 'clamp(3rem, 8vw, 6rem)',
+                  fontWeight: '900',
+                  fontStyle: 'italic',
+                  color: '#cccccc',
+                  letterSpacing: '-0.02em',
+                  textTransform: 'uppercase',
+                  // Scroll from right to left, stop at center
+                  transform: `translateX(${ctaVisible ? 
+                    Math.max(-25, 75 - ((scrollY - ctaScrollOffset) * 0.12)) : 75}%) translateZ(0)`,
+                  transition: ctaVisible ? 'none' : 'transform 2.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                  opacity: ctaVisible ? 0.8 : 0,
+                  transitionDelay: '0.3s',
+                  transformOrigin: 'left center',
+                  textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  textRendering: 'optimizeLegibility',
+                  willChange: 'transform',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}>
+                  Let's Create Something&nbsp;&nbsp;&nbsp;
+                </div>
+              </div>
 
-          {/* Second Line: "Extraordinary Together" - Left to Right */}
-          <div style={{
-            position: 'relative',
-            height: '90px',
-            width: '100vw',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            overflow: 'visible',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              position: 'absolute',
-              whiteSpace: 'nowrap',
-              fontSize: 'clamp(3rem, 8vw, 6rem)',
-              fontWeight: '900',
-              fontStyle: 'italic',
-              color: '#ffffff',
-              letterSpacing: '-0.02em',
-              textTransform: 'uppercase',
-              // Scroll from left to right, stop at center
-              transform: `translateX(${ctaVisible ? 
-                Math.min(25, -75 + ((scrollY - ctaScrollOffset) * 0.12)) : -75}%) translateZ(0)`,
-              transition: ctaVisible ? 'none' : 'transform 2.8s cubic-bezier(0.165, 0.84, 0.44, 1)',
-              opacity: ctaVisible ? 1 : 0,
-              transitionDelay: '0.6s',
-              transformOrigin: 'right center',
-              textShadow: '0 4px 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.05)',
-              // Anti-aliasing and performance optimizations
-              WebkitFontSmoothing: 'antialiased',
-              MozOsxFontSmoothing: 'grayscale',
-              textRendering: 'optimizeLegibility',
-              willChange: 'transform',
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden'
-            }}>
-Extraordinary Together&nbsp;&nbsp;&nbsp;
-            </div>
-          </div>
+              {/* Second Line: "Extraordinary Together" - Left to Right */}
+              <div style={{
+                position: 'relative',
+                height: '90px',
+                width: '100vw',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                overflow: 'visible',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  whiteSpace: 'nowrap',
+                  fontSize: 'clamp(3rem, 8vw, 6rem)',
+                  fontWeight: '900',
+                  fontStyle: 'italic',
+                  color: '#ffffff',
+                  letterSpacing: '-0.02em',
+                  textTransform: 'uppercase',
+                  // Scroll from left to right, stop at center
+                  transform: `translateX(${ctaVisible ? 
+                    Math.min(25, -75 + ((scrollY - ctaScrollOffset) * 0.12)) : -75}%) translateZ(0)`,
+                  transition: ctaVisible ? 'none' : 'transform 2.8s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                  opacity: ctaVisible ? 1 : 0,
+                  transitionDelay: '0.6s',
+                  transformOrigin: 'right center',
+                  textShadow: '0 4px 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.05)',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  textRendering: 'optimizeLegibility',
+                  willChange: 'transform',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}>
+                  Extraordinary Together&nbsp;&nbsp;&nbsp;
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Subtle Background Lines for Depth */}
           <div style={{
