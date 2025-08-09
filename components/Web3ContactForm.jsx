@@ -7,7 +7,9 @@ export default function Web3ContactForm() {
     company: '',
     project: '',
     budget: '',
-    message: ''
+    message: '',
+    countryCode: '+1',
+    phone: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState('')
@@ -33,6 +35,29 @@ export default function Web3ContactForm() {
     'Let\'s discuss'
   ]
 
+  const countryCodes = [
+    { code: '+1', name: 'United States', flag: '🇺🇸' },
+    { code: '+1', name: 'Canada', flag: '🇨🇦' },
+    { code: '+91', name: 'India', flag: '🇮🇳' },
+    { code: '+44', name: 'United Kingdom', flag: '🇬🇧' },
+    { code: '+49', name: 'Germany', flag: '🇩🇪' },
+    { code: '+33', name: 'France', flag: '🇫🇷' },
+    { code: '+39', name: 'Italy', flag: '🇮🇹' },
+    { code: '+34', name: 'Spain', flag: '🇪🇸' },
+    { code: '+61', name: 'Australia', flag: '🇦🇺' },
+    { code: '+81', name: 'Japan', flag: '🇯🇵' },
+    { code: '+86', name: 'China', flag: '🇨🇳' },
+    { code: '+82', name: 'South Korea', flag: '🇰🇷' },
+    { code: '+55', name: 'Brazil', flag: '🇧🇷' },
+    { code: '+52', name: 'Mexico', flag: '🇲🇽' },
+    { code: '+7', name: 'Russia', flag: '🇷🇺' },
+    { code: '+27', name: 'South Africa', flag: '🇿🇦' },
+    { code: '+971', name: 'UAE', flag: '🇦🇪' },
+    { code: '+966', name: 'Saudi Arabia', flag: '🇸🇦' },
+    { code: '+65', name: 'Singapore', flag: '🇸🇬' },
+    { code: '+31', name: 'Netherlands', flag: '🇳🇱' }
+  ]
+
   // Validation function
   const validateForm = () => {
     const errors = {}
@@ -51,6 +76,11 @@ export default function Web3ContactForm() {
       errors.message = 'Project details are required'
     } else if (formData.message.trim().length < 10) {
       errors.message = 'Please provide more details about your project (minimum 10 characters)'
+    }
+
+    // Phone validation (optional but if provided, should be valid)
+    if (formData.phone.trim() && !/^[\d\s\-\(\)]+$/.test(formData.phone.trim())) {
+      errors.phone = 'Please enter a valid phone number'
     }
     
     return errors
@@ -105,6 +135,7 @@ export default function Web3ContactForm() {
       formDataObj.append('company', formData.company || 'Not specified')
       formDataObj.append('project', formData.project || 'Not specified')
       formDataObj.append('budget', formData.budget || 'Not specified')
+      formDataObj.append('phone', formData.phone ? `${formData.countryCode} ${formData.phone}` : 'Not provided')
       formDataObj.append('message', formData.message)
       
       // Add subject line
@@ -120,6 +151,7 @@ export default function Web3ContactForm() {
         company: formData.company,
         project: formData.project,
         budget: formData.budget,
+        phone: formData.phone ? `${formData.countryCode} ${formData.phone}` : 'Not provided',
         message: formData.message.substring(0, 50) + '...'
       })
 
@@ -142,7 +174,9 @@ export default function Web3ContactForm() {
           company: '',
           project: '',
           budget: '',
-          message: ''
+          message: '',
+          countryCode: '+1',
+          phone: ''
         })
         
         // Clear success message after 5 seconds
@@ -273,6 +307,72 @@ export default function Web3ContactForm() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Phone Number Field */}
+        <div style={{ marginBottom: '2rem' }}>
+          <label style={{
+            display: 'block',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            marginBottom: '0.5rem',
+            color: '#000000'
+          }}>
+            Phone Number
+          </label>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '120px 1fr',
+            gap: '0.5rem'
+          }}>
+            <select
+              name="countryCode"
+              value={formData.countryCode}
+              onChange={handleInputChange}
+              style={{
+                padding: '1rem',
+                border: '1px solid rgba(0,0,0,0.2)',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontFamily: 'inherit',
+                transition: 'all 0.3s ease',
+                background: '#ffffff',
+                outline: 'none'
+              }}
+            >
+              {countryCodes.map((country, index) => (
+                <option key={index} value={country.code}>
+                  {country.flag} {country.code}
+                </option>
+              ))}
+            </select>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder="Enter phone number"
+              style={{
+                padding: '1rem',
+                border: `1px solid ${validationErrors.phone ? '#dc3545' : 'rgba(0,0,0,0.2)'}`,
+                borderRadius: '8px',
+                fontSize: '1rem',
+                fontFamily: 'inherit',
+                transition: 'all 0.3s ease',
+                background: '#ffffff',
+                outline: 'none'
+              }}
+            />
+          </div>
+          {validationErrors.phone && (
+            <div style={{
+              color: '#dc3545',
+              fontSize: '0.75rem',
+              marginTop: '0.25rem'
+            }}>
+              {validationErrors.phone}
+            </div>
+          )}
         </div>
 
         <div style={{
@@ -480,22 +580,6 @@ export default function Web3ContactForm() {
           </div>
         )}
 
-        {/* Debug Information */}
-        <div style={{
-          marginTop: '1rem',
-          padding: '0.5rem',
-          background: '#f8f9fa',
-          border: '1px solid #dee2e6',
-          borderRadius: '6px',
-          fontSize: '0.75rem',
-          color: '#6c757d'
-        }}>
-          <strong>Troubleshooting tips:</strong><br />
-          1. Check your spam/junk folder<br />
-          2. Open browser console (F12) to see detailed logs<br />
-          3. Verify the email address used to get the Web3Forms access key<br />
-          4. Form submissions may take a few minutes to appear in your inbox
-        </div>
 
         {/* Web3Forms Honeypot (hidden spam protection) */}
         <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
