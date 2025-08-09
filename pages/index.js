@@ -1063,35 +1063,35 @@ export default function Home() {
       <nav 
         ref={navRef}
         style={{
-          position: isMobile ? 'static' : 'sticky',
-          top: isMobile ? 'auto' : 0,
+          position: 'fixed',
+          top: 0,
           left: 0,
           right: 0,
           zIndex: 1000,
-          height: isMobile ? 'auto' : 'var(--header-height)',
-          padding: isMobile ? '1rem' : '1rem 2rem',
-          background: isMobile ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.1)',
-          backdropFilter: isMobile ? 'none' : 'blur(20px)',
-          WebkitBackdropFilter: isMobile ? 'none' : 'blur(20px)',
-          boxShadow: isMobile ? '0 2px 8px rgba(0,0,0,0.1)' : 'inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 32px rgba(0,0,0,0.1)',
-          borderBottom: isMobile ? '1px solid rgba(0,0,0,0.2)' : '1px solid rgba(0,0,0,0.1)',
+          padding: '1rem 2rem',
+          background: isMobile ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.1)',
+          backdropFilter: isMobile ? 'blur(20px)' : 'blur(20px)',
+          borderBottom: '1px solid rgba(0,0,0,0.1)',
+          transform: 'translateY(0)',
           transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
           opacity: 1
         }}
       >
         <div style={{
-          maxWidth: '1200px',
+          maxWidth: isMobile ? '100%' : '1200px',
           margin: '0 auto',
           display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
+          justifyContent: isMobile ? 'space-between' : 'space-between',
+          alignItems: 'center',
+          width: '100%'
         }}>
           {/* Logo */}
           <div 
             style={{
               cursor: 'pointer',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexShrink: 0
             }}
             onClick={() => scrollToSection(heroSectionRef)}
           >
@@ -1099,121 +1099,128 @@ export default function Home() {
               src="/BRIDGE.png" 
               alt="Bridge Software Solutions Logo" 
               style={{
-                height: '42px',
+                height: isMobile ? '32px' : '42px',
                 width: 'auto',
                 objectFit: 'contain'
               }}
             />
           </div>
 
-          {/* Navigation Links */}
+          {/* All Navigation Items - Uniformly Distributed */}
           <div style={{
             display: 'flex',
-            gap: isMobile ? '1rem' : '3rem',
-            alignItems: 'center'
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flex: 1,
+            marginLeft: isMobile ? '1rem' : '2rem',
+            gap: isMobile ? 'clamp(0.25rem, 2vw, 1rem)' : '2rem'
           }}>
-            {/* Mobile Menu Button */}
-            {isMobile && (
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                style={{
-                  background: 'rgba(0,0,0,0.05)',
-                  border: '1px solid rgba(0,0,0,0.1)',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  padding: '0.75rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  width: '40px',
-                  height: '40px',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}
-                aria-label="Toggle mobile menu"
-              >
-                <span style={{
-                  width: '24px',
-                  height: '3px',
-                  backgroundColor: '#000000',
-                  margin: '2px 0',
-                  transition: 'all 0.3s ease',
-                  transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none',
-                  borderRadius: '1px'
-                }} />
-                <span style={{
-                  width: '24px',
-                  height: '3px',
-                  backgroundColor: '#000000',
-                  margin: '2px 0',
-                  transition: 'all 0.3s ease',
-                  opacity: mobileMenuOpen ? 0 : 1,
-                  borderRadius: '1px'
-                }} />
-                <span style={{
-                  width: '24px',
-                  height: '3px',
-                  backgroundColor: '#000000',
-                  margin: '2px 0',
-                  transition: 'all 0.3s ease',
-                  transform: mobileMenuOpen ? 'rotate(-45deg) translate(7px, -7px)' : 'none',
-                  borderRadius: '1px'
-                }} />
-              </button>
-            )}
-            
-            {/* Desktop Navigation */}
-            {!isMobile && (
-              <>
-            {[
-              { name: 'Home', key: 'home', ref: heroSectionRef },
-              { name: 'Services', key: 'services', ref: servicesRef },
-              { name: 'Projects', key: 'projects', ref: projectsRef }
-            ].map((item) => (
-              <button
-                key={item.key}
-                onClick={() => scrollToSection(item.ref)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '0.875rem',
-                  fontWeight: activeSection === item.key ? '500' : '400',
-                  letterSpacing: '0.05em',
-                  color: activeSection === item.key ? '#000000' : '#333333',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit',
-                  transform: 'scale(1)'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = '#000000'
-                  e.target.style.transform = 'scale(1.1)'
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = activeSection === item.key ? '#000000' : '#666666'
-                  e.target.style.transform = 'scale(1)'
-                }}
-              >
-                {item.name}
-              </button>
-            ))}
+            {/* Home */}
+            <button
+              onClick={() => scrollToSection(heroSectionRef)}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
+                fontWeight: activeSection === 'home' ? '500' : '400',
+                letterSpacing: '0.05em',
+                color: activeSection === 'home' ? '#000000' : '#333333',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: 'inherit',
+                whiteSpace: 'nowrap',
+                flex: '1',
+                textAlign: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = '#000000'
+                e.target.style.transform = 'scale(1.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = activeSection === 'home' ? '#000000' : '#666666'
+                e.target.style.transform = 'scale(1)'
+              }}
+            >
+              Home
+            </button>
 
-            {/* Blogs Link */}
+            {/* Services */}
+            <button
+              onClick={() => scrollToSection(servicesRef)}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
+                fontWeight: activeSection === 'services' ? '500' : '400',
+                letterSpacing: '0.05em',
+                color: activeSection === 'services' ? '#000000' : '#333333',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: 'inherit',
+                whiteSpace: 'nowrap',
+                flex: '1',
+                textAlign: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = '#000000'
+                e.target.style.transform = 'scale(1.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = activeSection === 'services' ? '#000000' : '#666666'
+                e.target.style.transform = 'scale(1)'
+              }}
+            >
+              Services
+            </button>
+
+            {/* Projects */}
+            <button
+              onClick={() => scrollToSection(projectsRef)}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
+                fontWeight: activeSection === 'projects' ? '500' : '400',
+                letterSpacing: '0.05em',
+                color: activeSection === 'projects' ? '#000000' : '#333333',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: 'inherit',
+                whiteSpace: 'nowrap',
+                flex: '1',
+                textAlign: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = '#000000'
+                e.target.style.transform = 'scale(1.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = activeSection === 'projects' ? '#000000' : '#666666'
+                e.target.style.transform = 'scale(1)'
+              }}
+            >
+              Projects
+            </button>
+
+            {/* Blogs */}
             <Link href="/blogs">
               <button style={{
                 background: 'none',
                 border: 'none',
-                fontSize: '0.875rem',
+                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
                 fontWeight: '400',
                 letterSpacing: '0.05em',
                 color: '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 fontFamily: 'inherit',
-                transform: 'scale(1)'
+                whiteSpace: 'nowrap',
+                flex: '1',
+                textAlign: 'center'
               }}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.1)'
+                e.target.style.transform = 'scale(1.05)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = '#666666'
@@ -1230,14 +1237,17 @@ export default function Home() {
                 background: '#000000',
                 color: '#ffffff',
                 border: 'none',
-                padding: '0.75rem 1.5rem',
+                padding: isMobile ? 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)' : '0.75rem 1.5rem',
                 borderRadius: '6px',
-                fontSize: '0.875rem',
+                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
                 fontWeight: '500',
                 letterSpacing: '0.05em',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                fontFamily: 'inherit'
+                fontFamily: 'inherit',
+                whiteSpace: 'nowrap',
+                flex: '1',
+                textAlign: 'center'
               }}
               onMouseEnter={(e) => {
                 e.target.style.background = '#333333'
@@ -1251,8 +1261,6 @@ export default function Home() {
                 Contact
               </button>
             </Link>
-            </>
-            )}
           </div>
         </div>
 
@@ -1349,59 +1357,6 @@ export default function Home() {
         )}
       </nav>
 
-      {/* Floating Contact FAB */}
-      {!mobileMenuOpen && (
-        <Link href="/contact">
-          <button
-            style={{
-              position: 'fixed',
-              right: `max(16px, ${typeof window !== 'undefined' && window.CSS?.supports('right', 'env(safe-area-inset-right)') ? 'env(safe-area-inset-right)' : '16px'})`,
-              bottom: `max(16px, ${typeof window !== 'undefined' && window.CSS?.supports('bottom', 'env(safe-area-inset-bottom)') ? 'env(safe-area-inset-bottom)' : '16px'})`,
-              zIndex: 1100,
-              width: isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '48px' : '56px',
-              height: isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '48px' : '56px',
-              borderRadius: '50%',
-              background: '#000000',
-              color: '#ffffff',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.15)',
-              transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '12px' : '14px',
-              fontWeight: '600',
-              letterSpacing: '0.5px',
-              pointerEvents: 'auto',
-              transform: 'translateZ(0)', // Hardware acceleration
-              backfaceVisibility: 'hidden'
-            }}
-            onMouseEnter={(e) => {
-              if (!isMobile) {
-                e.target.style.transform = 'translateY(-2px) scale(1.1) translateZ(0)'
-                e.target.style.boxShadow = '0 6px 24px rgba(0,0,0,0.4), 0 12px 48px rgba(0,0,0,0.2)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isMobile) {
-                e.target.style.transform = 'translateY(0) scale(1) translateZ(0)'
-                e.target.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.15)'
-              }
-            }}
-            onTouchStart={(e) => {
-              e.target.style.transform = 'scale(0.95) translateZ(0)'
-            }}
-            onTouchEnd={(e) => {
-              setTimeout(() => {
-                e.target.style.transform = 'scale(1) translateZ(0)'
-              }, 100)
-            }}
-          >
-            {isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '💬' : 'CONTACT'}
-          </button>
-        </Link>
-      )}
       
       {/* Hero Section with Scroll-Controlled Video */}
       <section 
@@ -1412,9 +1367,8 @@ export default function Home() {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          overflow: 'hidden',
-          scrollMarginTop: isMobile ? '0' : 'var(--header-height)',
-          paddingTop: isMobile ? '0' : 'var(--header-height)'
+          paddingTop: isMobile ? '80px' : '100px',
+          overflow: 'hidden'
         }}
       >
         {/* Video Background for Desktop, Image for Mobile */}
