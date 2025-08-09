@@ -96,8 +96,8 @@ export default function Web3ContactForm() {
     try {
       const formDataObj = new FormData()
       
-      // Add Web3Forms access key (you'll need to replace this with your actual access key)
-      formDataObj.append('access_key', 'YOUR_WEB3FORMS_ACCESS_KEY_HERE')
+      // Add Web3Forms access key
+      formDataObj.append('access_key', '5dbb14e1-ff10-466c-a85d-3bccb0d6f084')
       
       // Add form data
       formDataObj.append('name', formData.name)
