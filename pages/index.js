@@ -210,29 +210,29 @@ export default function Home() {
       main: "Bridge", 
       sub: "connecting possibilities",
       desc: "We bridge the gap between your vision and digital reality",
-      leftIcon: "🌉",
-      rightIcon: "✨"
+      leftIcon: "",
+      rightIcon: ""
     },
     { 
       main: "Be Un-Conventional", 
       sub: "think differently",
       desc: "Break free from ordinary. Embrace the extraordinary approach to digital presence",
-      leftIcon: "⚡",
-      rightIcon: "🚀"
+      leftIcon: "",
+      rightIcon: ""
     },
     { 
       main: "Let your website speak", 
       sub: "visual storytelling",
       desc: "Every pixel tells your story. Every interaction builds your brand",
-      leftIcon: "💬",
-      rightIcon: "🎨"
+      leftIcon: "",
+      rightIcon: ""
     },
     { 
       main: "Make your business Online", 
       sub: "digital transformation",
       desc: "Transform your traditional business into a digital powerhouse",
-      leftIcon: "💼",
-      rightIcon: "🌐"
+      leftIcon: "",
+      rightIcon: ""
     }
   ]
 

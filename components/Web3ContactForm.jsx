@@ -224,366 +224,569 @@ export default function Web3ContactForm() {
       </div>
 
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        {/* Personal Information Section */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '2rem',
-          marginBottom: '2rem'
+          marginBottom: '3rem',
+          padding: '0 0 2rem 0',
+          borderBottom: '1px solid rgba(0,0,0,0.1)'
         }}>
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              marginBottom: '0.5rem',
-              color: '#000000'
-            }}>
-              Name *
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              style={{
-                width: '100%',
-                padding: '1rem',
-                border: `1px solid ${validationErrors.name ? '#dc3545' : 'rgba(0,0,0,0.2)'}`,
-                borderRadius: '8px',
-                fontSize: '1rem',
-                fontFamily: 'inherit',
-                transition: 'all 0.3s ease',
-                background: '#ffffff',
-                outline: 'none'
-              }}
-            />
-            {validationErrors.name && (
-              <div style={{
-                color: '#dc3545',
-                fontSize: '0.75rem',
-                marginTop: '0.25rem'
-              }}>
-                {validationErrors.name}
-              </div>
-            )}
-          </div>
-          
-          <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              marginBottom: '0.5rem',
-              color: '#000000'
-            }}>
-              Email *
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              style={{
-                width: '100%',
-                padding: '1rem',
-                border: `1px solid ${validationErrors.email ? '#dc3545' : 'rgba(0,0,0,0.2)'}`,
-                borderRadius: '8px',
-                fontSize: '1rem',
-                fontFamily: 'inherit',
-                transition: 'all 0.3s ease',
-                background: '#ffffff',
-                outline: 'none'
-              }}
-            />
-            {validationErrors.email && (
-              <div style={{
-                color: '#dc3545',
-                fontSize: '0.75rem',
-                marginTop: '0.25rem'
-              }}>
-                {validationErrors.email}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Phone Number Field */}
-        <div style={{ marginBottom: '2rem' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '0.875rem',
+          <h3 className="section-title" style={{
+            fontSize: '1.125rem',
             fontWeight: '500',
-            marginBottom: '0.5rem',
-            color: '#000000'
+            marginBottom: '1.5rem',
+            color: '#000000',
+            margin: 0,
+            marginBottom: '1.5rem'
           }}>
-            Phone Number
-          </label>
-          <div style={{
+            Personal Information
+          </h3>
+          
+          <div className="form-grid-2" style={{
             display: 'grid',
-            gridTemplateColumns: '120px 1fr',
-            gap: '0.5rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '2rem',
+            marginBottom: '2rem'
           }}>
-            <select
-              name="countryCode"
-              value={formData.countryCode}
-              onChange={handleInputChange}
-              style={{
-                padding: '1rem',
-                border: '1px solid rgba(0,0,0,0.2)',
-                borderRadius: '8px',
+            <div>
+              <label style={{
+                display: 'block',
                 fontSize: '0.875rem',
-                fontFamily: 'inherit',
-                transition: 'all 0.3s ease',
-                background: '#ffffff',
-                outline: 'none'
-              }}
-            >
-              {countryCodes.map((country, index) => (
-                <option key={index} value={country.code}>
-                  {country.flag} {country.code}
-                </option>
-              ))}
-            </select>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              placeholder="Enter phone number"
-              style={{
-                padding: '1rem',
-                border: `1px solid ${validationErrors.phone ? '#dc3545' : 'rgba(0,0,0,0.2)'}`,
-                borderRadius: '8px',
-                fontSize: '1rem',
-                fontFamily: 'inherit',
-                transition: 'all 0.3s ease',
-                background: '#ffffff',
-                outline: 'none'
-              }}
-            />
-          </div>
-          {validationErrors.phone && (
-            <div style={{
-              color: '#dc3545',
-              fontSize: '0.75rem',
-              marginTop: '0.25rem'
-            }}>
-              {validationErrors.phone}
+                fontWeight: '500',
+                marginBottom: '0.75rem',
+                color: '#000000'
+              }}>
+                Full Name *
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                placeholder="Enter your full name"
+                style={{
+                  width: '100%',
+                  padding: '1rem 1.25rem',
+                  border: `2px solid ${validationErrors.name ? '#dc3545' : 'rgba(0,0,0,0.15)'}`,
+                  borderRadius: '12px',
+                  fontSize: '1rem',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease',
+                  background: '#ffffff',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => {
+                  if (!validationErrors.name) e.target.style.border = '2px solid #000000'
+                }}
+                onBlur={(e) => {
+                  if (!validationErrors.name) e.target.style.border = '2px solid rgba(0,0,0,0.15)'
+                }}
+              />
+              {validationErrors.name && (
+                <div style={{
+                  color: '#dc3545',
+                  fontSize: '0.75rem',
+                  marginTop: '0.5rem',
+                  fontWeight: '500'
+                }}>
+                  {validationErrors.name}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+            
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                marginBottom: '0.75rem',
+                color: '#000000'
+              }}>
+                Email Address *
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                placeholder="Enter your email address"
+                style={{
+                  width: '100%',
+                  padding: '1rem 1.25rem',
+                  border: `2px solid ${validationErrors.email ? '#dc3545' : 'rgba(0,0,0,0.15)'}`,
+                  borderRadius: '12px',
+                  fontSize: '1rem',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease',
+                  background: '#ffffff',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => {
+                  if (!validationErrors.email) e.target.style.border = '2px solid #000000'
+                }}
+                onBlur={(e) => {
+                  if (!validationErrors.email) e.target.style.border = '2px solid rgba(0,0,0,0.15)'
+                }}
+              />
+              {validationErrors.email && (
+                <div style={{
+                  color: '#dc3545',
+                  fontSize: '0.75rem',
+                  marginTop: '0.5rem',
+                  fontWeight: '500'
+                }}>
+                  {validationErrors.email}
+                </div>
+              )}
+            </div>
+          </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '2rem',
-          marginBottom: '2rem'
-        }}>
+          {/* Phone Number Field */}
           <div>
             <label style={{
               display: 'block',
               fontSize: '0.875rem',
               fontWeight: '500',
-              marginBottom: '0.5rem',
+              marginBottom: '0.75rem',
               color: '#000000'
             }}>
-              Company
+              Phone Number
             </label>
-            <input
-              type="text"
-              name="company"
-              value={formData.company}
+            <div className="phone-grid" style={{
+              display: 'grid',
+              gridTemplateColumns: '140px 1fr',
+              gap: '1rem',
+              alignItems: 'start'
+            }}>
+              <select
+                name="countryCode"
+                value={formData.countryCode}
+                onChange={handleInputChange}
+                style={{
+                  padding: '1rem 1.25rem',
+                  border: '2px solid rgba(0,0,0,0.15)',
+                  borderRadius: '12px',
+                  fontSize: '0.875rem',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease',
+                  background: '#ffffff',
+                  outline: 'none',
+                  height: '56px',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.target.style.border = '2px solid #000000'}
+                onBlur={(e) => e.target.style.border = '2px solid rgba(0,0,0,0.15)'}
+              >
+                {countryCodes.map((country, index) => (
+                  <option key={index} value={country.code}>
+                    {country.flag} {country.code}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Enter phone number"
+                style={{
+                  padding: '1rem 1.25rem',
+                  border: `2px solid ${validationErrors.phone ? '#dc3545' : 'rgba(0,0,0,0.15)'}`,
+                  borderRadius: '12px',
+                  fontSize: '1rem',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease',
+                  background: '#ffffff',
+                  outline: 'none',
+                  height: '56px',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => {
+                  if (!validationErrors.phone) e.target.style.border = '2px solid #000000'
+                }}
+                onBlur={(e) => {
+                  if (!validationErrors.phone) e.target.style.border = '2px solid rgba(0,0,0,0.15)'
+                }}
+              />
+            </div>
+            {validationErrors.phone && (
+              <div style={{
+                color: '#dc3545',
+                fontSize: '0.75rem',
+                marginTop: '0.5rem',
+                fontWeight: '500'
+              }}>
+                {validationErrors.phone}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Company & Project Section */}
+        <div style={{
+          marginBottom: '3rem',
+          padding: '0 0 2rem 0',
+          borderBottom: '1px solid rgba(0,0,0,0.1)'
+        }}>
+          <h3 className="section-title" style={{
+            fontSize: '1.125rem',
+            fontWeight: '500',
+            marginBottom: '1.5rem',
+            color: '#000000',
+            margin: 0,
+            marginBottom: '1.5rem'
+          }}>
+            Company & Project Details
+          </h3>
+          
+          <div className="form-grid-2" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '2rem',
+            marginBottom: '2rem'
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                marginBottom: '0.75rem',
+                color: '#000000'
+              }}>
+                Company Name
+              </label>
+              <input
+                type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleInputChange}
+                placeholder="Enter your company name (optional)"
+                style={{
+                  width: '100%',
+                  padding: '1rem 1.25rem',
+                  border: '2px solid rgba(0,0,0,0.15)',
+                  borderRadius: '12px',
+                  fontSize: '1rem',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease',
+                  background: '#ffffff',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.target.style.border = '2px solid #000000'}
+                onBlur={(e) => e.target.style.border = '2px solid rgba(0,0,0,0.15)'}
+              />
+            </div>
+            
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                marginBottom: '0.75rem',
+                color: '#000000'
+              }}>
+                Project Type
+              </label>
+              <select
+                name="project"
+                value={formData.project}
+                onChange={handleInputChange}
+                style={{
+                  width: '100%',
+                  padding: '1rem 1.25rem',
+                  border: '2px solid rgba(0,0,0,0.15)',
+                  borderRadius: '12px',
+                  fontSize: '1rem',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease',
+                  background: '#ffffff',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  height: '56px'
+                }}
+                onFocus={(e) => e.target.style.border = '2px solid #000000'}
+                onBlur={(e) => e.target.style.border = '2px solid rgba(0,0,0,0.15)'}
+              >
+                <option value="">Select a project type</option>
+                {projectTypes.map((type, index) => (
+                  <option key={index} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label style={{
+              display: 'block',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              marginBottom: '0.75rem',
+              color: '#000000'
+            }}>
+              Budget Range
+            </label>
+            <select
+              name="budget"
+              value={formData.budget}
               onChange={handleInputChange}
               style={{
                 width: '100%',
-                padding: '1rem',
-                border: '1px solid rgba(0,0,0,0.2)',
-                borderRadius: '8px',
+                padding: '1rem 1.25rem',
+                border: '2px solid rgba(0,0,0,0.15)',
+                borderRadius: '12px',
                 fontSize: '1rem',
                 fontFamily: 'inherit',
                 transition: 'all 0.3s ease',
                 background: '#ffffff',
-                outline: 'none'
+                outline: 'none',
+                boxSizing: 'border-box',
+                height: '56px'
               }}
-            />
+              onFocus={(e) => e.target.style.border = '2px solid #000000'}
+              onBlur={(e) => e.target.style.border = '2px solid rgba(0,0,0,0.15)'}
+            >
+              <option value="">Select budget range</option>
+              {budgetRanges.map((range, index) => (
+                <option key={index} value={range}>{range}</option>
+              ))}
+            </select>
           </div>
+        </div>
+
+        {/* Project Details Section */}
+        <div style={{
+          marginBottom: '3rem'
+        }}>
+          <h3 className="section-title" style={{
+            fontSize: '1.125rem',
+            fontWeight: '500',
+            marginBottom: '1.5rem',
+            color: '#000000',
+            margin: 0,
+            marginBottom: '1.5rem'
+          }}>
+            Project Details
+          </h3>
           
           <div>
             <label style={{
               display: 'block',
               fontSize: '0.875rem',
               fontWeight: '500',
-              marginBottom: '0.5rem',
+              marginBottom: '0.75rem',
               color: '#000000'
             }}>
-              Project Type
+              Tell us about your project *
             </label>
-            <select
-              name="project"
-              value={formData.project}
+            <textarea
+              name="message"
+              value={formData.message}
               onChange={handleInputChange}
+              required
+              rows="6"
+              placeholder="Please describe your project goals, requirements, timeline, and any specific details that would help us understand your needs..."
               style={{
                 width: '100%',
-                padding: '1rem',
-                border: '1px solid rgba(0,0,0,0.2)',
-                borderRadius: '8px',
+                padding: '1.25rem',
+                border: `2px solid ${validationErrors.message ? '#dc3545' : 'rgba(0,0,0,0.15)'}`,
+                borderRadius: '12px',
                 fontSize: '1rem',
                 fontFamily: 'inherit',
                 transition: 'all 0.3s ease',
                 background: '#ffffff',
-                outline: 'none'
+                outline: 'none',
+                resize: 'vertical',
+                minHeight: '140px',
+                lineHeight: '1.5',
+                boxSizing: 'border-box'
               }}
-            >
-              <option value="">Select a project type</option>
-              {projectTypes.map((type, index) => (
-                <option key={index} value={type}>{type}</option>
-              ))}
-            </select>
+              onFocus={(e) => {
+                if (!validationErrors.message) e.target.style.border = '2px solid #000000'
+              }}
+              onBlur={(e) => {
+                if (!validationErrors.message) e.target.style.border = '2px solid rgba(0,0,0,0.15)'
+              }}
+            />
+            {validationErrors.message && (
+              <div style={{
+                color: '#dc3545',
+                fontSize: '0.75rem',
+                marginTop: '0.5rem',
+                fontWeight: '500'
+              }}>
+                {validationErrors.message}
+              </div>
+            )}
           </div>
         </div>
 
-        <div style={{ marginBottom: '2rem' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            marginBottom: '0.5rem',
-            color: '#000000'
-          }}>
-            Budget Range
-          </label>
-          <select
-            name="budget"
-            value={formData.budget}
-            onChange={handleInputChange}
+        {/* Submit Button */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          paddingTop: '2rem'
+        }}>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="submit-button"
             style={{
-              width: '100%',
-              padding: '1rem',
-              border: '1px solid rgba(0,0,0,0.2)',
-              borderRadius: '8px',
+              padding: '1.25rem 3rem',
+              background: isSubmitting ? 'rgba(0,0,0,0.5)' : '#000000',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '12px',
               fontSize: '1rem',
+              fontWeight: '600',
               fontFamily: 'inherit',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
               transition: 'all 0.3s ease',
-              background: '#ffffff',
-              outline: 'none'
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+              minWidth: '200px',
+              boxShadow: isSubmitting ? 'none' : '0 4px 20px rgba(0,0,0,0.15)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+            onMouseEnter={(e) => {
+              if (!isSubmitting) {
+                e.target.style.background = '#333333'
+                e.target.style.transform = 'translateY(-2px)'
+                e.target.style.boxShadow = '0 8px 30px rgba(0,0,0,0.25)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isSubmitting) {
+                e.target.style.background = '#000000'
+                e.target.style.transform = 'translateY(0)'
+                e.target.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)'
+              }
             }}
           >
-            <option value="">Select budget range</option>
-            {budgetRanges.map((range, index) => (
-              <option key={index} value={range}>{range}</option>
-            ))}
-          </select>
+            {isSubmitting ? (
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <span style={{
+                  width: '16px',
+                  height: '16px',
+                  border: '2px solid #ffffff',
+                  borderTop: '2px solid transparent',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }} />
+                Sending...
+              </span>
+            ) : (
+              'Send Message'
+            )}
+          </button>
         </div>
-
-        <div style={{ marginBottom: '3rem' }}>
-          <label style={{
-            display: 'block',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            marginBottom: '0.5rem',
-            color: '#000000'
-          }}>
-            Project Details *
-          </label>
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleInputChange}
-            required
-            rows="6"
-            placeholder="Tell us about your project, goals, and requirements..."
-            style={{
-              width: '100%',
-              padding: '1rem',
-              border: `1px solid ${validationErrors.message ? '#dc3545' : 'rgba(0,0,0,0.2)'}`,
-              borderRadius: '8px',
-              fontSize: '1rem',
-              fontFamily: 'inherit',
-              transition: 'all 0.3s ease',
-              background: '#ffffff',
-              outline: 'none',
-              resize: 'vertical'
-            }}
-          />
-          {validationErrors.message && (
-            <div style={{
-              color: '#dc3545',
-              fontSize: '0.75rem',
-              marginTop: '0.25rem'
-            }}>
-              {validationErrors.message}
-            </div>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          style={{
-            width: '100%',
-            padding: '1.25rem 2rem',
-            background: isSubmitting ? '#cccccc' : '#000000',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '1rem',
-            fontWeight: '500',
-            fontFamily: 'inherit',
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            transition: 'all 0.3s ease',
-            letterSpacing: '0.05em'
-          }}
-          onMouseEnter={(e) => {
-            if (!isSubmitting) {
-              e.target.style.background = '#333333'
-              e.target.style.transform = 'translateY(-2px)'
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isSubmitting) {
-              e.target.style.background = '#000000'
-              e.target.style.transform = 'translateY(0)'
-            }
-          }}
-        >
-          {isSubmitting ? 'Sending...' : 'Send Message'}
-        </button>
 
         {/* Status Messages */}
         {submitStatus === 'success' && (
-          <div style={{
-            marginTop: '1rem',
-            padding: '1rem',
-            background: '#d4edda',
-            border: '1px solid #c3e6cb',
-            borderRadius: '8px',
+          <div className="status-message" style={{
+            marginTop: '2rem',
+            padding: '1.5rem',
+            background: 'linear-gradient(135deg, #d4edda 0%, #e8f5e8 100%)',
+            border: '2px solid #c3e6cb',
+            borderRadius: '12px',
             color: '#155724',
-            fontSize: '0.875rem'
+            fontSize: '1rem',
+            fontWeight: '500',
+            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.75rem'
           }}>
-            ✓ Message sent successfully! We'll get back to you within 24 hours.
+            <span style={{ fontSize: '1.25rem' }}>✓</span>
+            Message sent successfully! We'll get back to you within 24 hours.
           </div>
         )}
 
         {submitStatus === 'error' && (
-          <div style={{
-            marginTop: '1rem',
-            padding: '1rem',
-            background: '#f8d7da',
-            border: '1px solid #f5c6cb',
-            borderRadius: '8px',
+          <div className="status-message" style={{
+            marginTop: '2rem',
+            padding: '1.5rem',
+            background: 'linear-gradient(135deg, #f8d7da 0%, #fce4e6 100%)',
+            border: '2px solid #f5c6cb',
+            borderRadius: '12px',
             color: '#721c24',
-            fontSize: '0.875rem'
+            fontSize: '1rem',
+            fontWeight: '500',
+            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.75rem'
           }}>
-            ✗ Something went wrong. Please check the browser console for details, or contact us directly at hello@bridgesoftwaresolutions.com
+            <span style={{ fontSize: '1.25rem' }}>✗</span>
+            Something went wrong. Please try again or contact us directly at hello@bridgesoftwaresolutions.com
           </div>
         )}
-
 
         {/* Web3Forms Honeypot (hidden spam protection) */}
         <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
       </form>
+      
+      {/* CSS for animations and responsive design */}
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .form-grid-2 {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+          
+          .phone-grid {
+            grid-template-columns: 100px 1fr !important;
+          }
+          
+          .submit-button {
+            padding: 1rem 2rem !important;
+            font-size: 0.9rem !important;
+          }
+          
+          .section-title {
+            font-size: 1rem !important;
+          }
+          
+          .form-input, .form-select, .form-textarea {
+            padding: 0.875rem 1rem !important;
+            font-size: 0.9rem !important;
+          }
+          
+          .country-select {
+            padding: 0.875rem 0.75rem !important;
+            font-size: 0.8rem !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .phone-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0.75rem !important;
+          }
+          
+          .submit-button {
+            width: 100% !important;
+            padding: 1rem 1.5rem !important;
+          }
+          
+          .status-message {
+            padding: 1rem !important;
+            font-size: 0.9rem !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }
