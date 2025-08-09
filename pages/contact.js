@@ -162,8 +162,10 @@ export default function Contact() {
         <title>Contact - Bridge Software Solutions</title>
         <meta name="description" content="Get in touch with Bridge Software Solutions. Let's bridge the gap between your vision and digital reality." />
         <meta name="keywords" content="contact, bridge software solutions, web development, digital agency, hyderabad" />
-        <link rel="icon" href="/BRIDGE favicon.svg" type="image/svg+xml" />
-        <link rel="alternate icon" href="/favicon.ico" />
+        <link rel="icon" href="/bridge-favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/bridge-favicon.svg" />
+        <meta name="msapplication-TileImage" content="/bridge-favicon.svg" />
       </Head>
 
       {/* Navigation Bar */}
