@@ -165,4 +165,4 @@ This project is proprietary software owned by Bridge Software Solutions.
 
 ---
 
-**Bridge Software Solutions** - Be Un-Conventional. Let your website speak.
+**Bridge Software Solutions** - Be Un-Conventional. Let your website speak.# Bridge
