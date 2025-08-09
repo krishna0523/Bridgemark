@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-500 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-600;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+  }
+  
+  .glass-effect {
+    backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.125);
+  }
+  
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 lg:py-24;
+  }
+}
+
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Three.js canvas styling */
+.three-canvas {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+
+/* For box text effect */
+
+@import url("https://fonts.googleapis.com/css?family=Inconsolata:700");
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+	min-height: 100vh;
+	background-color: black;
+	display: flex;
+	flex-wrap: wrap;
+	color: white;
+}
+
+h2 {
+	font-family: Inconsolata, monospace;
+	font-size: 1.8rem;
+	text-transform: uppercase;
+	width: 515px;
+	height: 168px;
+}
+
+.char {
+	// --i: calc(50% / var(--char-total));
+	--offset: calc(var(--char-index) * 1rem);
+	offset-path:
+ path("M0 0 l1152 0 l0 648 l -1152 0 Z");
+  
+	offset-distance: var(--offset);
+	position: absolute;
+	animation: move 15000ms infinite linear var(--delay, 0ms);
+}
+
+@keyframes move {
+	100% {
+		// --i: 2rem;
+		offset-distance: calc(var(--offset) + 250rem);
+	}
+}
+

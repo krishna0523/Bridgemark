@@ -1,0 +1,2397 @@
+import { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import Link from 'next/link'
+import Head from 'next/head'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
+import { useInView } from 'react-intersection-observer'
+import Lenis from 'lenis'
+import SEO from '../components/SEO'
+
+gsap.registerPlugin(ScrollTrigger)
+
+
+// Clean Process Card Component with Hover Effects
+function ProcessCard({ number, title, description }) {
+  const [isHovered, setIsHovered] = useState(false)
+  const cardRef = useRef()
+  
+  // Determine border style based on card number
+  const getBorderStyle = () => {
+    if (number === 1) {
+      return {
+        borderTop: '1px solid #000000',
+        borderBottom: '1px solid #000000',
+        borderLeft: '1px solid #000000',
+        borderRight: 'none'
+      }
+    } else if (number === 4) {
+      return {
+        borderTop: '1px solid #000000',
+        borderBottom: '1px solid #000000',
+        borderLeft: 'none',
+        borderRight: '1px solid #000000'
+      }
+    } else {
+      return {
+        borderTop: '1px solid #000000',
+        borderBottom: '1px solid #000000',
+        borderLeft: 'none',
+        borderRight: 'none'
+      }
+    }
+  }
+
+  const handleMouseEnter = () => {
+    setIsHovered(true)
+    if (cardRef.current) {
+      gsap.to(cardRef.current, {
+        scale: 1.05,
+        duration: 0.8,
+        ease: "power2.out"
+      })
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+    if (cardRef.current) {
+      gsap.to(cardRef.current, {
+        scale: 1,
+        duration: 0.8,
+        ease: "power2.out"
+      })
+    }
+  }
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <div 
+        ref={cardRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          ...getBorderStyle(),
+          borderRadius: '0',
+          padding: '2rem 1.5rem',
+          background: isHovered ? '#000000' : '#ffffff',
+          flex: '0 0 240px',
+          minHeight: '200px',
+          transition: 'background-color 0.8s ease',
+          cursor: 'pointer'
+        }}
+      >
+        {/* Content */}
+        <div>
+          <div style={{
+            fontSize: '1.5rem',
+            fontWeight: '100',
+            opacity: 0.4,
+            marginBottom: '1rem',
+            color: isHovered ? '#ffffff' : '#000000',
+            transition: 'color 0.8s ease'
+          }}>
+            0{number}
+          </div>
+          
+          <h3 style={{
+            fontSize: '1.1rem',
+            fontWeight: '300',
+            margin: 0,
+            marginBottom: '1rem',
+            letterSpacing: '-0.01em',
+            color: isHovered ? '#ffffff' : '#000000',
+            lineHeight: '1.3',
+            transition: 'color 0.3s ease'
+          }}>
+            {title}
+          </h3>
+          
+          <div style={{
+            width: '30px',
+            height: '1px',
+            background: isHovered ? '#ffffff' : '#000000',
+            marginBottom: '1rem',
+            opacity: 0.3,
+            transition: 'background-color 0.8s ease'
+          }} />
+          
+          <p style={{
+            fontSize: '0.8rem',
+            fontWeight: '300',
+            lineHeight: '1.5',
+            opacity: 0.7,
+            margin: 0,
+            color: isHovered ? '#ffffff' : '#000000',
+            transition: 'color 0.8s ease'
+          }}>
+            {description}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [showMainContent, setShowMainContent] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [scrollY, setScrollY] = useState(0)
+  const [activeAccordion, setActiveAccordion] = useState(null)
+  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const [videoTime, setVideoTime] = useState(0)
+  const [showTitle, setShowTitle] = useState(false)
+  const [showFullText, setShowFullText] = useState(false)
+  const [isVerticalScroll, setIsVerticalScroll] = useState(false)
+  const [ctaVisible, setCtaVisible] = useState(false)
+  const [ctaScrollOffset, setCtaScrollOffset] = useState(0)
+  const [processVisible, setProcessVisible] = useState(false)
+  const [navVisible, setNavVisible] = useState(false)
+  const [activeSection, setActiveSection] = useState('home')
+  const videoRef = useRef()
+  const heroSectionRef = useRef()
+  const observerRef = useRef()
+  const statsRef = useRef()
+  const statsItemsRef = useRef([])
+  const servicesRef = useRef()
+  const projectsRef = useRef()
+  const projectItemsRef = useRef([])
+  const ctaRef = useRef()
+  const processRef = useRef()
+  const lenisRef = useRef()
+  const navRef = useRef()
+
+  // Initialize Lenis smooth scrolling
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+        smoothTouch: false,
+        touchMultiplier: 2
+      })
+
+      lenisRef.current = lenis
+
+      // Integrate Lenis with GSAP ScrollTrigger
+      lenis.on('scroll', ScrollTrigger.update)
+
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000)
+      })
+
+      gsap.ticker.lagSmoothing(0)
+
+      return () => {
+        lenis.destroy()
+        gsap.ticker.remove()
+      }
+    }
+  }, [])
+
+  // Update scroll handlers to work with Lenis
+  useEffect(() => {
+    if (lenisRef.current && showMainContent) {
+      const updateScrollY = () => {
+        setScrollY(lenisRef.current.scroll)
+      }
+
+      lenisRef.current.on('scroll', updateScrollY)
+
+      return () => {
+        lenisRef.current.off('scroll', updateScrollY)
+      }
+    }
+  }, [showMainContent])
+
+  const heroStatements = [
+    { 
+      main: "Bridge", 
+      sub: "connecting possibilities",
+      desc: "We bridge the gap between your vision and digital reality",
+      leftIcon: "🌉",
+      rightIcon: "✨"
+    },
+    { 
+      main: "Be Un-Conventional", 
+      sub: "think differently",
+      desc: "Break free from ordinary. Embrace the extraordinary approach to digital presence",
+      leftIcon: "⚡",
+      rightIcon: "🚀"
+    },
+    { 
+      main: "Let your website speak", 
+      sub: "visual storytelling",
+      desc: "Every pixel tells your story. Every interaction builds your brand",
+      leftIcon: "💬",
+      rightIcon: "🎨"
+    },
+    { 
+      main: "Make your business Online", 
+      sub: "digital transformation",
+      desc: "Transform your traditional business into a digital powerhouse",
+      leftIcon: "💼",
+      rightIcon: "🌐"
+    }
+  ]
+
+  const services = [
+    {
+      id: 'seo',
+      title: 'SEO Mastery',
+      subtitle: 'Organic Growth Engine',
+      description: 'We don\'t just optimize for search engines. We optimize for humans who use search engines. Our holistic approach combines technical excellence with content strategy to build sustainable organic growth.',
+      keywords: ['SEO', 'Organic Growth', 'Analytics', 'Keywords', 'Content Strategy'],
+      features: [
+        'Strategic keyword architecture',
+        'Technical SEO excellence', 
+        'Content-driven authority building',
+        'Local market domination',
+        'Performance analytics & insights'
+      ]
+    },
+    {
+      id: 'web',
+      title: 'Digital Craftsmanship',
+      subtitle: 'Web Development Artistry',
+      description: 'Code is poetry. Design is philosophy. We create digital experiences that resonate with your audience and perform flawlessly across all devices and platforms.',
+      keywords: ['React', 'Next.js', 'Performance', 'Responsive', 'Accessibility'],
+      features: [
+        'Minimalist design principles',
+        'Performance-first development',
+        'Mobile-native experiences',
+        'Accessibility & inclusion',
+        'Future-proof architecture'
+      ]
+    },
+    {
+      id: 'brand',
+      title: 'Identity Design',
+      subtitle: 'Brand Psychology',
+      description: 'Your brand is not what you say it is. It\'s what your audience feels it is. We craft visual identities that communicate your values and build emotional connections.',
+      keywords: ['Brand Identity', 'Visual Design', 'Psychology', 'Typography', 'Guidelines'],
+      features: [
+        'Visual identity systems',
+        'Brand strategy & positioning',
+        'Typography & color psychology',
+        'Digital brand guidelines',
+        'Consistent brand experiences'
+      ]
+    }
+  ]
+
+  const testimonials = [
+    {
+      id: 1,
+      quote: "Bridge doesn't just build websites. They craft digital poetry. Every pixel tells a story, every interaction feels intentional.",
+      name: "Priya Sharma",
+      title: "Founder",
+      company: "Artisan Collective",
+      location: "Banjara Hills"
+    },
+    {
+      id: 2,
+      quote: "Working with Bridge was like watching magic happen. They took our chaotic vision and transformed it into something we never imagined possible.",
+      name: "Rajesh Kumar",
+      title: "CEO",
+      company: "TechnoVision",
+      location: "HITEC City"
+    },
+    {
+      id: 3,
+      quote: "Finally, a team that understands that great design is invisible. It just works, beautifully and effortlessly.",
+      name: "Ananya Reddy",
+      title: "Creative Director",
+      company: "Studio Minimal",
+      location: "Jubilee Hills"
+    }
+  ]
+
+  const stats = [
+    { number: "50+", label: "Projects Delivered" },
+    { number: "98%", label: "Client Satisfaction" },
+    { number: "3x", label: "Average ROI Increase" },
+    { number: "24/7", label: "Ongoing Support" }
+  ]
+
+  useEffect(() => {
+    const testimonialInterval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
+    }, 5000)
+
+    return () => clearInterval(testimonialInterval)
+  }, [testimonials.length])
+
+  useEffect(() => {
+    const handleScroll = (e) => {
+      if (!showMainContent && !isTransitioning) {
+        e.preventDefault()
+        
+        setIsTransitioning(true)
+        
+        if (e.deltaY > 0 && currentSlide < heroStatements.length - 1) {
+          setCurrentSlide(prev => prev + 1)
+        } else if (e.deltaY < 0 && currentSlide > 0) {
+          setCurrentSlide(prev => prev - 1)
+        } else if (e.deltaY > 0 && currentSlide === heroStatements.length - 1) {
+          setShowMainContent(true)
+        }
+        
+        setTimeout(() => {
+          setIsTransitioning(false)
+        }, 1400)
+      }
+    }
+
+    if (!showMainContent) {
+      window.addEventListener('wheel', handleScroll, { passive: false })
+    }
+
+    return () => {
+      window.removeEventListener('wheel', handleScroll)
+    }
+  }, [showMainContent, isTransitioning, currentSlide, heroStatements.length])
+
+  // Auto-play video once when main content shows
+  useEffect(() => {
+    if (showMainContent && videoRef.current) {
+      const video = videoRef.current
+      
+      // Play video automatically once
+      video.play().catch(e => console.log('Video autoplay failed:', e))
+      
+      // Show title at 3 seconds
+      const titleTimer = setTimeout(() => {
+        setShowTitle(true)
+      }, 3000)
+      
+      // Show full text at 5 seconds
+      const fullTextTimer = setTimeout(() => {
+        setShowFullText(true)
+      }, 5000)
+      
+      // Enable vertical scroll when video ends
+      const handleVideoEnd = () => {
+        setIsVerticalScroll(true)
+      }
+      
+      video.addEventListener('ended', handleVideoEnd)
+      
+      return () => {
+        clearTimeout(titleTimer)
+        clearTimeout(fullTextTimer)
+        video.removeEventListener('ended', handleVideoEnd)
+      }
+    }
+  }, [showMainContent])
+
+
+  // GSAP Stats Animation on Scroll
+  useEffect(() => {
+    if (showMainContent && statsItemsRef.current.length > 0) {
+      // Set initial state - already set in inline styles, but ensure it's applied
+      gsap.set(statsItemsRef.current, {
+        opacity: 0,
+        y: 100
+      })
+
+      // Create stagger animation triggered by scroll
+      gsap.fromTo(statsItemsRef.current, 
+        {
+          opacity: 0,
+          y: 100
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: "power3.out",
+          stagger: {
+            amount: 0.8, // Total time for all elements to animate
+            from: "start" // Animate from left to right
+          },
+          scrollTrigger: {
+            trigger: statsRef.current,
+            start: "top 80%", // Start animation when top of section is 80% from top of viewport
+            end: "bottom 20%",
+            toggleActions: "play none none reverse", // play on enter, reverse on leave
+            markers: false // Set to true for debugging
+          }
+        }
+      )
+
+      // Cleanup
+      return () => {
+        ScrollTrigger.getAll().forEach(trigger => {
+          if (trigger.trigger === statsRef.current) {
+            trigger.kill()
+          }
+        })
+      }
+    }
+  }, [showMainContent])
+
+  // GSAP Projects Animation on Scroll
+  useEffect(() => {
+    if (showMainContent && projectItemsRef.current.length > 0) {
+      // Set initial state
+      gsap.set(projectItemsRef.current, {
+        opacity: 0,
+        y: 100
+      })
+
+      // Create stagger animation triggered by scroll
+      gsap.fromTo(projectItemsRef.current, 
+        {
+          opacity: 0,
+          y: 100
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: "power3.out",
+          stagger: {
+            amount: 1.5, // Total time for all 6 elements to animate (0.25s between each)
+            from: "start" // Animate from left to right
+          },
+          scrollTrigger: {
+            trigger: projectsRef.current,
+            start: "top 80%", // Start animation when top of section is 80% from top of viewport
+            end: "bottom 20%",
+            toggleActions: "play none none reverse", // play on enter, reverse on leave
+            markers: false // Set to true for debugging
+          }
+        }
+      )
+
+      // Cleanup
+      return () => {
+        ScrollTrigger.getAll().forEach(trigger => {
+          if (trigger.trigger === projectsRef.current) {
+            trigger.kill()
+          }
+        })
+      }
+    }
+  }, [showMainContent])
+
+  // Navigation visibility and section tracking
+  useEffect(() => {
+    if (showMainContent && lenisRef.current) {
+      const handleNavScroll = () => {
+        const scrollY = lenisRef.current.scroll
+        
+        // Show nav after hero section
+        if (scrollY > window.innerHeight * 0.5) {
+          setNavVisible(true)
+        } else {
+          setNavVisible(false)
+        }
+
+        // Track active section
+        const sections = [
+          { name: 'home', element: heroSectionRef.current },
+          { name: 'services', element: servicesRef.current },
+          { name: 'projects', element: projectsRef.current },
+          { name: 'contact', element: ctaRef.current }
+        ]
+
+        sections.forEach(section => {
+          if (section.element) {
+            const rect = section.element.getBoundingClientRect()
+            if (rect.top <= window.innerHeight * 0.3 && rect.bottom >= window.innerHeight * 0.3) {
+              setActiveSection(section.name)
+            }
+          }
+        })
+      }
+
+      lenisRef.current.on('scroll', handleNavScroll)
+
+      return () => {
+        lenisRef.current.off('scroll', handleNavScroll)
+      }
+    }
+  }, [showMainContent])
+
+  // Smooth scroll to section
+  const scrollToSection = (sectionRef) => {
+    if (sectionRef.current && lenisRef.current) {
+      lenisRef.current.scrollTo(sectionRef.current, { 
+        duration: 2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+      })
+    }
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Capture the scroll position when CTA becomes visible
+          setCtaScrollOffset(window.scrollY)
+          setTimeout(() => setCtaVisible(true), 200)
+        }
+      },
+      {
+        threshold: 0.2,
+        rootMargin: '0px'
+      }
+    )
+
+    if (ctaRef.current) {
+      observer.observe(ctaRef.current)
+    }
+
+    return () => {
+      if (ctaRef.current) {
+        observer.unobserve(ctaRef.current)
+      }
+    }
+  }, [showMainContent])
+
+  // CTA-specific scroll handler with Lenis
+  useEffect(() => {
+    const handleCtaScroll = () => {
+      if (ctaVisible && lenisRef.current) {
+        const currentScroll = lenisRef.current.scroll
+        // Only update scroll position if we're past the CTA section visibility point
+        if (currentScroll >= ctaScrollOffset) {
+          setScrollY(currentScroll)
+        }
+      }
+    }
+
+    if (ctaVisible && showMainContent && isVerticalScroll && lenisRef.current) {
+      lenisRef.current.on('scroll', handleCtaScroll)
+
+      return () => {
+        lenisRef.current.off('scroll', handleCtaScroll)
+      }
+    }
+  }, [ctaVisible, ctaScrollOffset, showMainContent, isVerticalScroll])
+
+  // Project Box Hover Animation Handler
+  const handleProjectHover = (index, isHovering) => {
+    const projectBox = projectItemsRef.current[index]
+    
+    if (!projectBox) return
+    
+    if (isHovering) {
+      // Simple scale and glow effect on hover
+      gsap.to(projectBox, {
+        scale: 1.02,
+        duration: 0.3,
+        ease: 'power2.out'
+      })
+      
+      // Add subtle border glow
+      projectBox.style.borderColor = 'rgba(255,255,255,0.3)'
+      projectBox.style.boxShadow = '0 0 20px rgba(255,255,255,0.1)'
+      
+    } else {
+      // Reset to normal state
+      gsap.to(projectBox, {
+        scale: 1,
+        duration: 0.3,
+        ease: 'power2.out'
+      })
+      
+      // Remove glow effect
+      projectBox.style.borderColor = 'rgba(255,255,255,0.1)'
+      projectBox.style.boxShadow = 'none'
+    }
+  }
+
+  if (!showMainContent) {
+    return (
+      <div style={{ 
+        height: '100vh', 
+        width: '100vw', 
+        overflow: 'hidden',
+        background: currentSlide % 2 === 0 ? '#000000' : '#ffffff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+      }}>
+        
+        {/* Animated Icons */}
+        <div style={{
+          position: 'absolute',
+          top: '25%',
+          left: '10%',
+          fontSize: '4rem',
+          opacity: 0.4,
+          transform: `translateY(${currentSlide * -20}px) rotate(${currentSlide * 10}deg) scale(${1 + currentSlide * 0.05})`,
+          transition: 'all 2.0s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          animation: 'float 6s ease-in-out infinite'
+        }}>
+          {heroStatements[currentSlide]?.leftIcon || ''}
+        </div>
+
+        <div style={{
+          position: 'absolute',
+          bottom: '20%',
+          right: '10%',
+          fontSize: '3.5rem',
+          opacity: 0.5,
+          transform: `translateX(${currentSlide * 30}px) rotate(${currentSlide * -12}deg) scale(${1 + currentSlide * 0.08})`,
+          transition: 'all 2.2s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          animation: 'float 8s ease-in-out infinite reverse'
+        }}>
+          {heroStatements[currentSlide]?.rightIcon || ''}
+        </div>
+
+        {/* Subtle geometric lines */}
+        <div style={{
+          position: 'absolute',
+          top: '15%',
+          right: '15%',
+          width: '1px',
+          height: '200px',
+          background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          transform: `translateY(${currentSlide * -20}px) rotate(${currentSlide * 8}deg)`,
+          transition: 'all 2.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          opacity: 0.2
+        }} />
+
+        <div style={{
+          position: 'absolute',
+          bottom: '25%',
+          left: '12%',
+          width: '150px',
+          height: '1px',
+          background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          transform: `translateX(${currentSlide * 25}px)`,
+          transition: 'all 2.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          opacity: 0.15
+        }} />
+
+        {/* Main Content */}
+        <div style={{ 
+          textAlign: 'left',
+          color: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          maxWidth: '800px',
+          padding: '0 2rem',
+          transform: `translateX(${currentSlide * -20}px)`,
+          transition: 'all 2s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          zIndex: 2
+        }}>
+          
+          <div style={{ 
+            fontSize: '0.875rem',
+            fontWeight: '400',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            opacity: 0.6,
+            marginBottom: '1rem',
+            animation: 'fadeInUp 1.5s ease-out',
+            animationDelay: '0.5s',
+            animationFillMode: 'both'
+          }}>
+            {heroStatements[currentSlide]?.sub || ''}
+          </div>
+
+          <h1 style={{ 
+            fontSize: 'clamp(3rem, 8vw, 7rem)',
+            fontWeight: '100',
+            margin: 0,
+            lineHeight: '0.9',
+            letterSpacing: '-0.02em',
+            marginBottom: '2rem',
+            animation: 'slideInLeft 2s cubic-bezier(0.165, 0.84, 0.44, 1)',
+            animationFillMode: 'both'
+          }}>
+            {heroStatements[currentSlide]?.main || ''}
+          </h1>
+          
+          <div style={{
+            width: '60px',
+            height: '1px',
+            background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+            marginBottom: '2rem',
+            animation: 'expandWidth 1.5s ease-out',
+            animationDelay: '1s',
+            animationFillMode: 'both'
+          }} />
+
+          <p style={{ 
+            fontSize: '1.125rem',
+            fontWeight: '300',
+            lineHeight: '1.6',
+            maxWidth: '500px',
+            opacity: 0.8,
+            animation: 'fadeInUp 1.5s ease-out',
+            animationDelay: '1.2s',
+            animationFillMode: 'both'
+          }}>
+            {heroStatements[currentSlide]?.desc || ''}
+          </p>
+        </div>
+
+        {/* Slide Counter */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          right: '2rem',
+          transform: 'translateY(-50%) rotate(90deg)',
+          fontSize: '0.75rem',
+          fontWeight: '300',
+          letterSpacing: '0.2em',
+          color: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          opacity: 0.4
+        }}>
+          {String(currentSlide + 1).padStart(2, '0')} / {String(heroStatements.length).padStart(2, '0')}
+        </div>
+
+        {/* Progress Lines */}
+        <div style={{
+          position: 'absolute',
+          bottom: '2rem',
+          left: '2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
+        }}>
+          {heroStatements.map((_, index) => (
+            <div key={index} style={{
+              width: currentSlide === index ? '40px' : '20px',
+              height: '1px',
+              background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+              opacity: currentSlide === index ? 1 : 0.3,
+              transition: 'all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)',
+              transitionDelay: `${index * 0.1}s`
+            }} />
+          ))}
+        </div>
+
+        {/* Scroll Indicator */}
+        <div style={{
+          position: 'absolute',
+          bottom: '2rem',
+          right: '2rem',
+          fontSize: '0.75rem',
+          fontWeight: '300',
+          color: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          opacity: 0.6,
+          animation: 'pulse 2s infinite'
+        }}>
+          {currentSlide < heroStatements.length - 1 ? 'scroll' : 'enter'}
+        </div>
+
+        <style jsx>{`
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+          
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          @keyframes slideInLeft {
+            from {
+              opacity: 0;
+              transform: translateX(-50px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+          
+          @keyframes expandWidth {
+            from {
+              width: 0;
+            }
+            to {
+              width: 60px;
+            }
+          }
+          
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 0.6;
+            }
+            50% {
+              opacity: 0.3;
+            }
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <SEO 
+        title="Bridge Software Solutions - Web Development Company in Hyderabad | SEO Services | React & Three.js Experts"
+        description="Professional web development, mobile app development, brand identity design, and SEO services in Hyderabad. We create digital experiences that drive growth for businesses across Telangana and India."
+        keywords={[
+          'web development Hyderabad',
+          'SEO services Hyderabad',
+          'React development',
+          'Three.js experts',
+          'mobile app development',
+          'brand identity design',
+          'digital marketing',
+          'website design Telangana',
+          'software development company',
+          'UI/UX design Hyderabad'
+        ]}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Bridge Software Solutions",
+          "description": "Professional web development, mobile app development, brand identity design, and SEO services in Hyderabad",
+          "url": "https://bridgesoftwaresolutions.com",
+          "logo": "https://bridgesoftwaresolutions.com/logo.png",
+          "image": "https://bridgesoftwaresolutions.com/og-image.jpg",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Hyderabad",
+            "addressRegion": "Telangana",
+            "addressCountry": "IN"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "17.385044",
+            "longitude": "78.486671"
+          },
+          "telephone": "+91 9996 999 770",
+          "email": "hello@bridgesoftwaresolutions.com",
+          "sameAs": [
+            "https://www.linkedin.com/company/bridge-software-solutions",
+            "https://twitter.com/bridgesoftware",
+            "https://www.facebook.com/bridgesoftwaresolutions"
+          ],
+          "founder": {
+            "@type": "Person",
+            "name": "Bridge Software Solutions Team"
+          },
+          "foundingDate": "2020",
+          "areaServed": [
+            {
+              "@type": "Country",
+              "name": "India"
+            },
+            {
+              "@type": "State",
+              "name": "Telangana"
+            },
+            {
+              "@type": "City", 
+              "name": "Hyderabad"
+            }
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Digital Services",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Web Development",
+                  "description": "Custom website development using React, Next.js, and modern technologies"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "SEO Services",
+                  "description": "Search engine optimization and digital marketing services"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Mobile App Development",
+                  "description": "Native and cross-platform mobile application development"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Brand Identity Design",
+                  "description": "Logo design, brand guidelines, and visual identity creation"
+                }
+              }
+            ]
+          }
+        }}
+      />
+      <div style={{ 
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        background: '#ffffff',
+        color: '#000000',
+        overflow: 'hidden'
+      }}>
+
+      {/* Navigation Bar */}
+      <nav 
+        ref={navRef}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          padding: '1rem 2rem',
+          background: navVisible ? 'rgba(255,255,255,0.95)' : 'transparent',
+          backdropFilter: navVisible ? 'blur(20px)' : 'none',
+          borderBottom: navVisible ? '1px solid rgba(0,0,0,0.1)' : 'none',
+          transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
+          transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          opacity: navVisible ? 1 : 0
+        }}
+      >
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          {/* Logo */}
+          <div 
+            style={{
+              fontSize: '1.25rem',
+              fontWeight: '400',
+              letterSpacing: '0.05em',
+              color: '#000000',
+              cursor: 'pointer'
+            }}
+            onClick={() => scrollToSection(heroSectionRef)}
+          >
+            Bridge
+          </div>
+
+          {/* Navigation Links */}
+          <div style={{
+            display: 'flex',
+            gap: '3rem',
+            alignItems: 'center'
+          }}>
+            {[
+              { name: 'Home', key: 'home', ref: heroSectionRef },
+              { name: 'Services', key: 'services', ref: servicesRef },
+              { name: 'Projects', key: 'projects', ref: projectsRef }
+            ].map((item) => (
+              <button
+                key={item.key}
+                onClick={() => scrollToSection(item.ref)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: activeSection === item.key ? '500' : '400',
+                  letterSpacing: '0.05em',
+                  color: activeSection === item.key ? '#000000' : '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  position: 'relative'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = activeSection === item.key ? '#000000' : '#666666'
+                }}
+              >
+                {item.name}
+                {/* Active indicator */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: activeSection === item.key ? '20px' : '0',
+                  height: '1px',
+                  background: '#000000',
+                  transition: 'width 0.3s ease'
+                }} />
+              </button>
+            ))}
+
+            {/* Blogs Link */}
+            <Link href="/blogs">
+              <button style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '0.875rem',
+                fontWeight: '400',
+                letterSpacing: '0.05em',
+                color: '#666666',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: 'inherit',
+                position: 'relative'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = '#000000'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = '#666666'
+              }}
+              >
+                Blogs
+              </button>
+            </Link>
+
+            {/* Contact Button */}
+            <Link href="/contact">
+              <button style={{
+                background: '#000000',
+                color: '#ffffff',
+                border: 'none',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '6px',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                letterSpacing: '0.05em',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: 'inherit'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#333333'
+                e.target.style.transform = 'translateY(-1px)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = '#000000'
+                e.target.style.transform = 'translateY(0)'
+              }}
+              >
+                Contact
+              </button>
+            </Link>
+          </div>
+        </div>
+      </nav>
+      
+      {/* Hero Section with Scroll-Controlled Video */}
+      <section 
+        ref={heroSectionRef}
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        {/* Video Background */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 1
+        }}>
+          <video
+            ref={videoRef}
+            muted
+            autoplay
+            preload="metadata"
+            controls={false}
+            onLoadStart={() => console.log('Hero video loading started')}
+            onCanPlay={() => console.log('Hero video can play')}
+            onError={(e) => console.error('Hero video error:', e)}
+            onLoadedData={() => console.log('Hero video data loaded')}
+            onTimeUpdate={(e) => setVideoTime(e.target.currentTime)}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              display: 'block'
+            }}
+          >
+            <source src="/videos/Bridge%20Video.mp4" type="video/mp4" />
+          </video>
+        </div>
+
+        {/* Progress Indicator */}
+        <div style={{
+          position: 'absolute',
+          bottom: '2rem',
+          left: '2rem',
+          zIndex: 4,
+          color: '#ffffff',
+          fontSize: '0.875rem',
+          fontWeight: '300',
+          opacity: showFullText ? 0 : 0.8,
+          transition: 'opacity 1s ease'
+        }}>
+          {!isVerticalScroll && (
+            <>
+              <div style={{ marginBottom: '1rem' }}>
+                {!showFullText 
+                  ? `Playing • ${Math.round((videoTime / (videoRef.current?.duration || 30)) * 100)}%`
+                  : `Continue exploring • ${Math.round((videoTime / (videoRef.current?.duration || 30)) * 100)}%`
+                }
+              </div>
+              <div style={{
+                width: '100px',
+                height: '1px',
+                background: 'rgba(255,255,255,0.3)',
+                position: 'relative'
+              }}>
+                <div style={{
+                  width: `${(videoTime / (videoRef.current?.duration || 30)) * 100}%`,
+                  height: '1px',
+                  background: '#ffffff',
+                  transition: 'width 0.1s ease'
+                }} />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Hero Text - Staggered Reveal */}
+        <div style={{ 
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          textAlign: 'center',
+          zIndex: 3
+        }}>
+          
+          {/* Main Title - Appears at 3 seconds */}
+          <h1 style={{
+            fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+            fontWeight: '100',
+            lineHeight: '0.9',
+            letterSpacing: '-0.02em',
+            margin: 0,
+            color: '#ffffff',
+            textShadow: '0 4px 30px rgba(0,0,0,0.8)',
+            opacity: showTitle ? 1 : 0,
+            transform: `translateY(${showTitle ? 0 : 30}px)`,
+            transition: 'all 2s cubic-bezier(0.165, 0.84, 0.44, 1)'
+          }}>
+            Bridge Software<br />Solutions
+          </h1>
+
+          {/* Supporting Content - Appears at 5 seconds */}
+          <div style={{
+            opacity: showFullText ? 1 : 0,
+            transform: `translateY(${showFullText ? 0 : 30}px)`,
+            transition: 'all 2s cubic-bezier(0.165, 0.84, 0.44, 1)',
+            transitionDelay: '0.3s'
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '400',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginTop: '2rem',
+              marginBottom: '2rem',
+              color: '#ffffff',
+              textShadow: '0 2px 20px rgba(0,0,0,0.8)'
+            }}>
+              Digital Craftsmanship Studio
+            </div>
+
+            <div style={{
+              width: '80px',
+              height: '1px',
+              background: '#ffffff',
+              margin: '2rem auto',
+              opacity: 0.8,
+              boxShadow: '0 0 10px rgba(255,255,255,0.5)'
+            }} />
+
+            <p style={{
+              fontSize: '1.25rem',
+              fontWeight: '300',
+              lineHeight: '1.6',
+              maxWidth: '600px',
+              color: '#ffffff',
+              textShadow: '0 2px 20px rgba(0,0,0,0.8)',
+              margin: '0 auto'
+            }}>
+              We create digital experiences that bridge the gap between vision and reality. 
+              Minimalist design meets powerful functionality.
+            </p>
+
+            {/* Scroll Hint for Vertical Scroll */}
+            {isVerticalScroll && (
+              <div style={{
+                marginTop: '3rem',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  fontSize: '0.875rem',
+                  opacity: 0.8,
+                  animation: 'pulse 2s infinite',
+                  marginBottom: '2rem'
+                }}>
+                  Scroll down to continue ↓
+                </div>
+
+                {/* Start Your Project Button */}
+                <Link href="/contact">
+                  <button style={{
+                    background: 'transparent',
+                    color: '#ffffff',
+                    border: '1px solid #ffffff',
+                    padding: '1rem 2rem',
+                    borderRadius: '8px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    letterSpacing: '0.05em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    backdropFilter: 'blur(10px)',
+                    textTransform: 'uppercase'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#ffffff'
+                    e.target.style.color = '#000000'
+                    e.target.style.transform = 'translateY(-2px)'
+                    e.target.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'transparent'
+                    e.target.style.color = '#ffffff'
+                    e.target.style.transform = 'translateY(0)'
+                    e.target.style.boxShadow = 'none'
+                  }}
+                  >
+                    Start Your Project
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Subtle Overlay for Text Readability - Removed as requested */}
+      </section>
+
+      {/* Enhanced Services Section */}
+      <section 
+        ref={servicesRef}
+        style={{
+        padding: '10rem 2rem',
+        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%)',
+        color: '#ffffff',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Animated Background Elements */}
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '-10%',
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'float 20s ease-in-out infinite',
+          zIndex: 1
+        }} />
+        
+        <div style={{
+          position: 'absolute',
+          bottom: '10%',
+          right: '-10%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'float 25s ease-in-out infinite reverse',
+          zIndex: 1
+        }} />
+
+        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
+          <div style={{
+            marginBottom: '6rem',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '400',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              opacity: 0.6,
+              marginBottom: '2rem',
+              background: 'linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.8), rgba(255,255,255,0.6))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              What We Do
+            </div>
+            <h2 style={{
+              fontSize: 'clamp(2rem, 5vw, 4rem)',
+              fontWeight: '100',
+              margin: 0,
+              background: 'linear-gradient(135deg, #ffffff 0%, #cccccc 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              Services
+            </h2>
+          </div>
+
+          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+            {services.map((service, index) => (
+              <div key={service.id} style={{
+                marginBottom: '2rem',
+                position: 'relative'
+              }}>
+                <div 
+                  className={`service-card ${activeAccordion === service.id ? 'active' : ''}`}
+                  style={{
+                    background: activeAccordion === service.id 
+                      ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)'
+                      : 'rgba(255,255,255,0.02)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px',
+                    padding: '3rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transformOrigin: 'center',
+                    boxShadow: activeAccordion === service.id 
+                      ? '0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                      : '0 8px 32px rgba(0,0,0,0.1)'
+                  }}
+                  onClick={() => setActiveAccordion(activeAccordion === service.id ? null : service.id)}
+                >
+                  {/* Glass reflection effect */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '1px',
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                    opacity: activeAccordion === service.id ? 1 : 0.5,
+                    transition: 'opacity 0.3s ease'
+                  }} />
+
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    marginBottom: '1rem'
+                  }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        fontWeight: '400',
+                        letterSpacing: '0.1em',
+                        textTransform: 'uppercase',
+                        opacity: 0.6,
+                        marginBottom: '0.5rem'
+                      }}>
+                        {service.subtitle}
+                      </div>
+                      
+                      <h3 style={{
+                        fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+                        fontWeight: '200',
+                        margin: 0,
+                        marginBottom: '1rem',
+                        transition: 'all 0.3s ease',
+                        color: activeAccordion === service.id ? '#f5f5f5' : '#ffffff'
+                      }}>
+                        {service.title}
+                      </h3>
+
+                      {/* Service Keywords */}
+                      <div style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '0.5rem',
+                        marginBottom: '1rem',
+                        opacity: activeAccordion === service.id ? 1 : 0.7,
+                        transition: 'opacity 0.3s ease'
+                      }}>
+                        {service.keywords.map((keyword, i) => (
+                          <span key={i} style={{
+                            fontSize: '0.75rem',
+                            fontWeight: '300',
+                            padding: '0.25rem 0.75rem',
+                            background: 'rgba(255,255,255,0.1)',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            opacity: 0.8,
+                            transition: 'all 0.3s ease'
+                          }}>
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div style={{
+                      fontSize: '1.5rem',
+                      fontWeight: '100',
+                      transition: 'all 0.3s ease',
+                      transform: activeAccordion === service.id ? 'rotate(45deg) scale(1.1)' : 'rotate(0deg)',
+                      color: activeAccordion === service.id ? '#ffffff' : 'rgba(255,255,255,0.7)',
+                      marginLeft: '2rem'
+                    }}>
+                      +
+                    </div>
+                  </div>
+
+                  {/* Expanded Content */}
+                  <div style={{
+                    maxHeight: activeAccordion === service.id ? '500px' : '0',
+                    overflow: 'hidden',
+                    transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                    opacity: activeAccordion === service.id ? 1 : 0
+                  }}>
+                    <div style={{ 
+                      paddingTop: '2rem',
+                      borderTop: '1px solid rgba(255,255,255,0.1)',
+                      marginTop: '1rem'
+                    }}>
+                      <p style={{
+                        fontSize: '1.125rem',
+                        fontWeight: '300',
+                        lineHeight: '1.6',
+                        marginBottom: '2rem',
+                        opacity: 0.9,
+                        color: '#f5f5f5'
+                      }}>
+                        {service.description}
+                      </p>
+                      
+                      {/* Service Features */}
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                        gap: '1rem',
+                        marginBottom: '2rem'
+                      }}>
+                        {service.features.map((feature, i) => (
+                          <div key={i} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            fontSize: '0.9rem',
+                            fontWeight: '300',
+                            opacity: 0.8,
+                            padding: '0.75rem',
+                            background: 'rgba(255,255,255,0.03)',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(255,255,255,0.05)',
+                            transition: 'all 0.3s ease'
+                          }}>
+                            <div style={{
+                              width: '4px',
+                              height: '4px',
+                              background: 'linear-gradient(45deg, #ffffff, #cccccc)',
+                              borderRadius: '50%',
+                              marginRight: '1rem',
+                              opacity: 0.7
+                            }} />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Animated Background Pattern */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    width: '100px',
+                    height: '100px',
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.01) 0%, transparent 70%)',
+                    borderRadius: '50%',
+                    opacity: activeAccordion === service.id ? 1 : 0.5,
+                    transition: 'opacity 0.5s ease',
+                    animation: 'pulse 4s ease-in-out infinite'
+                  }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </section>
+
+
+      {/* Stats Section with GSAP Scroll Animation */}
+      <section 
+        ref={statsRef}
+        style={{
+          padding: '8rem 2rem',
+          background: '#ffffff',
+          color: '#000000'
+        }}
+      >
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '4rem',
+            textAlign: 'center'
+          }}>
+            {stats.map((stat, index) => (
+              <div 
+                key={index} 
+                ref={(el) => (statsItemsRef.current[index] = el)}
+                className="stat-item"
+                style={{
+                  opacity: 0,
+                  transform: 'translateY(100px)'
+                }}
+              >
+                <div style={{
+                  fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                  fontWeight: '100',
+                  marginBottom: '0.5rem',
+                  color: '#000000'
+                }}>
+                  {stat.number}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '300',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  opacity: 0.6
+                }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section style={{
+        padding: '10rem 2rem',
+        background: '#000000',
+        color: '#ffffff',
+        overflow: 'hidden'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{
+            fontSize: '0.75rem',
+            fontWeight: '400',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            opacity: 0.6,
+            marginBottom: '4rem'
+          }}>
+            Client Voices
+          </div>
+
+          <div style={{
+            position: 'relative',
+            height: '400px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            {testimonials.map((testimonial, index) => (
+              <div key={testimonial.id} style={{
+                position: 'absolute',
+                width: '100%',
+                opacity: index === currentTestimonial ? 1 : 0,
+                transform: `translateX(${index === currentTestimonial ? 0 : index < currentTestimonial ? -100 : 100}px)`,
+                transition: 'all 1.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                textAlign: 'center'
+              }}>
+                <blockquote style={{
+                  fontSize: 'clamp(1.25rem, 3vw, 2rem)',
+                  fontWeight: '200',
+                  lineHeight: '1.4',
+                  marginBottom: '3rem',
+                  margin: 0,
+                  maxWidth: '800px',
+                  marginLeft: 'auto',
+                  marginRight: 'auto'
+                }}>
+                  "{testimonial.quote}"
+                </blockquote>
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '2rem',
+                  marginTop: '3rem'
+                }}>
+                  <div style={{
+                    width: '40px',
+                    height: '1px',
+                    background: '#000000',
+                    opacity: 0.3
+                  }} />
+                  
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{
+                      fontSize: '1rem',
+                      fontWeight: '400',
+                      marginBottom: '0.25rem'
+                    }}>
+                      {testimonial.name}
+                    </div>
+                    <div style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '300',
+                      opacity: 0.7
+                    }}>
+                      {testimonial.title}, {testimonial.company}
+                    </div>
+                    <div style={{
+                      fontSize: '0.75rem',
+                      fontWeight: '300',
+                      opacity: 0.5,
+                      marginTop: '0.25rem'
+                    }}>
+                      {testimonial.location}
+                    </div>
+                  </div>
+
+                  <div style={{
+                    width: '40px',
+                    height: '1px',
+                    background: '#000000',
+                    opacity: 0.3
+                  }} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Testimonial Navigation */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '1rem',
+            marginTop: '3rem'
+          }}>
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentTestimonial(index)}
+                style={{
+                  width: '40px',
+                  height: '1px',
+                  background: '#000000',
+                  border: 'none',
+                  opacity: index === currentTestimonial ? 1 : 0.3,
+                  cursor: 'pointer',
+                  transition: 'opacity 0.3s ease'
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Creative Process Section */}
+      <section style={{
+        padding: '10rem 2rem',
+        background: '#ffffff',
+        color: '#000000',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          {/* Section Header */}
+          <div style={{
+            marginBottom: '6rem',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '400',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              opacity: 0.6,
+              marginBottom: '2rem'
+            }}>
+              Our Process
+            </div>
+            <h2 style={{
+              fontSize: 'clamp(2rem, 5vw, 4rem)',
+              fontWeight: '100',
+              margin: 0,
+              color: '#000000'
+            }}>
+              How We Work
+            </h2>
+          </div>
+
+          {/* Single Line Process Timeline */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'stretch',
+            gap: '1.5rem',
+            flexWrap: 'nowrap',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <ProcessCard 
+              number={1}
+              title="Discovery"
+              description="We dive deep into your brand, understanding your vision, challenges, and goals. Every great project starts with listening."
+            />
+            
+            <ProcessCard 
+              number={2}
+              title="Strategy"
+              description="Strategic thinking meets creative vision. We craft roadmaps that transform your ideas into digital excellence."
+            />
+            
+            <ProcessCard 
+              number={3}
+              title="Design"
+              description="Where aesthetics meet functionality. Every pixel is purposefully placed to create experiences that captivate and convert."
+            />
+            
+            <ProcessCard 
+              number={4}
+              title="Development"
+              description="Cutting-edge technology brings designs to life. We build robust, scalable solutions that perform beautifully across all devices."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Projects with GSAP Animation */}
+      <section 
+        ref={projectsRef}
+        style={{
+          padding: '10rem 2rem',
+          background: '#000000',
+          color: '#ffffff'
+        }}
+      >
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '6rem'
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '400',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              opacity: 0.6,
+              marginBottom: '2rem'
+            }}>
+              Featured Work
+            </div>
+            <h2 style={{
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: '100',
+              margin: 0
+            }}>
+              Recent Projects
+            </h2>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '4rem',
+            overflow: 'visible'
+          }}>
+            {[
+              {
+                category: "E-commerce Platform",
+                title: "Artisan Marketplace",
+                description: "Connecting local artisans with global audiences through minimalist design and seamless user experience."
+              },
+              {
+                category: "Brand Identity",
+                title: "TechnoVision Rebrand",
+                description: "Complete visual identity transformation for a leading technology consultancy firm in Hyderabad."
+              },
+              {
+                category: "Web Application",
+                title: "FinanceFlow Dashboard",
+                description: "Comprehensive financial analytics platform with real-time data visualization and intuitive user interface design."
+              },
+              {
+                category: "Mobile App Design",
+                title: "WellnessPro App",
+                description: "Health and wellness mobile application featuring personalized workout plans and nutrition tracking capabilities."
+              },
+              {
+                category: "SaaS Platform",
+                title: "CloudSync Enterprise",
+                description: "Cloud-based project management suite with advanced collaboration tools and automated workflow optimization for modern teams."
+              },
+              {
+                category: "Restaurant App",
+                title: "FoodieConnect",
+                description: "Food delivery and restaurant discovery platform with AI-powered recommendations and seamless ordering experience."
+              }
+            ].map((project, index) => (
+              <div 
+                key={index}
+                ref={(el) => (projectItemsRef.current[index] = el)}
+                className="project-item"
+                style={{
+                  position: 'relative',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  padding: '3rem',
+                  transition: 'all 0.5s ease',
+                  cursor: 'pointer',
+                  opacity: 0,
+                  transform: 'translateY(100px)'
+                }}
+                onMouseEnter={() => handleProjectHover(index, true)}
+                onMouseLeave={() => handleProjectHover(index, false)}
+              >
+                
+                <div style={{
+                  fontSize: '0.75rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  opacity: 0.6,
+                  marginBottom: '1rem'
+                }}>
+                  {project.category}
+                </div>
+                <h3 style={{
+                  fontSize: '1.5rem',
+                  fontWeight: '200',
+                  marginBottom: '1.5rem',
+                  margin: 0
+                }}>
+                  {project.title}
+                </h3>
+                <p style={{
+                  fontSize: '0.95rem',
+                  fontWeight: '300',
+                  lineHeight: '1.6',
+                  opacity: 0.8,
+                  marginBottom: '2rem'
+                }}>
+                  {project.description}
+                </p>
+                <div style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '300',
+                  opacity: 0.6
+                }}>
+                  View Case Study →
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Advanced CTA Section with Horizontal Scrolling Text */}
+      <section 
+        ref={ctaRef}
+        style={{
+          height: '50vh',
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundColor: '#000000',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        {/* Animated Background Grid */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          opacity: 0.03,
+          backgroundImage: `
+            linear-gradient(90deg, #ffffff 1px, transparent 1px),
+            linear-gradient(180deg, #ffffff 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+          transform: ctaVisible ? 'translateX(0)' : 'translateX(-100px)',
+          transition: 'transform 3s ease-out',
+          zIndex: 1
+        }} />
+
+        {/* Two-Line Horizontal Scrolling Text Effect */}
+        <div style={{
+          width: '100%',
+          height: '200px',
+          position: 'relative',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          marginBottom: '3rem',
+          zIndex: 2
+        }}>
+          {/* First Line: "Let's Create Something" - Right to Left */}
+          <div style={{
+            position: 'relative',
+            height: '90px',
+            width: '100vw',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            overflow: 'visible',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              position: 'absolute',
+              whiteSpace: 'nowrap',
+              fontSize: 'clamp(3rem, 8vw, 6rem)',
+              fontWeight: '900',
+              fontStyle: 'italic',
+              color: '#cccccc',
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              // Scroll from right to left, stop at center
+              transform: `translateX(${ctaVisible ? 
+                Math.max(-25, 75 - ((scrollY - ctaScrollOffset) * 0.12)) : 75}%) translateZ(0)`,
+              transition: ctaVisible ? 'none' : 'transform 2.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+              opacity: ctaVisible ? 0.8 : 0,
+              transitionDelay: '0.3s',
+              transformOrigin: 'left center',
+              textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+              // Anti-aliasing and performance optimizations
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
+              textRendering: 'optimizeLegibility',
+              willChange: 'transform',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden'
+            }}>
+              Let's Create Something&nbsp;&nbsp;&nbsp;
+            </div>
+          </div>
+
+          {/* Second Line: "Extraordinary Together" - Left to Right */}
+          <div style={{
+            position: 'relative',
+            height: '90px',
+            width: '100vw',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            overflow: 'visible',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              position: 'absolute',
+              whiteSpace: 'nowrap',
+              fontSize: 'clamp(3rem, 8vw, 6rem)',
+              fontWeight: '900',
+              fontStyle: 'italic',
+              color: '#ffffff',
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              // Scroll from left to right, stop at center
+              transform: `translateX(${ctaVisible ? 
+                Math.min(25, -75 + ((scrollY - ctaScrollOffset) * 0.12)) : -75}%) translateZ(0)`,
+              transition: ctaVisible ? 'none' : 'transform 2.8s cubic-bezier(0.165, 0.84, 0.44, 1)',
+              opacity: ctaVisible ? 1 : 0,
+              transitionDelay: '0.6s',
+              transformOrigin: 'right center',
+              textShadow: '0 4px 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.05)',
+              // Anti-aliasing and performance optimizations
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
+              textRendering: 'optimizeLegibility',
+              willChange: 'transform',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden'
+            }}>
+Extraordinary Together&nbsp;&nbsp;&nbsp;
+            </div>
+          </div>
+
+          {/* Subtle Background Lines for Depth */}
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: 0,
+            width: '100%',
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
+            opacity: ctaVisible ? 1 : 0,
+            transition: 'opacity 1s ease',
+            transitionDelay: '1.2s'
+          }} />
+          
+          <div style={{
+            position: 'absolute',
+            bottom: '20px',
+            left: 0,
+            width: '100%',
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
+            opacity: ctaVisible ? 1 : 0,
+            transition: 'opacity 1s ease',
+            transitionDelay: '1.5s'
+          }} />
+
+          {/* Center alignment guide (invisible) */}
+          <div style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            width: '2px',
+            height: '100%',
+            background: 'rgba(255,255,255,0.05)',
+            transform: 'translate(-50%, -50%)',
+            opacity: ctaVisible ? 0.3 : 0,
+            transition: 'opacity 2s ease',
+            transitionDelay: '2s'
+          }} />
+        </div>
+
+        {/* Animated Divider */}
+        <div style={{
+          width: ctaVisible ? '200px' : '0px',
+          height: '2px',
+          background: 'linear-gradient(90deg, transparent, #ffffff, transparent)',
+          marginBottom: '3rem',
+          transition: 'width 1.5s ease-out',
+          transitionDelay: '1.2s',
+          opacity: ctaVisible ? 1 : 0,
+          zIndex: 2
+        }} />
+
+        {/* Subtitle with Stagger Effect */}
+        <div style={{
+          textAlign: 'center',
+          marginBottom: '4rem',
+          zIndex: 2
+        }}>
+          {['Ready', 'to', 'bridge', 'the', 'gap', 'between', 'vision', '&', 'reality?'].map((word, index) => (
+            <span
+              key={index}
+              style={{
+                display: 'inline-block',
+                fontSize: '1.25rem',
+                fontWeight: '300',
+                color: '#ffffff',
+                opacity: ctaVisible ? 0.9 : 0,
+                transform: `translateY(${ctaVisible ? 0 : 20}px)`,
+                transition: `all 0.6s ease-out`,
+                transitionDelay: `${1.5 + index * 0.1}s`,
+                margin: '0 8px',
+                fontStyle: index === 7 ? 'italic' : 'normal' // Make '&' italic
+              }}
+            >
+              {word}
+            </span>
+          ))}
+        </div>
+
+        {/* CTA Button with Advanced Effects */}
+        <div style={{
+          position: 'relative',
+          zIndex: 2,
+          opacity: ctaVisible ? 1 : 0,
+          transform: `translateY(${ctaVisible ? 0 : 30}px) scale(${ctaVisible ? 1 : 0.9})`,
+          transition: 'all 1s cubic-bezier(0.165, 0.84, 0.44, 1)',
+          transitionDelay: '2.5s'
+        }}>
+          {/* Button Glow Effect */}
+          <div style={{
+            position: 'absolute',
+            top: '-2px',
+            left: '-2px',
+            right: '-2px',
+            bottom: '-2px',
+            background: 'linear-gradient(45deg, #ffffff, transparent, #ffffff, transparent, #ffffff)',
+            borderRadius: '2px',
+            opacity: ctaVisible ? 0.3 : 0,
+            transition: 'opacity 1s ease',
+            transitionDelay: '3s'
+          }} />
+          
+          <Link href="/contact">
+            <button style={{
+              position: 'relative',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: '#ffffff',
+              backgroundColor: '#000000',
+              border: '2px solid #000000',
+              padding: '1.5rem 4rem',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              fontFamily: 'Inter, sans-serif',
+              overflow: 'hidden'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = '#333333'
+              e.target.style.color = '#ffffff'
+              e.target.style.border = '2px solid #333333'
+              e.target.style.transform = 'translateY(-2px)'
+              e.target.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = '#000000'
+              e.target.style.color = '#ffffff'
+              e.target.style.border = '2px solid #000000'
+              e.target.style.transform = 'translateY(0)'
+              e.target.style.boxShadow = 'none'
+            }}
+            >
+              {/* Button Background Animation */}
+              <span style={{
+                position: 'absolute',
+                top: 0,
+                left: '-100%',
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                transition: 'left 0.5s ease'
+              }} />
+              
+              Start Your Project
+            </button>
+          </Link>
+        </div>
+
+        {/* Floating Elements */}
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              width: '2px',
+              height: '2px',
+              backgroundColor: '#ffffff',
+              borderRadius: '50%',
+              opacity: ctaVisible ? 0.4 : 0,
+              left: `${20 + i * 15}%`,
+              top: `${30 + i * 10}%`,
+              transition: 'opacity 1s ease',
+              transitionDelay: `${2 + i * 0.2}s`,
+              zIndex: 1
+            }}
+          />
+        ))}
+      </section>
+
+      {/* Footer */}
+      <footer style={{
+        padding: '4rem 2rem 2rem',
+        background: '#ffffff',
+        borderTop: '1px solid rgba(0,0,0,0.1)'
+      }}>
+        <div style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '3rem'
+        }}>
+          <div>
+            <div style={{
+              fontSize: '1rem',
+              fontWeight: '400',
+              marginBottom: '1rem'
+            }}>
+              Contact
+            </div>
+            <div style={{
+              fontSize: '0.875rem',
+              fontWeight: '300',
+              opacity: 0.7,
+              lineHeight: '1.6'
+            }}>
+              Hyderabad, Telangana<br />
+              hello@bridgesoftwaresolutions.com<br />
+              +91 9996 999 770
+            </div>
+          </div>
+
+          <div>
+            <div style={{
+              fontSize: '1rem',
+              fontWeight: '400',
+              marginBottom: '1rem'
+            }}>
+              Navigate
+            </div>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem'
+            }}>
+              <a href="/about" style={{ 
+                fontSize: '0.875rem',
+                fontWeight: '300',
+                opacity: 0.7,
+                color: '#000000',
+                textDecoration: 'none'
+              }}>About</a>
+              <a href="/services" style={{ 
+                fontSize: '0.875rem',
+                fontWeight: '300',
+                opacity: 0.7,
+                color: '#000000',
+                textDecoration: 'none'
+              }}>Services</a>
+              <a href="/blogs" style={{ 
+                fontSize: '0.875rem',
+                fontWeight: '300',
+                opacity: 0.7,
+                color: '#000000',
+                textDecoration: 'none'
+              }}>Journal</a>
+              <a href="/contact" style={{ 
+                fontSize: '0.875rem',
+                fontWeight: '300',
+                opacity: 0.7,
+                color: '#000000',
+                textDecoration: 'none'
+              }}>Contact</a>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          marginTop: '3rem',
+          paddingTop: '2rem',
+          borderTop: '1px solid rgba(0,0,0,0.1)',
+          textAlign: 'center',
+          fontSize: '0.75rem',
+          fontWeight: '300',
+          opacity: 0.5
+        }}>
+          © 2024 Bridge Software Solutions. All rights reserved.
+        </div>
+      </footer>
+      
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+        
+        * {
+          box-sizing: border-box;
+        }
+        
+        body {
+          margin: 0;
+          padding: 0;
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-20px) rotate(1deg); }
+          50% { transform: translateY(-10px) rotate(0deg); }
+          75% { transform: translateY(-15px) rotate(-1deg); }
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 0.1; transform: scale(1); }
+          50% { opacity: 0.3; transform: scale(1.05); }
+        }
+
+        /* Service Card Hover Effects - Prevents Stacking */
+        .service-card {
+          will-change: transform, background, box-shadow;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+        
+        .service-card:not(.active):hover {
+          background: rgba(255,255,255,0.04) !important;
+          transform: translateY(-2px) !important;
+          box-shadow: 0 12px 40px rgba(0,0,0,0.2) !important;
+        }
+        
+        .service-card:not(.active):not(:hover) {
+          background: rgba(255,255,255,0.02) !important;
+          transform: translateY(0) !important;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Stats Animation Performance Optimization */
+        .stat-item {
+          will-change: transform, opacity;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
+        }
+
+        /* Projects Animation Performance Optimization */
+        .project-item {
+          will-change: transform, opacity;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
+        }
+
+        /* Project Hover Effects */
+        .project-item {
+          will-change: transform, box-shadow;
+          backface-visibility: hidden;
+        }
+        
+        .project-item:hover {
+          transform: translateY(-8px) translateZ(0);
+          box-shadow: 0 15px 50px rgba(255,255,255,0.1);
+          border-color: rgba(255,255,255,0.2) !important;
+        }
+
+        /* Dot Animation Keyframes */
+        @keyframes dotGlow {
+          0%, 100% { 
+            box-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.4);
+          }
+          50% { 
+            box-shadow: 0 0 25px rgba(255,255,255,1), 0 0 50px rgba(255,255,255,0.6);
+          }
+        }
+
+        /* Enhanced dot visibility */
+        .project-item:hover [id^="project-dot-"] {
+          animation: dotGlow 1s ease-in-out infinite;
+        }
+      `}</style>
+      </div>
+    </>
+  )
+}
