@@ -162,7 +162,7 @@ export default function Home() {
   const [ctaVisible, setCtaVisible] = useState(false)
   const [ctaScrollOffset, setCtaScrollOffset] = useState(0)
   const [processVisible, setProcessVisible] = useState(false)
-  const [navVisible, setNavVisible] = useState(false)
+  const [navVisible, setNavVisible] = useState(true)
   const [activeSection, setActiveSection] = useState('home')
   const [unicornStudioVisible, setUnicornStudioVisible] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -591,12 +591,8 @@ export default function Home() {
       const handleNavScroll = () => {
         const scrollY = lenisRef.current.scroll
         
-        // Show nav after hero section
-        if (scrollY > window.innerHeight * 0.5) {
-          setNavVisible(true)
-        } else {
-          setNavVisible(false)
-        }
+        // Keep nav always visible
+        setNavVisible(true)
 
         // Track active section
         const sections = [
@@ -1059,27 +1055,28 @@ export default function Home() {
         fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
         background: '#ffffff',
         color: '#000000',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        '--header-height': isMobile ? '60px' : '72px'
       }}>
 
       {/* Navigation Bar */}
       <nav 
         ref={navRef}
         style={{
-          position: 'fixed',
-          top: 0,
+          position: isMobile ? 'static' : 'sticky',
+          top: isMobile ? 'auto' : 0,
           left: 0,
           right: 0,
           zIndex: 1000,
-          padding: isMobile ? '0.75rem 1rem' : '1rem 2rem',
-          background: navVisible ? 'rgba(255,255,255,0.1)' : 'transparent',
-          backdropFilter: navVisible ? 'blur(20px)' : 'none',
-          WebkitBackdropFilter: navVisible ? 'blur(20px)' : 'none',
-          boxShadow: navVisible ? 'inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 32px rgba(0,0,0,0.1)' : 'none',
-          borderBottom: navVisible ? '1px solid rgba(0,0,0,0.1)' : 'none',
-          transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
+          height: isMobile ? 'auto' : 'var(--header-height)',
+          padding: isMobile ? '1rem' : '1rem 2rem',
+          background: isMobile ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.1)',
+          backdropFilter: isMobile ? 'none' : 'blur(20px)',
+          WebkitBackdropFilter: isMobile ? 'none' : 'blur(20px)',
+          boxShadow: isMobile ? '0 2px 8px rgba(0,0,0,0.1)' : 'inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 32px rgba(0,0,0,0.1)',
+          borderBottom: isMobile ? '1px solid rgba(0,0,0,0.2)' : '1px solid rgba(0,0,0,0.1)',
           transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
-          opacity: navVisible ? 1 : 0
+          opacity: 1
         }}
       >
         <div style={{
@@ -1120,41 +1117,46 @@ export default function Home() {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 style={{
-                  background: 'none',
-                  border: 'none',
+                  background: 'rgba(0,0,0,0.05)',
+                  border: '1px solid rgba(0,0,0,0.1)',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  padding: '0.5rem',
+                  padding: '0.75rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
-                  width: '30px',
-                  height: '30px'
+                  width: '40px',
+                  height: '40px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 }}
                 aria-label="Toggle mobile menu"
               >
                 <span style={{
-                  width: '20px',
-                  height: '2px',
+                  width: '24px',
+                  height: '3px',
                   backgroundColor: '#000000',
                   margin: '2px 0',
                   transition: 'all 0.3s ease',
-                  transform: mobileMenuOpen ? 'rotate(45deg) translate(3px, 3px)' : 'none'
+                  transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none',
+                  borderRadius: '1px'
                 }} />
                 <span style={{
-                  width: '20px',
-                  height: '2px',
+                  width: '24px',
+                  height: '3px',
                   backgroundColor: '#000000',
                   margin: '2px 0',
                   transition: 'all 0.3s ease',
-                  opacity: mobileMenuOpen ? 0 : 1
+                  opacity: mobileMenuOpen ? 0 : 1,
+                  borderRadius: '1px'
                 }} />
                 <span style={{
-                  width: '20px',
-                  height: '2px',
+                  width: '24px',
+                  height: '3px',
                   backgroundColor: '#000000',
                   margin: '2px 0',
                   transition: 'all 0.3s ease',
-                  transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none'
+                  transform: mobileMenuOpen ? 'rotate(-45deg) translate(7px, -7px)' : 'none',
+                  borderRadius: '1px'
                 }} />
               </button>
             )}
@@ -1176,7 +1178,7 @@ export default function Home() {
                   fontSize: '0.875rem',
                   fontWeight: activeSection === item.key ? '500' : '400',
                   letterSpacing: '0.05em',
-                  color: activeSection === item.key ? '#000000' : navVisible ? '#333333' : '#666666',
+                  color: activeSection === item.key ? '#000000' : '#333333',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   fontFamily: 'inherit',
@@ -1258,14 +1260,14 @@ export default function Home() {
         {mobileMenuOpen && isMobile && (
           <div style={{
             position: 'fixed',
-            top: '70px',
+            top: '0',
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(30px)',
-            WebkitBackdropFilter: 'blur(30px)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 32px rgba(0,0,0,0.1)',
+            background: 'rgba(255, 255, 255, 0.98)',
+            backdropFilter: 'none',
+            WebkitBackdropFilter: 'none',
+            boxShadow: '0 4px 32px rgba(0,0,0,0.15)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -1346,6 +1348,60 @@ export default function Home() {
           </div>
         )}
       </nav>
+
+      {/* Floating Contact FAB */}
+      {!mobileMenuOpen && (
+        <Link href="/contact">
+          <button
+            style={{
+              position: 'fixed',
+              right: `max(16px, ${typeof window !== 'undefined' && window.CSS?.supports('right', 'env(safe-area-inset-right)') ? 'env(safe-area-inset-right)' : '16px'})`,
+              bottom: `max(16px, ${typeof window !== 'undefined' && window.CSS?.supports('bottom', 'env(safe-area-inset-bottom)') ? 'env(safe-area-inset-bottom)' : '16px'})`,
+              zIndex: 1100,
+              width: isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '48px' : '56px',
+              height: isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '48px' : '56px',
+              borderRadius: '50%',
+              background: '#000000',
+              color: '#ffffff',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.15)',
+              transition: 'all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '12px' : '14px',
+              fontWeight: '600',
+              letterSpacing: '0.5px',
+              pointerEvents: 'auto',
+              transform: 'translateZ(0)', // Hardware acceleration
+              backfaceVisibility: 'hidden'
+            }}
+            onMouseEnter={(e) => {
+              if (!isMobile) {
+                e.target.style.transform = 'translateY(-2px) scale(1.1) translateZ(0)'
+                e.target.style.boxShadow = '0 6px 24px rgba(0,0,0,0.4), 0 12px 48px rgba(0,0,0,0.2)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isMobile) {
+                e.target.style.transform = 'translateY(0) scale(1) translateZ(0)'
+                e.target.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.15)'
+              }
+            }}
+            onTouchStart={(e) => {
+              e.target.style.transform = 'scale(0.95) translateZ(0)'
+            }}
+            onTouchEnd={(e) => {
+              setTimeout(() => {
+                e.target.style.transform = 'scale(1) translateZ(0)'
+              }, 100)
+            }}
+          >
+            {isMobile && typeof window !== 'undefined' && window.innerWidth <= 375 ? '💬' : 'CONTACT'}
+          </button>
+        </Link>
+      )}
       
       {/* Hero Section with Scroll-Controlled Video */}
       <section 
@@ -1356,7 +1412,9 @@ export default function Home() {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          scrollMarginTop: isMobile ? '0' : 'var(--header-height)',
+          paddingTop: isMobile ? '0' : 'var(--header-height)'
         }}
       >
         {/* Video Background for Desktop, Image for Mobile */}
@@ -1391,17 +1449,26 @@ export default function Home() {
               <source src="/videos/Bridge%20Video.mp4" type="video/mp4" />
             </video>
           ) : (
-            <img
-              src="/mobile bridge.png"
-              alt="Bridge Software Solutions Mobile Hero"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center',
-                display: 'block'
-              }}
-            />
+            <div style={{
+              width: '100%',
+              height: '100%',
+              backgroundImage: 'url(/mobile bridge.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              position: 'relative'
+            }}>
+              {/* Light overlay for text contrast - reduced opacity */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0, 0, 0, 0.1)',
+                zIndex: 1
+              }} />
+            </div>
           )}
         </div>
 
@@ -1574,7 +1641,8 @@ export default function Home() {
         background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%)',
         color: '#ffffff',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        scrollMarginTop: 'var(--header-height)'
       }}>
         {/* Animated Background Elements */}
         <div style={{
@@ -2100,7 +2168,8 @@ export default function Home() {
           background: '#000000',
           color: '#ffffff',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          scrollMarginTop: isMobile ? '0' : 'var(--header-height)'
         }}
       >
         {/* UnicornStudio Animation Background - Extended Coverage */}
@@ -2258,14 +2327,16 @@ export default function Home() {
       <section 
         ref={ctaRef}
         style={{
-          height: '50vh',
+          height: isMobile ? '80vh' : '50vh',
+          minHeight: isMobile ? '700px' : '500px',
           position: 'relative',
           overflow: 'hidden',
           backgroundColor: '#000000',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          padding: isMobile ? '3rem 1rem' : '2rem'
         }}
       >
         {/* Animated Background Grid */}
@@ -2289,43 +2360,52 @@ export default function Home() {
         {/* Two-Line Horizontal Scrolling Text Effect */}
         <div style={{
           width: '100%',
-          height: '200px',
+          minHeight: isMobile ? '200px' : '200px',
+          height: isMobile ? 'auto' : '200px',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           marginBottom: '3rem',
-          zIndex: 2
+          zIndex: 2,
+          padding: isMobile ? '2rem 0' : '0'
         }}>
           {isMobile ? (
             /* Mobile: Single centered text */
-            <div style={{
-              position: 'relative',
-              width: '100%',
-              padding: '0 1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center'
-            }}>
-              <div style={{
-                fontSize: 'clamp(1.5rem, 8vw, 2.5rem)',
-                fontWeight: '900',
-                fontStyle: 'italic',
-                color: '#ffffff',
-                letterSpacing: '-0.01em',
-                textTransform: 'uppercase',
-                lineHeight: '1.2',
-                opacity: ctaVisible ? 1 : 0,
-                transform: `translateY(${ctaVisible ? 0 : 30}px)`,
-                transition: 'all 2s cubic-bezier(0.165, 0.84, 0.44, 1)',
-                transitionDelay: '0.3s',
-                textShadow: '0 4px 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.05)',
-                WebkitFontSmoothing: 'antialiased',
-                MozOsxFontSmoothing: 'grayscale',
-                textRendering: 'optimizeLegibility'
+            <div 
+              className="mobile-cta-container"
+              style={{
+                position: 'relative',
+                width: '100%',
+                minHeight: 'fit-content',
+                padding: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center'
               }}>
+              <div 
+                className="mobile-cta-text"
+                style={{
+                  fontSize: 'clamp(1.2rem, 7vw, 2.2rem)',
+                  fontWeight: '900',
+                  fontStyle: 'italic',
+                  color: '#ffffff',
+                  letterSpacing: '-0.01em',
+                  textTransform: 'uppercase',
+                  lineHeight: '1.3',
+                  opacity: ctaVisible ? 1 : 0,
+                  transform: `translateY(${ctaVisible ? 0 : 30}px)`,
+                  transition: 'all 2s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                  transitionDelay: '0.3s',
+                  textShadow: '0 4px 20px rgba(255,255,255,0.1), 0 0 40px rgba(255,255,255,0.05)',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  textRendering: 'optimizeLegibility',
+                  wordWrap: 'break-word',
+                  hyphens: 'auto'
+                }}>
                 LET'S CREATE SOMETHING<br />EXTRAORDINARY TOGETHER
               </div>
             </div>
@@ -2500,7 +2580,8 @@ export default function Home() {
           opacity: ctaVisible ? 1 : 0,
           transform: `translateY(${ctaVisible ? 0 : 30}px) scale(${ctaVisible ? 1 : 0.9})`,
           transition: 'all 1s cubic-bezier(0.165, 0.84, 0.44, 1)',
-          transitionDelay: '2.5s'
+          transitionDelay: '2.5s',
+          marginBottom: isMobile ? '3rem' : '0'
         }}>
           {/* Button Glow Effect */}
           <div style={{
@@ -2770,6 +2851,21 @@ export default function Home() {
             overflow-x: hidden;
           }
           
+          /* Ensure CTA text container is responsive to content */
+          .mobile-cta-container {
+            min-height: fit-content !important;
+            height: auto !important;
+            padding: 2rem 1rem !important;
+          }
+          
+          /* Responsive CTA text sizing */
+          .mobile-cta-text {
+            font-size: clamp(1.2rem, 7vw, 2.2rem) !important;
+            line-height: 1.3 !important;
+            word-wrap: break-word !important;
+            hyphens: auto !important;
+          }
+          
           /* Mobile typography adjustments */
           h1 {
             font-size: clamp(2rem, 8vw, 3rem) !important;
@@ -2803,6 +2899,13 @@ export default function Home() {
             min-height: 44px;
             min-width: 44px;
             padding: 0.75rem 1rem !important;
+          }
+          
+          /* CTA section mobile spacing */
+          .mobile-cta-section {
+            height: 80vh !important;
+            min-height: 700px !important;
+            padding: 3rem 1rem !important;
           }
           
           /* Mobile video optimizations */
