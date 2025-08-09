@@ -114,14 +114,27 @@ export default function Web3ContactForm() {
       formDataObj.append('from_name', formData.name)
       formDataObj.append('reply_to', formData.email)
 
+      console.log('Submitting form with data:', {
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        project: formData.project,
+        budget: formData.budget,
+        message: formData.message.substring(0, 50) + '...'
+      })
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formDataObj
       })
 
       const data = await response.json()
+      
+      console.log('Web3Forms API response:', data)
+      console.log('Response status:', response.status)
 
       if (data.success) {
+        console.log('✅ Form submitted successfully to Web3Forms')
         setSubmitStatus('success')
         setFormData({
           name: '',
@@ -137,11 +150,12 @@ export default function Web3ContactForm() {
           setSubmitStatus('')
         }, 5000)
       } else {
-        throw new Error(data.message || 'Something went wrong')
+        console.error('❌ Web3Forms API returned error:', data)
+        throw new Error(data.message || 'Web3Forms API returned an error')
       }
     } catch (error) {
+      console.error('❌ Form submission error:', error)
       setSubmitStatus('error')
-      console.error('Form submission error:', error)
       
       // Clear error message after 5 seconds
       setTimeout(() => {
@@ -462,9 +476,26 @@ export default function Web3ContactForm() {
             color: '#721c24',
             fontSize: '0.875rem'
           }}>
-            ✗ Something went wrong. Please try again or contact us directly at hello@bridgesoftwaresolutions.com
+            ✗ Something went wrong. Please check the browser console for details, or contact us directly at hello@bridgesoftwaresolutions.com
           </div>
         )}
+
+        {/* Debug Information */}
+        <div style={{
+          marginTop: '1rem',
+          padding: '0.5rem',
+          background: '#f8f9fa',
+          border: '1px solid #dee2e6',
+          borderRadius: '6px',
+          fontSize: '0.75rem',
+          color: '#6c757d'
+        }}>
+          <strong>Troubleshooting tips:</strong><br />
+          1. Check your spam/junk folder<br />
+          2. Open browser console (F12) to see detailed logs<br />
+          3. Verify the email address used to get the Web3Forms access key<br />
+          4. Form submissions may take a few minutes to appear in your inbox
+        </div>
 
         {/* Web3Forms Honeypot (hidden spam protection) */}
         <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
