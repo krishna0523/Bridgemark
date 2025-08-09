@@ -187,13 +187,19 @@ export default function Contact() {
           {/* Logo */}
           <Link href="/">
             <div style={{
-              fontSize: '1.25rem',
-              fontWeight: '400',
-              letterSpacing: '0.05em',
-              color: '#000000',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center'
             }}>
-              Bridge
+              <img 
+                src="/BRIDGE.png" 
+                alt="Bridge Software Solutions Logo" 
+                style={{
+                  height: '32px',
+                  width: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
             </div>
           </Link>
 
@@ -545,29 +551,89 @@ export default function Contact() {
                 </p>
               </div>
 
-              {/* Placeholder Map */}
+              {/* Interactive Map with Custom Styling */}
               <div style={{
                 width: '100%',
                 height: '400px',
-                background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)',
                 borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 marginBottom: '2rem',
-                border: '1px solid rgba(0,0,0,0.1)'
+                border: '1px solid rgba(0,0,0,0.1)',
+                overflow: 'hidden',
+                position: 'relative',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
               }}>
+                <img 
+                  src="/snazzy-image-2.png"
+                  alt="Interactive map showing Bridge Software Solutions location in Hyderabad"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    transition: 'transform 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.05)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1)'
+                  }}
+                  onError={(e) => {
+                    // Fallback if image doesn't load
+                    e.target.style.display = 'none'
+                    e.target.parentElement.innerHTML = `
+                      <div style="
+                        width: 100%; 
+                        height: 100%; 
+                        background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center;
+                        flex-direction: column;
+                        color: #666666;
+                      ">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🗺️</div>
+                        <div style="font-size: 1rem; font-weight: 500;">Interactive Map</div>
+                        <div style="font-size: 0.875rem; opacity: 0.8;">Hyderabad, Telangana</div>
+                      </div>
+                    `
+                  }}
+                />
+                
+                {/* Map Overlay with Location Marker */}
                 <div style={{
-                  textAlign: 'center',
-                  color: '#666666'
-                }}>
-                  <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🗺️</div>
-                  <div style={{ fontSize: '1rem', fontWeight: '500' }}>
-                    Interactive Map
-                  </div>
-                  <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
-                    Hyderabad, Telangana
-                  </div>
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'rgba(0,0,0,0.8)',
+                  color: '#ffffff',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '25px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  opacity: 0.9,
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.opacity = '1'
+                  e.target.style.transform = 'translate(-50%, -50%) scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.opacity = '0.9'
+                  e.target.style.transform = 'translate(-50%, -50%) scale(1)'
+                }}
+                >
+                  <span>📍</span>
+                  <span>Bridge Software Solutions</span>
                 </div>
               </div>
 

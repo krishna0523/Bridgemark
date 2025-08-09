@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { useInView } from 'react-intersection-observer'
@@ -133,8 +134,10 @@ function ProcessCard({ number, title, description }) {
 }
 
 export default function Home() {
+  const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [showMainContent, setShowMainContent] = useState(false)
+  const [skipSlides, setSkipSlides] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [scrollY, setScrollY] = useState(0)
   const [activeAccordion, setActiveAccordion] = useState(null)
@@ -160,6 +163,21 @@ export default function Home() {
   const processRef = useRef()
   const lenisRef = useRef()
   const navRef = useRef()
+
+  // Check if user came from blog and skip slides
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const referrer = document.referrer
+      const fromBlog = referrer.includes('/blogs') || sessionStorage.getItem('fromBlog')
+      
+      if (fromBlog) {
+        setSkipSlides(true)
+        setShowMainContent(true)
+        // Clear the flag after using it
+        sessionStorage.removeItem('fromBlog')
+      }
+    }
+  }, [])
 
   // Initialize Lenis smooth scrolling
   useEffect(() => {
@@ -605,7 +623,7 @@ export default function Home() {
     }
   }
 
-  if (!showMainContent) {
+  if (!showMainContent && !skipSlides) {
     return (
       <div style={{ 
         height: '100vh', 
@@ -967,15 +985,21 @@ export default function Home() {
           {/* Logo */}
           <div 
             style={{
-              fontSize: '1.25rem',
-              fontWeight: '400',
-              letterSpacing: '0.05em',
-              color: '#000000',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center'
             }}
             onClick={() => scrollToSection(heroSectionRef)}
           >
-            Bridge
+            <img 
+              src="/BRIDGE.png" 
+              alt="Bridge Software Solutions Logo" 
+              style={{
+                height: '32px',
+                width: 'auto',
+                objectFit: 'contain'
+              }}
+            />
           </div>
 
           {/* Navigation Links */}

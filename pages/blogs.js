@@ -187,15 +187,26 @@ export default function BlogIndex() {
             alignItems: 'center'
           }}>
             {/* Logo */}
-            <Link href="/">
+            <Link 
+              href="/"
+              onClick={() => {
+                sessionStorage.setItem('fromBlog', 'true')
+              }}
+            >
               <div style={{
-                fontSize: '1.25rem',
-                fontWeight: '400',
-                letterSpacing: '0.05em',
-                color: '#000000',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center'
               }}>
-                Bridge
+                <img 
+                  src="/BRIDGE.png" 
+                  alt="Bridge Software Solutions Logo" 
+                  style={{
+                    height: '32px',
+                    width: 'auto',
+                    objectFit: 'contain'
+                  }}
+                />
               </div>
             </Link>
             
@@ -205,30 +216,44 @@ export default function BlogIndex() {
               gap: '3rem',
               alignItems: 'center'
             }}>
-              <Link href="/">
-                <button style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '0.875rem',
-                  fontWeight: '400',
-                  letterSpacing: '0.05em',
-                  color: '#666666',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit',
-                  position: 'relative'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = '#000000'
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = '#666666'
-                }}
+              {[
+                { name: 'Home', key: 'home', href: '/' },
+                { name: 'Services', key: 'services', href: '/#services' },
+                { name: 'Projects', key: 'projects', href: '/#projects' }
+              ].map((item) => (
+                <Link 
+                  key={item.key} 
+                  href={item.href}
+                  onClick={() => {
+                    if (item.key === 'home') {
+                      sessionStorage.setItem('fromBlog', 'true')
+                    }
+                  }}
                 >
-                  Home
-                </button>
-              </Link>
-              
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = '#000000'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = '#666666'
+                  }}
+                  >
+                    {item.name}
+                  </button>
+                </Link>
+              ))}
+
               {/* Blogs Link - Active */}
               <button style={{
                 background: 'none',
