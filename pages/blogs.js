@@ -240,13 +240,16 @@ export default function BlogIndex() {
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
                     fontFamily: 'inherit',
-                    position: 'relative'
+                    position: 'relative',
+                    transform: 'scale(1)'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.color = '#000000'
+                    e.target.style.transform = 'scale(1.1)'
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.color = '#666666'
+                    e.target.style.transform = 'scale(1)'
                   }}
                   >
                     {item.name}
@@ -265,20 +268,15 @@ export default function BlogIndex() {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 fontFamily: 'inherit',
-                position: 'relative'
+                transform: 'scale(1)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'scale(1.1)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'scale(1)'
               }}>
                 Blogs
-                {/* Active indicator */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-4px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '20px',
-                  height: '1px',
-                  background: '#000000',
-                  transition: 'width 0.3s ease'
-                }} />
               </button>
               
               {/* Contact Button */}

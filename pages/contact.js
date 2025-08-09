@@ -162,7 +162,8 @@ export default function Contact() {
         <title>Contact - Bridge Software Solutions</title>
         <meta name="description" content="Get in touch with Bridge Software Solutions. Let's bridge the gap between your vision and digital reality." />
         <meta name="keywords" content="contact, bridge software solutions, web development, digital agency, hyderabad" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/BRIDGE favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.ico" />
       </Head>
 
       {/* Navigation Bar */}
@@ -219,13 +220,16 @@ export default function Contact() {
                 color: '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                fontFamily: 'inherit'
+                fontFamily: 'inherit',
+                transform: 'scale(1)'
               }}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
+                e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = '#666666'
+                e.target.style.transform = 'scale(1)'
               }}>
                 Home
               </button>
@@ -241,13 +245,16 @@ export default function Contact() {
                 color: '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                fontFamily: 'inherit'
+                fontFamily: 'inherit',
+                transform: 'scale(1)'
               }}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
+                e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = '#666666'
+                e.target.style.transform = 'scale(1)'
               }}>
                 Services
               </button>
@@ -263,13 +270,16 @@ export default function Contact() {
                 color: '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                fontFamily: 'inherit'
+                fontFamily: 'inherit',
+                transform: 'scale(1)'
               }}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
+                e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = '#666666'
+                e.target.style.transform = 'scale(1)'
               }}>
                 Projects
               </button>
@@ -285,13 +295,16 @@ export default function Contact() {
                 color: '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                fontFamily: 'inherit'
+                fontFamily: 'inherit',
+                transform: 'scale(1)'
               }}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
+                e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = '#666666'
+                e.target.style.transform = 'scale(1)'
               }}>
                 Blogs
               </button>
