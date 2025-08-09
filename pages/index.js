@@ -164,17 +164,22 @@ export default function Home() {
   const lenisRef = useRef()
   const navRef = useRef()
 
-  // Check if user came from blog and skip slides
+  // Check if user came from blog and skip slides, or if slides have been shown this session
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const referrer = document.referrer
       const fromBlog = referrer.includes('/blogs') || sessionStorage.getItem('fromBlog')
+      const slidesShownThisSession = sessionStorage.getItem('slidesShown')
       
-      if (fromBlog) {
+      if (fromBlog || slidesShownThisSession) {
         setSkipSlides(true)
         setShowMainContent(true)
-        // Clear the flag after using it
+        // Clear the fromBlog flag after using it
         sessionStorage.removeItem('fromBlog')
+        // Ensure slidesShown flag is set if not already present
+        if (!slidesShownThisSession) {
+          sessionStorage.setItem('slidesShown', 'true')
+        }
       }
     }
   }, [])
@@ -341,6 +346,7 @@ export default function Home() {
     return () => clearInterval(testimonialInterval)
   }, [testimonials.length])
 
+  // Handle scroll navigation through intro slides
   useEffect(() => {
     const handleScroll = (e) => {
       if (!showMainContent && !isTransitioning) {
@@ -353,6 +359,8 @@ export default function Home() {
         } else if (e.deltaY < 0 && currentSlide > 0) {
           setCurrentSlide(prev => prev - 1)
         } else if (e.deltaY > 0 && currentSlide === heroStatements.length - 1) {
+          // Mark slides as shown for this session - they won't show again until browser session ends
+          sessionStorage.setItem('slidesShown', 'true')
           setShowMainContent(true)
         }
         
@@ -623,6 +631,7 @@ export default function Home() {
     }
   }
 
+  // Show intro slides only if main content isn't ready and slides haven't been skipped
   if (!showMainContent && !skipSlides) {
     return (
       <div style={{ 
@@ -995,7 +1004,7 @@ export default function Home() {
               src="/BRIDGE.png" 
               alt="Bridge Software Solutions Logo" 
               style={{
-                height: '32px',
+                height: '42px',
                 width: 'auto',
                 objectFit: 'contain'
               }}

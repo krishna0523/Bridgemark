@@ -195,7 +195,7 @@ export default function Contact() {
                 src="/BRIDGE.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
-                  height: '32px',
+                  height: '42px',
                   width: 'auto',
                   objectFit: 'contain'
                 }}
