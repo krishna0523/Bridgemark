@@ -8,7 +8,20 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function OrganicSEOContentTraffic() {
   const [readingProgress, setReadingProgress] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const contentRef = useRef()
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     const updateReadingProgress = () => {
@@ -134,7 +147,7 @@ export default function OrganicSEOContentTraffic() {
         left: 0,
         right: 0,
         zIndex: 999,
-        padding: '1rem 2rem',
+        padding: isMobile ? '1rem 1rem' : '1rem 2rem',
         background: 'rgba(255,255,255,0.95)',
         backdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(0,0,0,0.1)'
@@ -146,36 +159,229 @@ export default function OrganicSEOContentTraffic() {
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
+          {/* Logo */}
           <Link href="/">
             <div style={{
-              fontSize: '1.25rem',
-              fontWeight: '400',
-              letterSpacing: '0.05em',
-              color: '#000000',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center'
             }}>
-              Bridge
+              <img 
+                src="/BRIDGE.png" 
+                alt="Bridge Software Solutions Logo" 
+                style={{
+                  height: isMobile ? '32px' : '42px',
+                  width: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
             </div>
           </Link>
-
-          <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <Link href="/" style={{ color: '#666666', textDecoration: 'none', fontSize: '0.875rem' }}>Home</Link>
-            <Link href="/blogs" style={{ color: '#000000', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}>Blogs</Link>
-            <Link href="/contact" style={{ color: '#666666', textDecoration: 'none', fontSize: '0.875rem' }}>Contact</Link>
-          </div>
+          
+          {/* Navigation Links */}
+          {isMobile ? (
+            /* Mobile Navigation */
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flex: 1,
+              marginLeft: '1rem',
+              gap: 'clamp(0.25rem, 2vw, 1rem)'
+            }}>
+              
+              {/* Mobile Services */}
+              <Link href="/#services">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#333333',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#333333'
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Services
+                </button>
+              </Link>
+              
+              {/* Mobile Projects */}
+              <Link href="/#projects">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#333333',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#333333'
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Projects
+                </button>
+              </Link>
+              
+              {/* Mobile Blogs - Active */}
+              <Link href="/blogs">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  color: '#000000',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Blogs
+                </button>
+              </Link>
+              
+              {/* Mobile Contact Button */}
+              <Link href="/contact">
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)',
+                  borderRadius: '6px',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#0056b3'
+                  e.target.style.transform = 'translateY(-1px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#007bff'
+                  e.target.style.transform = 'translateY(0)'
+                }}
+                >
+                  Contact
+                </button>
+              </Link>
+            </div>
+          ) : (
+            /* Desktop Navigation */
+            <div style={{ 
+              display: 'flex', 
+              gap: '2rem', 
+              alignItems: 'center' 
+            }}>
+              <Link href="/" style={{ 
+                color: '#666666', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem',
+                transition: 'color 0.3s ease'
+              }}>Home</Link>
+              <Link href="/#services" style={{ 
+                color: '#666666', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem',
+                transition: 'color 0.3s ease'
+              }}>Services</Link>
+              <Link href="/#projects" style={{ 
+                color: '#666666', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem',
+                transition: 'color 0.3s ease'
+              }}>Projects</Link>
+              <Link href="/blogs" style={{ 
+                color: '#000000', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem', 
+                fontWeight: '500'
+              }}>Blogs</Link>
+              <Link href="/contact">
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#0056b3'
+                  e.target.style.transform = 'translateY(-1px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#007bff'
+                  e.target.style.transform = 'translateY(0)'
+                }}
+                >
+                  Contact
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </nav>
 
       {/* Hero Section */}
       <section style={{
-        paddingTop: '8rem',
-        paddingBottom: '4rem',
+        paddingTop: isMobile ? '6rem' : '8rem',
+        paddingBottom: isMobile ? '2rem' : '4rem',
         textAlign: 'center',
         background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)'
       }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 2rem' }}>
+        <div style={{ 
+          maxWidth: '800px', 
+          margin: '0 auto', 
+          padding: isMobile ? '0 1rem' : '0 2rem' 
+        }}>
           <div style={{
-            fontSize: '0.875rem',
+            fontSize: isMobile ? '0.75rem' : '0.875rem',
             fontWeight: '500',
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
@@ -186,20 +392,20 @@ export default function OrganicSEOContentTraffic() {
           </div>
           
           <h1 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+            fontSize: isMobile ? 'clamp(1.5rem, 8vw, 2.5rem)' : 'clamp(2rem, 5vw, 3.5rem)',
             fontWeight: '200',
             lineHeight: '1.2',
-            marginBottom: '2rem',
+            marginBottom: isMobile ? '1.5rem' : '2rem',
             color: '#000000'
           }}>
             Why Organic SEO Content is Your Best Investment for Long-Term Traffic
           </h1>
 
           <p style={{
-            fontSize: '1.25rem',
+            fontSize: isMobile ? '1rem' : '1.25rem',
             color: '#666666',
-            maxWidth: '600px',
-            margin: '0 auto 2rem',
+            maxWidth: isMobile ? '100%' : '600px',
+            margin: isMobile ? '0 auto 1.5rem' : '0 auto 2rem',
             fontWeight: '300'
           }}>
             Discover how quality, organic SEO content outperforms paid advertising and creates sustainable, long-term growth for your business.
@@ -209,9 +415,10 @@ export default function OrganicSEOContentTraffic() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: '2rem',
-            fontSize: '0.875rem',
-            color: '#666666'
+            gap: isMobile ? '1rem' : '2rem',
+            fontSize: isMobile ? '0.75rem' : '0.875rem',
+            color: '#666666',
+            flexWrap: 'wrap'
           }}>
             <span>Digital Marketing Team</span>
             <span>•</span>
@@ -222,131 +429,205 @@ export default function OrganicSEOContentTraffic() {
         </div>
       </section>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+      <div style={{ 
+        maxWidth: '1200px', 
+        margin: '0 auto', 
+        padding: isMobile ? '0 1rem' : '0 2rem' 
+      }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(250px, 1fr) 3fr',
-          gap: '4rem',
+          gridTemplateColumns: isMobile ? '1fr' : 'minmax(250px, 1fr) 3fr',
+          gap: isMobile ? '2rem' : '4rem',
           alignItems: 'start'
         }}>
           
-          {/* Table of Contents */}
-          <aside style={{
-            position: 'sticky',
-            top: '120px',
-            background: '#f8f9fa',
-            borderRadius: '12px',
-            padding: '2rem',
-            border: '1px solid #e9ecef'
-          }}>
-            <h3 style={{
-              fontSize: '1.125rem',
-              fontWeight: '500',
-              marginBottom: '1.5rem',
-              color: '#000000'
+          {/* Table of Contents - Hidden on mobile */}
+          {!isMobile && (
+            <aside style={{
+              position: 'sticky',
+              top: '120px',
+              background: '#f8f9fa',
+              borderRadius: '12px',
+              padding: '2rem',
+              border: '1px solid #e9ecef'
             }}>
-              Table of Contents
-            </h3>
-            
-            <nav>
-              {tableOfContents.map((item, index) => (
-                <a
-                  key={index}
-                  href={item.anchor}
-                  style={{
-                    display: 'block',
-                    padding: '0.5rem 0',
-                    color: '#666666',
-                    textDecoration: 'none',
-                    fontSize: '0.875rem',
-                    borderBottom: '1px solid #e9ecef',
-                    transition: 'color 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => e.target.style.color = '#000000'}
-                  onMouseLeave={(e) => e.target.style.color = '#666666'}
-                >
-                  {item.title}
-                </a>
-              ))}
-            </nav>
-          </aside>
+              <h3 style={{
+                fontSize: '1.125rem',
+                fontWeight: '500',
+                marginBottom: '1.5rem',
+                color: '#000000'
+              }}>
+                Table of Contents
+              </h3>
+              
+              <nav>
+                {tableOfContents.map((item, index) => (
+                  <a
+                    key={index}
+                    href={item.anchor}
+                    style={{
+                      display: 'block',
+                      padding: '0.5rem 0',
+                      color: '#666666',
+                      textDecoration: 'none',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e9ecef',
+                      transition: 'color 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = '#000000'}
+                    onMouseLeave={(e) => e.target.style.color = '#666666'}
+                  >
+                    {item.title}
+                  </a>
+                ))}
+              </nav>
+            </aside>
+          )}
 
           {/* Main Content */}
-          <article ref={contentRef} className="blog-content" style={{ paddingBottom: '4rem' }}>
+          <article ref={contentRef} className="blog-content" style={{ 
+            paddingBottom: isMobile ? '2rem' : '4rem' 
+          }}>
             
-            <div className="blog-section" style={{ marginBottom: '3rem' }}>
-              <p style={{ fontSize: '1.125rem', color: '#333333', marginBottom: '2rem' }}>
+            <div className="blog-section" style={{ marginBottom: isMobile ? '2rem' : '3rem' }}>
+              <p style={{ 
+                fontSize: isMobile ? '1rem' : '1.125rem', 
+                color: '#333333', 
+                marginBottom: isMobile ? '1.5rem' : '2rem',
+                lineHeight: '1.6'
+              }}>
                 In today's digital landscape, businesses are constantly torn between quick wins through paid advertising and the long-term benefits of organic content. While paid ads can deliver immediate results, organic SEO content remains the most valuable investment for sustainable growth and lasting success.
               </p>
             </div>
 
-            <section id="organic-power" className="blog-section" style={{ marginBottom: '4rem' }}>
+            <section id="organic-power" className="blog-section" style={{ 
+              marginBottom: isMobile ? '2.5rem' : '4rem' 
+            }}>
               <h2 style={{
-                fontSize: '2rem',
+                fontSize: isMobile ? '1.5rem' : '2rem',
                 fontWeight: '300',
                 marginBottom: '1.5rem',
-                color: '#000000'
+                color: '#000000',
+                lineHeight: '1.3'
               }}>
                 The Power of Organic SEO Content
               </h2>
               
-              <p style={{ marginBottom: '1.5rem', color: '#444444' }}>
+              <p style={{ 
+                marginBottom: '1.5rem', 
+                color: '#444444',
+                fontSize: isMobile ? '0.95rem' : '1rem',
+                lineHeight: '1.6'
+              }}>
                 Organic SEO content is content created specifically to rank well in search engines without paying for placement. Unlike paid advertisements, organic content continues to drive traffic long after publication, creating a compound effect that grows over time.
               </p>
 
               <div style={{
                 background: '#f1f3f4',
                 borderLeft: '4px solid #000000',
-                padding: '1.5rem',
+                padding: isMobile ? '1rem' : '1.5rem',
                 borderRadius: '0 8px 8px 0',
                 marginBottom: '2rem'
               }}>
-                <p style={{ margin: 0, fontStyle: 'italic', color: '#333333' }}>
+                <p style={{ 
+                  margin: 0, 
+                  fontStyle: 'italic', 
+                  color: '#333333',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  lineHeight: '1.5'
+                }}>
                   <strong>Key Insight:</strong> A well-optimized blog post written today can continue attracting visitors for years, making organic content one of the highest ROI marketing investments available.
                 </p>
               </div>
 
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '400', marginBottom: '1rem', color: '#000000' }}>
+              <h3 style={{ 
+                fontSize: isMobile ? '1.25rem' : '1.5rem', 
+                fontWeight: '400', 
+                marginBottom: '1rem', 
+                color: '#000000',
+                lineHeight: '1.3'
+              }}>
                 Benefits of Organic Content:
               </h3>
 
-              <ul style={{ marginBottom: '2rem', paddingLeft: '2rem', color: '#444444' }}>
-                <li style={{ marginBottom: '0.5rem' }}><strong>Cost-effective:</strong> No ongoing ad spend required</li>
-                <li style={{ marginBottom: '0.5rem' }}><strong>Builds authority:</strong> Establishes your business as an industry expert</li>
-                <li style={{ marginBottom: '0.5rem' }}><strong>Long-term results:</strong> Content continues working 24/7</li>
-                <li style={{ marginBottom: '0.5rem' }}><strong>Trust building:</strong> Users trust organic results more than ads</li>
-                <li style={{ marginBottom: '0.5rem' }}><strong>Compound growth:</strong> Each piece of content adds to your overall authority</li>
+              <ul style={{ 
+                marginBottom: '2rem', 
+                paddingLeft: isMobile ? '1.5rem' : '2rem', 
+                color: '#444444'
+              }}>
+                <li style={{ 
+                  marginBottom: '0.75rem',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  lineHeight: '1.5'
+                }}><strong>Cost-effective:</strong> No ongoing ad spend required</li>
+                <li style={{ 
+                  marginBottom: '0.75rem',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  lineHeight: '1.5'
+                }}><strong>Builds authority:</strong> Establishes your business as an industry expert</li>
+                <li style={{ 
+                  marginBottom: '0.75rem',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  lineHeight: '1.5'
+                }}><strong>Long-term results:</strong> Content continues working 24/7</li>
+                <li style={{ 
+                  marginBottom: '0.75rem',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  lineHeight: '1.5'
+                }}><strong>Trust building:</strong> Users trust organic results more than ads</li>
+                <li style={{ 
+                  marginBottom: '0.75rem',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  lineHeight: '1.5'
+                }}><strong>Compound growth:</strong> Each piece of content adds to your overall authority</li>
               </ul>
             </section>
 
-            <section id="paid-limitations" className="blog-section" style={{ marginBottom: '4rem' }}>
+            <section id="paid-limitations" className="blog-section" style={{ 
+              marginBottom: isMobile ? '2.5rem' : '4rem' 
+            }}>
               <h2 style={{
-                fontSize: '2rem',
+                fontSize: isMobile ? '1.5rem' : '2rem',
                 fontWeight: '300',
                 marginBottom: '1.5rem',
-                color: '#000000'
+                color: '#000000',
+                lineHeight: '1.3'
               }}>
                 Why Paid Ads Fall Short Long-Term
               </h2>
 
-              <p style={{ marginBottom: '1.5rem', color: '#444444' }}>
+              <p style={{ 
+                marginBottom: '1.5rem', 
+                color: '#444444',
+                fontSize: isMobile ? '0.95rem' : '1rem',
+                lineHeight: '1.6'
+              }}>
                 While paid advertising has its place in a comprehensive marketing strategy, relying solely on paid traffic creates several challenges:
               </p>
 
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '1.5rem',
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: isMobile ? '1rem' : '1.5rem',
                 marginBottom: '2rem'
               }}>
                 <div style={{
                   background: '#ffffff',
                   border: '1px solid #e9ecef',
                   borderRadius: '8px',
-                  padding: '1.5rem'
+                  padding: isMobile ? '1rem' : '1.5rem'
                 }}>
-                  <h4 style={{ color: '#000000', marginBottom: '1rem' }}>Ongoing Costs</h4>
-                  <p style={{ color: '#666666', margin: 0, fontSize: '0.875rem' }}>
+                  <h4 style={{ 
+                    color: '#000000', 
+                    marginBottom: '1rem',
+                    fontSize: isMobile ? '1rem' : '1.125rem'
+                  }}>Ongoing Costs</h4>
+                  <p style={{ 
+                    color: '#666666', 
+                    margin: 0, 
+                    fontSize: isMobile ? '0.8rem' : '0.875rem',
+                    lineHeight: '1.5'
+                  }}>
                     Traffic stops the moment you stop paying. This creates an unsustainable dependency on advertising budget.
                   </p>
                 </div>
@@ -355,10 +636,19 @@ export default function OrganicSEOContentTraffic() {
                   background: '#ffffff',
                   border: '1px solid #e9ecef',
                   borderRadius: '8px',
-                  padding: '1.5rem'
+                  padding: isMobile ? '1rem' : '1.5rem'
                 }}>
-                  <h4 style={{ color: '#000000', marginBottom: '1rem' }}>Rising Competition</h4>
-                  <p style={{ color: '#666666', margin: 0, fontSize: '0.875rem' }}>
+                  <h4 style={{ 
+                    color: '#000000', 
+                    marginBottom: '1rem',
+                    fontSize: isMobile ? '1rem' : '1.125rem'
+                  }}>Rising Competition</h4>
+                  <p style={{ 
+                    color: '#666666', 
+                    margin: 0, 
+                    fontSize: isMobile ? '0.8rem' : '0.875rem',
+                    lineHeight: '1.5'
+                  }}>
                     As more businesses compete for the same keywords, advertising costs continue to increase over time.
                   </p>
                 </div>
@@ -367,10 +657,19 @@ export default function OrganicSEOContentTraffic() {
                   background: '#ffffff',
                   border: '1px solid #e9ecef',
                   borderRadius: '8px',
-                  padding: '1.5rem'
+                  padding: isMobile ? '1rem' : '1.5rem'
                 }}>
-                  <h4 style={{ color: '#000000', marginBottom: '1rem' }}>Trust Issues</h4>
-                  <p style={{ color: '#666666', margin: 0, fontSize: '0.875rem' }}>
+                  <h4 style={{ 
+                    color: '#000000', 
+                    marginBottom: '1rem',
+                    fontSize: isMobile ? '1rem' : '1.125rem'
+                  }}>Trust Issues</h4>
+                  <p style={{ 
+                    color: '#666666', 
+                    margin: 0, 
+                    fontSize: isMobile ? '0.8rem' : '0.875rem',
+                    lineHeight: '1.5'
+                  }}>
                     Studies show that 70% of users prefer clicking on organic results rather than paid advertisements.
                   </p>
                 </div>
@@ -380,47 +679,49 @@ export default function OrganicSEOContentTraffic() {
             <section style={{
               background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
               borderRadius: '12px',
-              padding: '3rem',
+              padding: isMobile ? '2rem 1rem' : '3rem',
               textAlign: 'center',
-              marginBottom: '3rem'
+              marginBottom: isMobile ? '2rem' : '3rem'
             }}>
               <h2 style={{
-                fontSize: '1.75rem',
+                fontSize: isMobile ? '1.4rem' : '1.75rem',
                 fontWeight: '400',
                 marginBottom: '1rem',
-                color: '#000000'
+                color: '#000000',
+                lineHeight: '1.3'
               }}>
                 Ready to Build Your Organic Traffic?
               </h2>
               
               <p style={{
-                fontSize: '1.125rem',
+                fontSize: isMobile ? '1rem' : '1.125rem',
                 color: '#666666',
-                marginBottom: '2rem',
+                marginBottom: isMobile ? '1.5rem' : '2rem',
                 maxWidth: '600px',
-                margin: '0 auto 2rem'
+                margin: isMobile ? '0 auto 1.5rem' : '0 auto 2rem',
+                lineHeight: '1.6'
               }}>
                 Let Bridge Software Solutions help you create a comprehensive SEO content strategy that drives long-term, sustainable growth for your business.
               </p>
 
               <Link href="/contact">
                 <button style={{
-                  background: '#000000',
+                  background: '#007bff',
                   color: '#ffffff',
                   border: 'none',
-                  padding: '1rem 2rem',
+                  padding: isMobile ? '0.875rem 1.5rem' : '1rem 2rem',
                   borderRadius: '8px',
-                  fontSize: '1rem',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
                   fontWeight: '500',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.background = '#333333'
+                  e.target.style.background = '#0056b3'
                   e.target.style.transform = 'translateY(-2px)'
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.background = '#000000'
+                  e.target.style.background = '#007bff'
                   e.target.style.transform = 'translateY(0)'
                 }}>
                   Start Your SEO Strategy
@@ -431,34 +732,44 @@ export default function OrganicSEOContentTraffic() {
             {/* Article Footer */}
             <footer style={{
               borderTop: '1px solid #e9ecef',
-              paddingTop: '2rem',
-              marginTop: '3rem'
+              paddingTop: isMobile ? '1.5rem' : '2rem',
+              marginTop: isMobile ? '2rem' : '3rem'
             }}>
               <div style={{
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: isMobile ? 'center' : 'space-between',
                 alignItems: 'center',
+                flexDirection: isMobile ? 'column' : 'row',
                 flexWrap: 'wrap',
-                gap: '1rem'
+                gap: isMobile ? '1.5rem' : '1rem'
               }}>
-                <div>
-                  <p style={{ margin: 0, color: '#666666', fontSize: '0.875rem' }}>
+                <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
+                  <p style={{ 
+                    margin: 0, 
+                    color: '#666666', 
+                    fontSize: isMobile ? '0.8rem' : '0.875rem' 
+                  }}>
                     Written by <strong>Digital Marketing Team</strong> at Bridge Software Solutions
                   </p>
                 </div>
                 
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  gap: isMobile ? '0.5rem' : '1rem',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  textAlign: 'center'
+                }}>
                   <Link href="/blogs/complete-seo-guide-hyderabad" style={{
                     color: '#666666',
                     textDecoration: 'none',
-                    fontSize: '0.875rem'
+                    fontSize: isMobile ? '0.8rem' : '0.875rem'
                   }}>
                     ← Previous: Complete SEO Guide
                   </Link>
                   <Link href="/blogs/ai-advancements-2024-business" style={{
                     color: '#666666',
                     textDecoration: 'none',
-                    fontSize: '0.875rem'
+                    fontSize: isMobile ? '0.8rem' : '0.875rem'
                   }}>
                     Next: AI in Business →
                   </Link>

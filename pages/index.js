@@ -1069,200 +1069,319 @@ export default function Home() {
           right: 0,
           zIndex: 1000,
           padding: '1rem 2rem',
-          background: isMobile ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.1)',
-          backdropFilter: isMobile ? 'blur(20px)' : 'blur(20px)',
-          borderBottom: '1px solid rgba(0,0,0,0.1)',
-          transform: 'translateY(0)',
+          background: isMobile ? '#ffffff' : (navVisible ? '#ffffff' : 'transparent'),
+          backdropFilter: 'none',
+          borderBottom: isMobile ? '1px solid rgba(0,0,0,0.1)' : (navVisible ? '1px solid rgba(0,0,0,0.1)' : 'none'),
+          transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
           transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
-          opacity: 1
+          opacity: navVisible ? 1 : 0
         }}
       >
-        <div style={{
-          maxWidth: isMobile ? '100%' : '1200px',
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: isMobile ? 'space-between' : 'space-between',
-          alignItems: 'center',
-          width: '100%'
-        }}>
-          {/* Logo */}
-          <div 
-            style={{
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              flexShrink: 0
-            }}
-            onClick={() => scrollToSection(heroSectionRef)}
-          >
-            <img 
-              src="/BRIDGE.png" 
-              alt="Bridge Software Solutions Logo" 
-              style={{
-                height: isMobile ? '32px' : '42px',
-                width: 'auto',
-                objectFit: 'contain'
-              }}
-            />
-          </div>
-
-          {/* All Navigation Items - Uniformly Distributed */}
+        {isMobile ? (
+          // Mobile Navigation Layout
           <div style={{
+            maxWidth: '100%',
+            margin: '0 auto',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            flex: 1,
-            marginLeft: isMobile ? '1rem' : '2rem',
-            gap: isMobile ? 'clamp(0.25rem, 2vw, 1rem)' : '2rem'
+            width: '100%'
           }}>
-            {/* Home */}
-            <button
-              onClick={() => scrollToSection(heroSectionRef)}
+            {/* Mobile Logo */}
+            <div 
               style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                flexShrink: 0
+              }}
+              onClick={() => scrollToSection(heroSectionRef)}
+            >
+              <img 
+                src="/BRIDGE.png" 
+                alt="Bridge Software Solutions Logo" 
+                style={{
+                  height: '32px',
+                  width: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
+            </div>
+
+            {/* Mobile Navigation */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flex: 1,
+              marginLeft: '1rem',
+              gap: 'clamp(0.25rem, 2vw, 1rem)'
+            }}>
+
+              {/* Mobile Services */}
+              <button
+                onClick={() => scrollToSection(servicesRef)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+              >
+                Services
+              </button>
+
+              {/* Mobile Projects */}
+              <button
+                onClick={() => scrollToSection(projectsRef)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+              >
+                Projects
+              </button>
+
+              {/* Mobile Blogs */}
+              <Link href="/blogs">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}>
+                  Blogs
+                </button>
+              </Link>
+
+              {/* Mobile Contact Button */}
+              <Link href="/contact">
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)',
+                  borderRadius: '6px',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#0056b3'
+                  e.target.style.transform = 'translateY(-1px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#007bff'
+                  e.target.style.transform = 'translateY(0)'
+                }}>
+                  Contact
+                </button>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          // Desktop Navigation Layout - Copy of Blog Navigation
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            {/* Desktop Logo */}
+            <div 
+              style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              onClick={() => scrollToSection(heroSectionRef)}
+            >
+              <img 
+                src="/BRIDGE.png" 
+                alt="Bridge Software Solutions Logo" 
+                style={{
+                  height: '42px',
+                  width: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
+            </div>
+            
+            {/* Desktop Navigation Links */}
+            <div style={{
+              display: 'flex',
+              gap: '2rem',
+              alignItems: 'center'
+            }}>
+              {/* Home Button - Active */}
+              <button style={{
                 background: 'none',
                 border: 'none',
-                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
+                fontSize: '0.875rem',
                 fontWeight: activeSection === 'home' ? '500' : '400',
                 letterSpacing: '0.05em',
-                color: activeSection === 'home' ? '#000000' : '#333333',
+                color: activeSection === 'home' ? '#000000' : '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 fontFamily: 'inherit',
-                whiteSpace: 'nowrap',
-                flex: '1',
-                textAlign: 'center'
+                position: 'relative',
+                transform: 'scale(1)'
               }}
+              onClick={() => scrollToSection(heroSectionRef)}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.05)'
+                e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = activeSection === 'home' ? '#000000' : '#666666'
                 e.target.style.transform = 'scale(1)'
-              }}
-            >
-              Home
-            </button>
+              }}>
+                Home
+              </button>
 
-            {/* Services */}
-            <button
-              onClick={() => scrollToSection(servicesRef)}
-              style={{
+              {/* Services Button */}
+              <button style={{
                 background: 'none',
                 border: 'none',
-                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
+                fontSize: '0.875rem',
                 fontWeight: activeSection === 'services' ? '500' : '400',
                 letterSpacing: '0.05em',
-                color: activeSection === 'services' ? '#000000' : '#333333',
+                color: activeSection === 'services' ? '#000000' : '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 fontFamily: 'inherit',
-                whiteSpace: 'nowrap',
-                flex: '1',
-                textAlign: 'center'
+                position: 'relative',
+                transform: 'scale(1)'
               }}
+              onClick={() => scrollToSection(servicesRef)}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.05)'
+                e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = activeSection === 'services' ? '#000000' : '#666666'
                 e.target.style.transform = 'scale(1)'
-              }}
-            >
-              Services
-            </button>
+              }}>
+                Services
+              </button>
 
-            {/* Projects */}
-            <button
-              onClick={() => scrollToSection(projectsRef)}
-              style={{
+              {/* Projects Button */}
+              <button style={{
                 background: 'none',
                 border: 'none',
-                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
+                fontSize: '0.875rem',
                 fontWeight: activeSection === 'projects' ? '500' : '400',
                 letterSpacing: '0.05em',
-                color: activeSection === 'projects' ? '#000000' : '#333333',
+                color: activeSection === 'projects' ? '#000000' : '#666666',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 fontFamily: 'inherit',
-                whiteSpace: 'nowrap',
-                flex: '1',
-                textAlign: 'center'
+                position: 'relative',
+                transform: 'scale(1)'
               }}
+              onClick={() => scrollToSection(projectsRef)}
               onMouseEnter={(e) => {
                 e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.05)'
+                e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.color = activeSection === 'projects' ? '#000000' : '#666666'
                 e.target.style.transform = 'scale(1)'
-              }}
-            >
-              Projects
-            </button>
-
-            {/* Blogs */}
-            <Link href="/blogs">
-              <button style={{
-                background: 'none',
-                border: 'none',
-                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
-                fontWeight: '400',
-                letterSpacing: '0.05em',
-                color: '#666666',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit',
-                whiteSpace: 'nowrap',
-                flex: '1',
-                textAlign: 'center'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.05)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = '#666666'
-                e.target.style.transform = 'scale(1)'
-              }}
-              >
-                Blogs
+              }}>
+                Projects
               </button>
-            </Link>
 
-            {/* Contact Button */}
-            <Link href="/contact">
-              <button style={{
-                background: '#000000',
-                color: '#ffffff',
-                border: 'none',
-                padding: isMobile ? 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)' : '0.75rem 1.5rem',
-                borderRadius: '6px',
-                fontSize: isMobile ? 'clamp(0.65rem, 3vw, 0.875rem)' : '0.875rem',
-                fontWeight: '500',
-                letterSpacing: '0.05em',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit',
-                whiteSpace: 'nowrap',
-                flex: '1',
-                textAlign: 'center'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = '#333333'
-                e.target.style.transform = 'translateY(-1px)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = '#000000'
-                e.target.style.transform = 'translateY(0)'
-              }}
-              >
-                Contact
-              </button>
-            </Link>
+              {/* Blogs Link */}
+              <Link href="/blogs">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  position: 'relative',
+                  transform: 'scale(1)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#666666'
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Blogs
+                </button>
+              </Link>
+              
+              {/* Contact Button */}
+              <Link href="/contact">
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#0056b3'
+                  e.target.style.transform = 'translateY(-1px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#007bff'
+                  e.target.style.transform = 'translateY(0)'
+                }}
+                >
+                  Contact
+                </button>
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && isMobile && (
@@ -1406,34 +1525,145 @@ export default function Home() {
             <div style={{
               width: '100%',
               height: '100%',
-              backgroundImage: 'url(/mobile bridge.png)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              position: 'relative'
+              background: '#ffffff',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
-              {/* Light overlay for text contrast - reduced opacity */}
+              {/* Mobile Hero Content */}
+              <div style={{
+                textAlign: 'center',
+                padding: '2rem 1.5rem',
+                zIndex: 3,
+                maxWidth: '100%',
+                width: '100%'
+              }}>
+                {/* Main Title */}
+                <h1 style={{
+                  fontSize: 'clamp(2.2rem, 10vw, 3.8rem)',
+                  fontWeight: '100',
+                  lineHeight: '1.0',
+                  letterSpacing: '-0.02em',
+                  margin: 0,
+                  marginBottom: '1rem',
+                  color: '#000000'
+                }}>
+                  Bridge Software<br />Solutions
+                </h1>
+
+                {/* Subtitle */}
+                <div style={{
+                  fontSize: 'clamp(0.7rem, 3vw, 0.9rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
+                  marginBottom: '2rem',
+                  color: '#666666'
+                }}>
+                  Digital Craftsmanship Studio
+                </div>
+
+                {/* Divider */}
+                <div style={{
+                  width: '60px',
+                  height: '1px',
+                  background: '#000000',
+                  margin: '0 auto 2rem auto'
+                }} />
+
+                {/* Description */}
+                <p style={{
+                  fontSize: 'clamp(0.95rem, 4.5vw, 1.15rem)',
+                  fontWeight: '300',
+                  lineHeight: '1.6',
+                  color: '#333333',
+                  margin: '0 auto',
+                  marginBottom: '3rem',
+                  maxWidth: '320px'
+                }}>
+                  We create digital experiences that bridge the gap between vision and reality. 
+                  Minimalist design meets powerful functionality.
+                </p>
+
+                {/* Call to Action Button */}
+                <Link href="/contact">
+                  <button style={{
+                    background: '#000000',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '1rem 2rem',
+                    borderRadius: '0',
+                    fontSize: 'clamp(0.85rem, 3.5vw, 1rem)',
+                    fontWeight: '500',
+                    letterSpacing: '0.1em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    textTransform: 'uppercase',
+                    transform: 'translateY(0)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#333333'
+                    e.target.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#000000'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                  onTouchStart={(e) => {
+                    e.target.style.transform = 'scale(0.98)'
+                    e.target.style.background = '#333333'
+                  }}
+                  onTouchEnd={(e) => {
+                    setTimeout(() => {
+                      e.target.style.transform = 'scale(1)'
+                      e.target.style.background = '#000000'
+                    }, 150)
+                  }}
+                  >
+                    Start Your Project
+                  </button>
+                </Link>
+              </div>
+
+              {/* Decorative Element */}
               <div style={{
                 position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0, 0, 0, 0.1)',
+                bottom: '2rem',
+                right: '1.5rem',
+                width: '40px',
+                height: '40px',
+                border: '1px solid #000000',
+                opacity: 0.1,
+                zIndex: 1
+              }} />
+              
+              <div style={{
+                position: 'absolute',
+                top: '2rem',
+                left: '1.5rem',
+                width: '20px',
+                height: '20px',
+                backgroundColor: '#000000',
+                opacity: 0.05,
                 zIndex: 1
               }} />
             </div>
           )}
         </div>
 
-        {/* Progress Indicator */}
+        {/* Progress Indicator - Desktop Only */}
+        {!isMobile && (
         <div style={{
           position: 'absolute',
-          bottom: isMobile ? '1rem' : '2rem',
-          left: isMobile ? '1rem' : '2rem',
+          bottom: '2rem',
+          left: '2rem',
           zIndex: 4,
           color: '#ffffff',
-          fontSize: isMobile ? '0.75rem' : '0.875rem',
+          fontSize: '0.875rem',
           fontWeight: '300',
           opacity: showFullText ? 0 : 0.8,
           transition: 'opacity 1s ease'
@@ -1462,8 +1692,10 @@ export default function Home() {
             </>
           )}
         </div>
+        )}
 
-        {/* Hero Text - Staggered Reveal */}
+        {/* Hero Text - Staggered Reveal - Desktop Only */}
+        {!isMobile && (
         <div style={{ 
           position: 'absolute',
           top: '50%',
@@ -1583,6 +1815,7 @@ export default function Home() {
             )}
           </div>
         </div>
+        )}
 
         {/* Subtle Overlay for Text Readability - Removed as requested */}
       </section>
@@ -2273,6 +2506,214 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Blog Posts Section */}
+      <section style={{
+        padding: isMobile ? '5rem 1rem' : '8rem 2rem',
+        background: '#ffffff',
+        color: '#000000'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{
+            textAlign: 'center',
+            marginBottom: isMobile ? '3rem' : '6rem'
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: '400',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              opacity: 0.6,
+              marginBottom: '2rem'
+            }}>
+              Latest Insights
+            </div>
+            <h2 style={{
+              fontSize: isMobile ? 'clamp(1.8rem, 6vw, 2.5rem)' : 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: '100',
+              margin: 0,
+              marginBottom: '1.5rem'
+            }}>
+              From Our Blog
+            </h2>
+            <p style={{
+              fontSize: isMobile ? '1rem' : '1.125rem',
+              fontWeight: '300',
+              color: '#666666',
+              maxWidth: '600px',
+              margin: '0 auto'
+            }}>
+              Expert insights on web development, SEO, digital marketing, and technology trends
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: isMobile ? '2rem' : '3rem'
+          }}>
+            {[
+              {
+                id: 'organic-seo-content-traffic',
+                title: 'Why Organic SEO Content is Your Best Investment for Long-Term Traffic',
+                excerpt: 'Discover how creating quality, organic SEO content can drive sustainable traffic to your website and help your Hyderabad business dominate search rankings.',
+                author: 'Digital Marketing Team',
+                date: '2024-12-15',
+                readTime: '7 min read',
+                category: 'SEO'
+              },
+              {
+                id: 'ai-advancements-2024-business',
+                title: 'How AI Advancements in 2024 Are Transforming Small Business Marketing',
+                excerpt: 'From ChatGPT to automated customer service, learn how the latest AI tools can help your business compete with larger companies.',
+                author: 'Tech Innovation Team',
+                date: '2024-12-10',
+                readTime: '6 min read',
+                category: 'Technology'
+              },
+              {
+                id: 'complete-seo-guide-hyderabad',
+                title: 'Complete SEO Guide for Hyderabad Businesses in 2024',
+                excerpt: 'Master local SEO strategies specifically designed for Hyderabad businesses to attract more customers from your local area.',
+                author: 'SEO Experts',
+                date: '2024-11-20',
+                readTime: '10 min read',
+                category: 'Local SEO'
+              }
+            ].slice(0, isMobile ? 2 : 3).map((post, index) => (
+              <article 
+                key={post.id}
+                style={{
+                  border: '1px solid rgba(0,0,0,0.1)',
+                  borderRadius: '12px',
+                  padding: isMobile ? '1.5rem' : '2rem',
+                  backgroundColor: '#ffffff',
+                  transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)'
+                  e.currentTarget.style.borderColor = 'rgba(0,0,0,0.2)'
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.borderColor = 'rgba(0,0,0,0.1)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+                onClick={() => window.open(`/blogs/${post.id}`, '_blank')}
+              >
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <span style={{
+                    backgroundColor: '#f8f9fa',
+                    color: '#000000',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '1rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '500',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em'
+                  }}>
+                    {post.category}
+                  </span>
+                </div>
+
+                <h3 style={{
+                  fontSize: isMobile ? '1.25rem' : '1.4rem',
+                  fontWeight: '200',
+                  color: '#000000',
+                  marginBottom: '1rem',
+                  lineHeight: '1.3',
+                  margin: 0,
+                  flexGrow: 1
+                }}>
+                  {post.title}
+                </h3>
+
+                <p style={{
+                  color: '#666666',
+                  marginBottom: '1.5rem',
+                  lineHeight: '1.6',
+                  fontWeight: '300',
+                  fontSize: isMobile ? '0.9rem' : '1rem',
+                  flexGrow: 1
+                }}>
+                  {post.excerpt}
+                </p>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  fontSize: '0.875rem',
+                  color: '#666666',
+                  marginBottom: '1.5rem',
+                  flexWrap: 'wrap',
+                  gap: '0.5rem'
+                }}>
+                  <span>{post.author}</span>
+                  <span>•</span>
+                  <span>{new Date(post.date).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  })}</span>
+                  <span>•</span>
+                  <span>{post.readTime}</span>
+                </div>
+
+                <div style={{
+                  color: '#000000',
+                  fontWeight: '400',
+                  fontSize: '0.875rem',
+                  letterSpacing: '0.05em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  Read Article 
+                  <span style={{
+                    transition: 'transform 0.3s ease'
+                  }}>→</span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* View All Blogs Button */}
+          <div style={{
+            textAlign: 'center',
+            marginTop: isMobile ? '3rem' : '4rem'
+          }}>
+            <Link href="/blogs">
+              <button style={{
+                background: '#000000',
+                color: '#ffffff',
+                border: 'none',
+                padding: isMobile ? '1rem 2rem' : '1.25rem 3rem',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                letterSpacing: '0.05em',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: 'inherit'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#333333'
+                e.target.style.transform = 'translateY(-2px)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = '#000000'
+                e.target.style.transform = 'translateY(0)'
+              }}>
+                View All Blog Posts
+              </button>
+            </Link>
           </div>
         </div>
       </section>

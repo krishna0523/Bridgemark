@@ -11,10 +11,23 @@ gsap.registerPlugin(ScrollTrigger)
 export default function BlogIndex() {
   const [navVisible, setNavVisible] = useState(true)
   const [activeSection, setActiveSection] = useState('blogs')
+  const [isMobile, setIsMobile] = useState(false)
   const lenisRef = useRef()
   const heroRef = useRef()
   const blogGridRef = useRef()
   const navRef = useRef()
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Scroll to section function
   const scrollToSection = (ref) => {
@@ -170,9 +183,9 @@ export default function BlogIndex() {
             left: 0,
             right: 0,
             zIndex: 1000,
-            padding: '1rem 2rem',
-            background: navVisible ? 'rgba(255,255,255,0.95)' : 'transparent',
-            backdropFilter: navVisible ? 'blur(20px)' : 'none',
+            padding: isMobile ? '1rem 1rem' : '1rem 2rem',
+            background: navVisible ? '#ffffff' : 'transparent',
+            backdropFilter: navVisible ? 'none' : 'none',
             borderBottom: navVisible ? '1px solid rgba(0,0,0,0.1)' : 'none',
             transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
             transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
@@ -202,7 +215,7 @@ export default function BlogIndex() {
                   src="/BRIDGE.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
-                    height: '42px',
+                    height: isMobile ? '32px' : '42px',
                     width: 'auto',
                     objectFit: 'contain'
                   }}
@@ -211,102 +224,230 @@ export default function BlogIndex() {
             </Link>
             
             {/* Navigation Links */}
-            <div style={{
-              display: 'flex',
-              gap: '3rem',
-              alignItems: 'center'
-            }}>
-              {[
-                { name: 'Home', key: 'home', href: '/' },
-                { name: 'Services', key: 'services', href: '/#services' },
-                { name: 'Projects', key: 'projects', href: '/#projects' }
-              ].map((item) => (
-                <Link 
-                  key={item.key} 
-                  href={item.href}
-                  onClick={() => {
-                    if (item.key === 'home') {
-                      sessionStorage.setItem('fromBlog', 'true')
-                    }
-                  }}
-                >
+            {isMobile ? (
+              /* Mobile Navigation */
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flex: 1,
+                marginLeft: '1rem',
+                gap: 'clamp(0.25rem, 2vw, 1rem)'
+              }}>
+                
+                {/* Mobile Services */}
+                <Link href="/#services" onClick={() => sessionStorage.setItem('fromBlog', 'true')}>
                   <button style={{
                     background: 'none',
                     border: 'none',
-                    fontSize: '0.875rem',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
                     fontWeight: '400',
                     letterSpacing: '0.05em',
-                    color: '#666666',
+                    color: '#333333',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
                     fontFamily: 'inherit',
-                    position: 'relative',
-                    transform: 'scale(1)'
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.color = '#000000'
-                    e.target.style.transform = 'scale(1.1)'
+                    e.target.style.transform = 'scale(1.05)'
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.color = '#666666'
+                    e.target.style.color = '#333333'
                     e.target.style.transform = 'scale(1)'
                   }}
                   >
-                    {item.name}
+                    Services
                   </button>
                 </Link>
-              ))}
-
-              {/* Blogs Link - Active */}
-              <button style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                letterSpacing: '0.05em',
-                color: '#000000',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit',
-                transform: 'scale(1)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'scale(1.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'scale(1)'
-              }}>
-                Blogs
-              </button>
-              
-              {/* Contact Button */}
-              <Link href="/contact">
+                
+                {/* Mobile Projects */}
+                <Link href="/#projects" onClick={() => sessionStorage.setItem('fromBlog', 'true')}>
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#333333',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = '#000000'
+                    e.target.style.transform = 'scale(1.05)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = '#333333'
+                    e.target.style.transform = 'scale(1)'
+                  }}
+                  >
+                    Projects
+                  </button>
+                </Link>
+                
+                {/* Mobile Blogs - Active */}
                 <button style={{
-                  background: '#000000',
-                  color: '#ffffff',
+                  background: 'none',
                   border: 'none',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '6px',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  color: '#000000',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Blogs
+                </button>
+                
+                {/* Mobile Contact Button */}
+                <Link href="/contact">
+                  <button style={{
+                    background: '#007bff',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)',
+                    borderRadius: '6px',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '500',
+                    letterSpacing: '0.05em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#0056b3'
+                    e.target.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#007bff'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                  >
+                    Contact
+                  </button>
+                </Link>
+              </div>
+            ) : (
+              /* Desktop Navigation */
+              <div style={{
+                display: 'flex',
+                gap: '2rem',
+                alignItems: 'center'
+              }}>
+                {[
+                  { name: 'Home', key: 'home', href: '/' },
+                  { name: 'Services', key: 'services', href: '/#services' },
+                  { name: 'Projects', key: 'projects', href: '/#projects' }
+                ].map((item) => (
+                  <Link 
+                    key={item.key} 
+                    href={item.href}
+                    onClick={() => {
+                      if (item.key === 'home') {
+                        sessionStorage.setItem('fromBlog', 'true')
+                      }
+                    }}
+                  >
+                    <button style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '0.875rem',
+                      fontWeight: '400',
+                      letterSpacing: '0.05em',
+                      color: '#666666',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      fontFamily: 'inherit',
+                      position: 'relative',
+                      transform: 'scale(1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = '#000000'
+                      e.target.style.transform = 'scale(1.1)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = '#666666'
+                      e.target.style.transform = 'scale(1)'
+                    }}
+                    >
+                      {item.name}
+                    </button>
+                  </Link>
+                ))}
+
+                {/* Blogs Link - Active */}
+                <button style={{
+                  background: 'none',
+                  border: 'none',
                   fontSize: '0.875rem',
                   fontWeight: '500',
                   letterSpacing: '0.05em',
+                  color: '#000000',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
-                  fontFamily: 'inherit'
+                  fontFamily: 'inherit',
+                  transform: 'scale(1)'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.background = '#333333'
-                  e.target.style.transform = 'translateY(-1px)'
+                  e.target.style.transform = 'scale(1.1)'
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.background = '#000000'
-                  e.target.style.transform = 'translateY(0)'
-                }}
-                >
-                  Contact
+                  e.target.style.transform = 'scale(1)'
+                }}>
+                  Blogs
                 </button>
-              </Link>
-            </div>
+                
+                {/* Contact Button */}
+                <Link href="/contact">
+                  <button style={{
+                    background: '#007bff',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    letterSpacing: '0.05em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#0056b3'
+                    e.target.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#007bff'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                  >
+                    Contact
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </nav>
 

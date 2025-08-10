@@ -8,6 +8,19 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function AIAdvancementsArticle() {
   const [readingProgress, setReadingProgress] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     const updateReadingProgress = () => {
@@ -103,9 +116,9 @@ export default function AIAdvancementsArticle() {
         left: 0,
         right: 0,
         zIndex: 999,
-        padding: '1rem 2rem',
-        background: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(20px)',
+        padding: isMobile ? '1rem 1rem' : '1rem 2rem',
+        background: '#ffffff',
+        backdropFilter: 'none',
         borderBottom: '1px solid rgba(0,0,0,0.1)'
       }}>
         <div style={{
@@ -115,36 +128,229 @@ export default function AIAdvancementsArticle() {
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
+          {/* Logo */}
           <Link href="/">
             <div style={{
-              fontSize: '1.25rem',
-              fontWeight: '400',
-              letterSpacing: '0.05em',
-              color: '#000000',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center'
             }}>
-              Bridge
+              <img 
+                src="/BRIDGE.png" 
+                alt="Bridge Software Solutions Logo" 
+                style={{
+                  height: isMobile ? '32px' : '42px',
+                  width: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
             </div>
           </Link>
-
-          <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <Link href="/" style={{ color: '#666666', textDecoration: 'none', fontSize: '0.875rem' }}>Home</Link>
-            <Link href="/blogs" style={{ color: '#000000', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}>Blogs</Link>
-            <Link href="/contact" style={{ color: '#666666', textDecoration: 'none', fontSize: '0.875rem' }}>Contact</Link>
-          </div>
+          
+          {/* Navigation Links */}
+          {isMobile ? (
+            /* Mobile Navigation */
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flex: 1,
+              marginLeft: '1rem',
+              gap: 'clamp(0.25rem, 2vw, 1rem)'
+            }}>
+              
+              {/* Mobile Services */}
+              <Link href="/#services">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#333333',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#333333'
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Services
+                </button>
+              </Link>
+              
+              {/* Mobile Projects */}
+              <Link href="/#projects">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#333333',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#333333'
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Projects
+                </button>
+              </Link>
+              
+              {/* Mobile Blogs - Active */}
+              <Link href="/blogs">
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  color: '#000000',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Blogs
+                </button>
+              </Link>
+              
+              {/* Mobile Contact Button */}
+              <Link href="/contact">
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)',
+                  borderRadius: '6px',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#0056b3'
+                  e.target.style.transform = 'translateY(-1px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#007bff'
+                  e.target.style.transform = 'translateY(0)'
+                }}
+                >
+                  Contact
+                </button>
+              </Link>
+            </div>
+          ) : (
+            /* Desktop Navigation */
+            <div style={{ 
+              display: 'flex', 
+              gap: '2rem', 
+              alignItems: 'center' 
+            }}>
+              <Link href="/" style={{ 
+                color: '#666666', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem',
+                transition: 'color 0.3s ease'
+              }}>Home</Link>
+              <Link href="/#services" style={{ 
+                color: '#666666', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem',
+                transition: 'color 0.3s ease'
+              }}>Services</Link>
+              <Link href="/#projects" style={{ 
+                color: '#666666', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem',
+                transition: 'color 0.3s ease'
+              }}>Projects</Link>
+              <Link href="/blogs" style={{ 
+                color: '#000000', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem', 
+                fontWeight: '500'
+              }}>Blogs</Link>
+              <Link href="/contact">
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#0056b3'
+                  e.target.style.transform = 'translateY(-1px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#007bff'
+                  e.target.style.transform = 'translateY(0)'
+                }}
+                >
+                  Contact
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </nav>
 
       {/* Hero Section */}
       <section style={{
-        paddingTop: '8rem',
-        paddingBottom: '4rem',
+        paddingTop: isMobile ? '6rem' : '8rem',
+        paddingBottom: isMobile ? '2rem' : '4rem',
         textAlign: 'center',
         background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)'
       }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 2rem' }}>
+        <div style={{ 
+          maxWidth: '800px', 
+          margin: '0 auto', 
+          padding: isMobile ? '0 1rem' : '0 2rem' 
+        }}>
           <div style={{
-            fontSize: '0.875rem',
+            fontSize: isMobile ? '0.75rem' : '0.875rem',
             fontWeight: '500',
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
@@ -155,20 +361,20 @@ export default function AIAdvancementsArticle() {
           </div>
           
           <h1 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+            fontSize: isMobile ? 'clamp(1.5rem, 8vw, 2.5rem)' : 'clamp(2rem, 5vw, 3.5rem)',
             fontWeight: '200',
             lineHeight: '1.2',
-            marginBottom: '2rem',
+            marginBottom: isMobile ? '1.5rem' : '2rem',
             color: '#000000'
           }}>
             How AI Advancements in 2024 Are Transforming Small Business Marketing
           </h1>
 
           <p style={{
-            fontSize: '1.25rem',
+            fontSize: isMobile ? '1rem' : '1.25rem',
             color: '#666666',
-            maxWidth: '600px',
-            margin: '0 auto 2rem',
+            maxWidth: isMobile ? '100%' : '600px',
+            margin: isMobile ? '0 auto 1.5rem' : '0 auto 2rem',
             fontWeight: '300'
           }}>
             From ChatGPT to automated customer service, discover how AI tools are revolutionizing the way small businesses compete and grow.
@@ -178,9 +384,10 @@ export default function AIAdvancementsArticle() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: '2rem',
-            fontSize: '0.875rem',
-            color: '#666666'
+            gap: isMobile ? '1rem' : '2rem',
+            fontSize: isMobile ? '0.75rem' : '0.875rem',
+            color: '#666666',
+            flexWrap: 'wrap'
           }}>
             <span>Tech Innovation Team</span>
             <span>•</span>
@@ -191,7 +398,11 @@ export default function AIAdvancementsArticle() {
         </div>
       </section>
 
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 2rem 4rem' }}>
+      <div style={{ 
+        maxWidth: '800px', 
+        margin: '0 auto', 
+        padding: isMobile ? '0 1rem 2rem' : '0 2rem 4rem' 
+      }}>
       <div style={{ marginBottom: '2rem' }}>
         <span style={{ 
           backgroundColor: '#fef3c7', 
@@ -249,7 +460,12 @@ export default function AIAdvancementsArticle() {
           Top AI Tools Transforming Business Marketing in 2024
         </h2>
 
-        <div style={{ backgroundColor: '#f9fafb', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem' }}>
+        <div style={{ 
+          backgroundColor: '#f9fafb', 
+          padding: isMobile ? '1rem' : '1.5rem', 
+          borderRadius: '8px', 
+          marginBottom: '2rem' 
+        }}>
           <h3 style={{ fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem', color: '#1f2937' }}>
             🤖 ChatGPT & AI Content Creation
           </h3>
@@ -295,7 +511,13 @@ export default function AIAdvancementsArticle() {
           Real Success Stories from Hyderabad Businesses
         </h2>
 
-        <div style={{ backgroundColor: '#f0f9ff', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #0ea5e9' }}>
+        <div style={{ 
+          backgroundColor: '#f0f9ff', 
+          padding: isMobile ? '1rem' : '1.5rem', 
+          borderRadius: '8px', 
+          marginBottom: '2rem', 
+          border: '1px solid #0ea5e9' 
+        }}>
           <h3 style={{ fontSize: '1.2rem', fontWeight: '600', marginBottom: '1rem', color: '#1f2937' }}>
             Local Fashion Store Increases Sales by 40%
           </h3>
@@ -352,7 +574,14 @@ export default function AIAdvancementsArticle() {
           </p>
         </div>
 
-        <div style={{ backgroundColor: '#2563eb', color: 'white', padding: '2rem', borderRadius: '8px', marginTop: '2rem', marginBottom: '2rem' }}>
+        <div style={{ 
+          backgroundColor: '#2563eb', 
+          color: 'white', 
+          padding: isMobile ? '1.5rem' : '2rem', 
+          borderRadius: '8px', 
+          marginTop: '2rem', 
+          marginBottom: '2rem' 
+        }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'white' }}>
             Warning: The AI Gap is Growing Fast
           </h2>
@@ -382,7 +611,13 @@ export default function AIAdvancementsArticle() {
           The businesses thriving in 2024 are those that have embraced AI as a tool to level the playing field with larger competitors. Whether you run a small shop in Old City or a growing service business in Gachibowli, AI tools can help you compete more effectively than ever before.
         </p>
 
-        <div style={{ backgroundColor: '#fef3c7', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #d97706' }}>
+        <div style={{ 
+          backgroundColor: '#fef3c7', 
+          padding: isMobile ? '1rem' : '1.5rem', 
+          borderRadius: '8px', 
+          marginBottom: '2rem', 
+          border: '1px solid #d97706' 
+        }}>
           <h3 style={{ fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem', color: '#92400e' }}>
             💡 Ready to Get Started with AI Marketing?
           </h3>
@@ -405,7 +640,13 @@ export default function AIAdvancementsArticle() {
           The AI revolution in small business marketing is happening now, not in the future. Businesses that start implementing these tools today will have a significant advantage over those who wait. The good news? Getting started is easier and more affordable than you might think.
         </p>
 
-        <div style={{ textAlign: 'center', padding: '2rem', backgroundColor: '#f9fafb', borderRadius: '8px', marginTop: '2rem' }}>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: isMobile ? '1.5rem' : '2rem', 
+          backgroundColor: '#f9fafb', 
+          borderRadius: '8px', 
+          marginTop: '2rem' 
+        }}>
           <h3 style={{ marginBottom: '1rem', color: '#1f2937' }}>Ready to Harness AI for Your Business?</h3>
           <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
             Let's discuss how AI can transform your marketing and help you compete with bigger businesses.
@@ -413,11 +654,12 @@ export default function AIAdvancementsArticle() {
           <a href="/contact" style={{ 
             backgroundColor: '#2563eb', 
             color: 'white', 
-            padding: '12px 24px', 
+            padding: isMobile ? '10px 20px' : '12px 24px', 
             borderRadius: '6px', 
             textDecoration: 'none',
             fontWeight: 'bold',
-            display: 'inline-block'
+            display: 'inline-block',
+            fontSize: isMobile ? '0.9rem' : '1rem'
           }}>
             Book Your AI Strategy Call
           </a>
@@ -428,34 +670,44 @@ export default function AIAdvancementsArticle() {
         {/* Article Footer */}
         <footer style={{
           borderTop: '1px solid #e9ecef',
-          paddingTop: '2rem',
-          marginTop: '3rem'
+          paddingTop: isMobile ? '1.5rem' : '2rem',
+          marginTop: isMobile ? '2rem' : '3rem'
         }}>
           <div style={{
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: isMobile ? 'center' : 'space-between',
             alignItems: 'center',
+            flexDirection: isMobile ? 'column' : 'row',
             flexWrap: 'wrap',
-            gap: '1rem'
+            gap: isMobile ? '1.5rem' : '1rem'
           }}>
-            <div>
-              <p style={{ margin: 0, color: '#666666', fontSize: '0.875rem' }}>
+            <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
+              <p style={{ 
+                margin: 0, 
+                color: '#666666', 
+                fontSize: isMobile ? '0.8rem' : '0.875rem' 
+              }}>
                 Written by <strong>Tech Innovation Team</strong> at Bridge Software Solutions
               </p>
             </div>
             
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ 
+              display: 'flex', 
+              gap: isMobile ? '0.5rem' : '1rem',
+              flexDirection: isMobile ? 'column' : 'row',
+              textAlign: 'center'
+            }}>
               <Link href="/blogs/organic-seo-content-traffic" style={{
                 color: '#666666',
                 textDecoration: 'none',
-                fontSize: '0.875rem'
+                fontSize: isMobile ? '0.8rem' : '0.875rem'
               }}>
                 ← Previous: Organic SEO Content
               </Link>
               <Link href="/blogs/complete-seo-guide-hyderabad" style={{
                 color: '#666666',
                 textDecoration: 'none',
-                fontSize: '0.875rem'
+                fontSize: isMobile ? '0.8rem' : '0.875rem'
               }}>
                 Next: SEO Guide →
               </Link>

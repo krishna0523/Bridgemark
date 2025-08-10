@@ -10,12 +10,25 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function Contact() {
   const [navVisible, setNavVisible] = useState(true) // Always visible on contact page
+  const [isMobile, setIsMobile] = useState(false)
   
   const lenisRef = useRef()
   const heroRef = useRef()
   const contactInfoRef = useRef([])
   const formRef = useRef()
   const mapRef = useRef()
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Initialize Lenis smooth scrolling
   useEffect(() => {
@@ -176,12 +189,12 @@ export default function Contact() {
         right: 0,
         zIndex: 1000,
         padding: '1rem 2rem',
-        background: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(20px)',
+        background: '#ffffff',
+        backdropFilter: 'none',
         borderBottom: '1px solid rgba(0,0,0,0.1)'
       }}>
         <div style={{
-          maxWidth: '1200px',
+          maxWidth: isMobile ? '100%' : '1200px',
           margin: '0 auto',
           display: 'flex',
           justifyContent: 'space-between',
@@ -198,7 +211,7 @@ export default function Contact() {
                 src="/BRIDGE.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
-                  height: '42px',
+                  height: isMobile ? '32px' : '42px',
                   width: 'auto',
                   objectFit: 'contain'
                 }}
@@ -209,195 +222,291 @@ export default function Contact() {
           {/* Navigation Links */}
           <div style={{
             display: 'flex',
-            gap: '3rem',
+            gap: isMobile ? 'clamp(0.5rem, 3vw, 1.5rem)' : '2rem',
             alignItems: 'center'
           }}>
-            <Link href="/">
-              <button style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.875rem',
-                fontWeight: '400',
-                letterSpacing: '0.05em',
-                color: '#666666',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit',
-                transform: 'scale(1)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = '#666666'
-                e.target.style.transform = 'scale(1)'
-              }}>
-                Home
-              </button>
-            </Link>
+            {!isMobile && (
+              <>
+                <Link href="/">
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    transform: 'scale(1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = '#000000'
+                    e.target.style.transform = 'scale(1.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = '#666666'
+                    e.target.style.transform = 'scale(1)'
+                  }}>
+                    Home
+                  </button>
+                </Link>
 
-            <Link href="/#services">
-              <button style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.875rem',
-                fontWeight: '400',
-                letterSpacing: '0.05em',
-                color: '#666666',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit',
-                transform: 'scale(1)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = '#666666'
-                e.target.style.transform = 'scale(1)'
-              }}>
-                Services
-              </button>
-            </Link>
+                <Link href="/#services">
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    transform: 'scale(1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = '#000000'
+                    e.target.style.transform = 'scale(1.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = '#666666'
+                    e.target.style.transform = 'scale(1)'
+                  }}>
+                    Services
+                  </button>
+                </Link>
 
-            <Link href="/#projects">
-              <button style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.875rem',
-                fontWeight: '400',
-                letterSpacing: '0.05em',
-                color: '#666666',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit',
-                transform: 'scale(1)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = '#666666'
-                e.target.style.transform = 'scale(1)'
-              }}>
-                Projects
-              </button>
-            </Link>
+                <Link href="/#projects">
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    transform: 'scale(1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = '#000000'
+                    e.target.style.transform = 'scale(1.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = '#666666'
+                    e.target.style.transform = 'scale(1)'
+                  }}>
+                    Projects
+                  </button>
+                </Link>
 
-            <Link href="/blogs">
-              <button style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '0.875rem',
-                fontWeight: '400',
-                letterSpacing: '0.05em',
-                color: '#666666',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                fontFamily: 'inherit',
-                transform: 'scale(1)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.color = '#000000'
-                e.target.style.transform = 'scale(1.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = '#666666'
-                e.target.style.transform = 'scale(1)'
-              }}>
-                Blogs
-              </button>
-            </Link>
+                <Link href="/blogs">
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    transform: 'scale(1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = '#000000'
+                    e.target.style.transform = 'scale(1.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = '#666666'
+                    e.target.style.transform = 'scale(1)'
+                  }}>
+                    Blogs
+                  </button>
+                </Link>
 
-            {/* Contact Button - Active */}
-            <button style={{
-              background: '#000000',
-              color: '#ffffff',
-              border: 'none',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '6px',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              letterSpacing: '0.05em',
-              cursor: 'default',
-              fontFamily: 'inherit',
-              position: 'relative'
-            }}>
-              Contact
+                {/* Contact Button - Active */}
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'default',
+                  fontFamily: 'inherit',
+                  position: 'relative'
+                }}>
+                  Contact
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-4px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '20px',
+                    height: '1px',
+                    background: '#ffffff'
+                  }} />
+                </button>
+              </>
+            )}
+
+            {/* Mobile Navigation */}
+            {isMobile && (
               <div style={{
-                position: 'absolute',
-                bottom: '-4px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '20px',
-                height: '1px',
-                background: '#ffffff'
-              }} />
-            </button>
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flex: 1,
+                marginLeft: '1rem',
+                gap: 'clamp(0.25rem, 2vw, 1rem)'
+              }}>
+
+                {/* Mobile Services */}
+                <Link href="/#services">
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}>
+                    Services
+                  </button>
+                </Link>
+
+                {/* Mobile Projects */}
+                <Link href="/#projects">
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}>
+                    Projects
+                  </button>
+                </Link>
+
+                {/* Mobile Blogs */}
+                <Link href="/blogs">
+                  <button style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}>
+                    Blogs
+                  </button>
+                </Link>
+
+                {/* Mobile Contact Button - Active */}
+                <button style={{
+                  background: '#007bff',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)',
+                  borderRadius: '6px',
+                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  cursor: 'default',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  flex: '1',
+                  textAlign: 'center'
+                }}>
+                  Contact
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
       <section style={{
-        minHeight: '60vh',
-        paddingTop: '6rem', // Account for fixed navigation
+        minHeight: isMobile ? '50vh' : '60vh',
+        paddingTop: isMobile ? '5rem' : '6rem', // Account for fixed navigation
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-        color: '#ffffff'
+        background: isMobile ? '#ffffff' : 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
+        color: isMobile ? '#000000' : '#ffffff'
       }}>
         <div 
           ref={heroRef}
           style={{
             textAlign: 'center',
             maxWidth: '800px',
-            padding: '0 2rem',
+            padding: isMobile ? '0 1.5rem' : '0 2rem',
             zIndex: 2
           }}
         >
           <div style={{
-            fontSize: '0.875rem',
+            fontSize: isMobile ? 'clamp(0.7rem, 3vw, 0.8rem)' : '0.875rem',
             fontWeight: '400',
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
             opacity: 0.6,
-            marginBottom: '2rem'
+            marginBottom: isMobile ? '1.5rem' : '2rem'
           }}>
             Let's Work Together
           </div>
           
           <h1 style={{
-            fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+            fontSize: isMobile ? 'clamp(2rem, 9vw, 3.5rem)' : 'clamp(2.5rem, 6vw, 5rem)',
             fontWeight: '100',
             lineHeight: '0.9',
             letterSpacing: '-0.02em',
             margin: 0,
-            marginBottom: '2rem'
+            marginBottom: isMobile ? '1.5rem' : '2rem'
           }}>
             Ready to Bridge<br />
             Your Vision?
           </h1>
 
           <div style={{
-            width: '80px',
+            width: isMobile ? '60px' : '80px',
             height: '1px',
-            background: '#ffffff',
-            margin: '2rem auto',
+            background: isMobile ? '#000000' : '#ffffff',
+            margin: isMobile ? '1.5rem auto' : '2rem auto',
             opacity: 0.8
           }} />
           
           <p style={{
-            fontSize: '1.25rem',
+            fontSize: isMobile ? 'clamp(0.9rem, 4vw, 1.1rem)' : '1.25rem',
             fontWeight: '300',
             lineHeight: '1.6',
             opacity: 0.9,
-            maxWidth: '600px',
+            maxWidth: isMobile ? '320px' : '600px',
             margin: '0 auto'
           }}>
             From concept to launch, we create digital experiences that matter. 
@@ -405,52 +514,56 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* Animated Background Elements */}
-        <div style={{
-          position: 'absolute',
-          top: '10%',
-          right: '10%',
-          width: '200px',
-          height: '200px',
-          background: 'radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)',
-          borderRadius: '50%',
-          animation: 'float 15s ease-in-out infinite'
-        }} />
-        
-        <div style={{
-          position: 'absolute',
-          bottom: '20%',
-          left: '5%',
-          width: '150px',
-          height: '150px',
-          background: 'radial-gradient(circle, rgba(255,255,255,0.01) 0%, transparent 70%)',
-          borderRadius: '50%',
-          animation: 'float 20s ease-in-out infinite reverse'
-        }} />
+        {/* Animated Background Elements - Desktop Only */}
+        {!isMobile && (
+          <>
+            <div style={{
+              position: 'absolute',
+              top: '10%',
+              right: '10%',
+              width: '200px',
+              height: '200px',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)',
+              borderRadius: '50%',
+              animation: 'float 15s ease-in-out infinite'
+            }} />
+            
+            <div style={{
+              position: 'absolute',
+              bottom: '20%',
+              left: '5%',
+              width: '150px',
+              height: '150px',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.01) 0%, transparent 70%)',
+              borderRadius: '50%',
+              animation: 'float 20s ease-in-out infinite reverse'
+            }} />
+          </>
+        )}
       </section>
 
       {/* Contact Methods */}
       <section style={{
-        padding: '8rem 2rem',
+        padding: isMobile ? '4rem 1.5rem' : '8rem 2rem',
         background: '#ffffff'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{
             textAlign: 'center',
-            marginBottom: '6rem'
+            marginBottom: isMobile ? '3rem' : '6rem'
           }}>
             <div style={{
-              fontSize: '0.75rem',
+              fontSize: isMobile ? 'clamp(0.6rem, 2.5vw, 0.75rem)' : '0.75rem',
               fontWeight: '400',
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
               opacity: 0.6,
-              marginBottom: '2rem'
+              marginBottom: isMobile ? '1.5rem' : '2rem'
             }}>
               Get In Touch
             </div>
             <h2 style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontSize: isMobile ? 'clamp(1.5rem, 7vw, 2.5rem)' : 'clamp(2rem, 5vw, 3.5rem)',
               fontWeight: '100',
               margin: 0
             }}>
@@ -462,8 +575,8 @@ export default function Contact() {
             className="contact-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '2rem'
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)',
+              gap: isMobile ? '1.5rem' : '2rem'
             }}
           >
             {contactMethods.map((method, index) => (
@@ -527,14 +640,14 @@ export default function Contact() {
 
       {/* Contact Form & Map */}
       <section style={{
-        padding: '8rem 2rem',
+        padding: isMobile ? '4rem 1.5rem' : '8rem 2rem',
         background: 'linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-            gap: '6rem',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(500px, 1fr))',
+            gap: isMobile ? '3rem' : '6rem',
             alignItems: 'start'
           }}>
             
@@ -693,17 +806,17 @@ export default function Contact() {
 
       {/* FAQ Section */}
       <section style={{
-        padding: '8rem 2rem',
+        padding: isMobile ? '4rem 1.5rem' : '8rem 2rem',
         background: '#000000',
         color: '#ffffff'
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <div style={{
             textAlign: 'center',
-            marginBottom: '4rem'
+            marginBottom: isMobile ? '3rem' : '4rem'
           }}>
             <h2 style={{
-              fontSize: 'clamp(2rem, 5vw, 3rem)',
+              fontSize: isMobile ? 'clamp(1.5rem, 7vw, 2.5rem)' : 'clamp(2rem, 5vw, 3rem)',
               fontWeight: '100',
               margin: 0
             }}>
@@ -711,7 +824,7 @@ export default function Contact() {
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gap: '2rem' }}>
+          <div style={{ display: 'grid', gap: isMobile ? '1.5rem' : '2rem' }}>
             {[
               {
                 question: "What's your typical project timeline?",
@@ -808,10 +921,6 @@ export default function Contact() {
           box-shadow: 0 0 0 2px rgba(0,0,0,0.1) !important;
         }
 
-        button:hover:not(:disabled) {
-          background: #333333 !important;
-          transform: translateY(-2px);
-        }
       `}</style>
     </div>
   )
