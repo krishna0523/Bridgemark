@@ -25,7 +25,7 @@ export function generateBlogPostSchema(post: BlogPostSchema): object {
       "name": "Bridge Software Solutions",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://bridgesoftwaresolutions.com/logo.png",
+        "url": "https://bridgesoftwaresolutions.com/BRIDGE%20new%20logo.png",
         "width": 200,
         "height": 60
       },
@@ -57,7 +57,7 @@ export function generateWebsiteSchema(): object {
     "url": "https://bridgesoftwaresolutions.com",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://bridgesoftwaresolutions.com/logo.png",
+      "url": "https://bridgesoftwaresolutions.com/BRIDGE%20new%20logo.png",
       "width": 200,
       "height": 60
     },

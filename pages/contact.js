@@ -208,7 +208,7 @@ export default function Contact() {
               alignItems: 'center'
             }}>
               <img 
-                src="/BRIDGE.png" 
+                src="/BRIDGE new logo.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
                   height: isMobile ? '32px' : '42px',
