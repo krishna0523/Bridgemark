@@ -13,9 +13,12 @@ async function commitToGitHub(fileName, content, title) {
     const token = process.env.GITHUB_TOKEN;
 
     if (!token) {
-      const errorMsg = 'GitHub token not found - cannot save blog post in production';
-      console.error(errorMsg);
-      throw new Error(errorMsg);
+      console.warn('GitHub token not found - blog edits will only be saved locally');
+      // In production without GitHub token, we can't save changes
+      if (process.env.VERCEL_ENV === 'production') {
+        throw new Error('GitHub token not configured in production. Please contact administrator to configure GITHUB_TOKEN environment variable.');
+      }
+      return; // Skip GitHub commit in development without token
     }
 
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/content/posts/${fileName}`;

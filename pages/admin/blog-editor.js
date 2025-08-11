@@ -293,9 +293,15 @@ export default function BlogEditor() {
                 />
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                  Tags
+              <div style={{ 
+                marginBottom: '1.5rem',
+                padding: '1rem',
+                border: '1px solid #e9ecef',
+                borderRadius: '6px',
+                backgroundColor: '#f8f9fa'
+              }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#495057' }}>
+                  🏷️ Tags
                 </label>
                 <input
                   type="text"
@@ -305,17 +311,18 @@ export default function BlogEditor() {
                     const tagsArray = tagsString.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
                     handleFrontMatterChange('tags', tagsArray);
                   }}
-                  placeholder="e.g., web development, SEO, digital marketing"
+                  placeholder="e.g., web development, SEO, digital marketing, hyderabad business"
                   style={{
                     width: '100%',
                     padding: '0.75rem',
-                    border: '1px solid #ddd',
+                    border: '2px solid #007bff',
                     borderRadius: '4px',
-                    fontSize: '1rem'
+                    fontSize: '1rem',
+                    backgroundColor: '#fff'
                   }}
                 />
-                <small style={{ color: '#666', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                  Separate tags with commas
+                <small style={{ color: '#666', fontSize: '0.875rem', marginTop: '0.5rem', display: 'block' }}>
+                  📝 <strong>Separate tags with commas</strong> - Tags help with SEO and content categorization
                 </small>
               </div>
 
