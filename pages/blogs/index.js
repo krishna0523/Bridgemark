@@ -1,25 +1,69 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function BlogIndex({ posts }) {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(1200);
+  const gridRef = useRef(null);
 
-  // Mobile detection
+  // Responsive handling
   useEffect(() => {
-    const checkMobile = () => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
       setIsMobile(window.innerWidth <= 768);
     };
     
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    handleResize();
+    window.addEventListener('resize', handleResize);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Blog card animations
+  useEffect(() => {
+    if (!gridRef.current) return;
+    
+    const cards = gridRef.current.querySelectorAll('[data-card]');
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    cards.forEach((card, index) => {
+      if (mq.matches) {
+        gsap.set(card, { opacity: 1, y: 0, scale: 1 });
+        return;
+      }
+
+      gsap.set(card, { opacity: 0, y: 24, scale: 0.98 });
+      
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          gsap.to(card, { 
+            opacity: 1, 
+            y: 0, 
+            scale: 1, 
+            duration: 0.6, 
+            ease: 'power2.out',
+            delay: index * 0.1 // Stagger animation
+          });
+        },
+      });
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
+  }, [posts]);
 
   return (
     <>
@@ -385,88 +429,143 @@ export default function BlogIndex({ posts }) {
           padding: '0 20px 80px',
         }}>
           {posts.length > 0 ? (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-              gap: '30px',
-              marginBottom: '40px'
-            }}>
+            <div 
+              ref={gridRef}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: screenWidth >= 1200 
+                  ? 'repeat(3, minmax(0, 1fr))' 
+                  : screenWidth >= 768 
+                    ? 'repeat(2, minmax(0, 1fr))' 
+                    : '1fr',
+                gap: screenWidth >= 768 ? '24px' : '16px',
+                alignItems: 'stretch',
+                marginBottom: '40px'
+              }}
+            >
               {posts.map((post, index) => (
                 <article
                   key={post.slug}
+                  data-card
                   style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: screenWidth >= 1200 
+                      ? '400px' 
+                      : screenWidth >= 768 
+                        ? '360px' 
+                        : 'auto',
                     border: '1px solid #eee',
-                    borderRadius: '8px',
-                    overflow: 'hidden',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    background: '#fff',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
                     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    cursor: 'pointer',
-                    background: '#fff'
+                    cursor: 'pointer'
                   }}
                   onClick={() => router.push(`/blogs/${post.slug}`)}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
+                    e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.06)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.02)';
                   }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.outline = 'none';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.4)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.02)';
+                  }}
+                  tabIndex="0"
+                  role="button"
+                  aria-label={`Read article: ${post.title}`}
                 >
                   {/* Post Header */}
-                  <div style={{ padding: '25px' }}>
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '15px', 
-                      color: '#666', 
-                      fontSize: '12px',
-                      marginBottom: '15px'
+                  <header style={{ 
+                    display: 'flex', 
+                    gap: '12px', 
+                    color: '#666', 
+                    fontSize: '12px',
+                    marginBottom: '12px',
+                    flexWrap: 'wrap',
+                    alignItems: 'center'
+                  }}>
+                    <span>📅 {new Date(post.date).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'short', 
+                      day: 'numeric' 
+                    })}</span>
+                    <span>•</span>
+                    <span>⏱️ {post.readingTime} min read</span>
+                    <span style={{
+                      background: '#f0f0f0',
+                      padding: '4px 8px',
+                      borderRadius: '12px',
+                      textTransform: 'uppercase',
+                      fontSize: '10px',
+                      fontWeight: '500',
+                      color: '#333'
                     }}>
-                      <span>📅 {new Date(post.date).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric' 
-                      })}</span>
-                      <span>⏱️ {post.readingTime} min read</span>
-                      <span style={{
-                        background: '#f0f0f0',
-                        padding: '2px 8px',
-                        borderRadius: '12px',
-                        textTransform: 'uppercase'
-                      }}>
-                        {post.stage}
-                      </span>
-                    </div>
+                      {post.stage}
+                    </span>
+                  </header>
 
-                    <h2 style={{ 
-                      fontSize: '1.4em', 
+                  {/* Post Content */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ 
+                      fontSize: '1.125rem', 
                       fontWeight: 'bold',
                       color: '#000',
-                      marginBottom: '15px',
-                      lineHeight: '1.3'
+                      marginBottom: '8px',
+                      lineHeight: '1.3',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
                     }}>
                       {post.title}
-                    </h2>
+                    </h3>
 
                     <p style={{ 
-                      color: '#666',
+                      color: '#555',
                       lineHeight: '1.6',
-                      marginBottom: '20px'
+                      marginBottom: '12px',
+                      fontSize: '14px',
+                      display: '-webkit-box',
+                      WebkitLineClamp: screenWidth >= 1200 ? 4 : 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      flex: 1
                     }}>
-                      {post.excerpt.length > 120 ? post.excerpt.substring(0, 120) + '...' : post.excerpt}
+                      {post.excerpt}
                     </p>
+                  </div>
 
+                  {/* Footer */}
+                  <footer style={{ 
+                    marginTop: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px'
+                  }}>
                     {/* Tags */}
                     {post.tags && post.tags.length > 0 && (
-                      <div style={{ marginBottom: '20px' }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        flexWrap: 'wrap', 
+                        gap: '6px' 
+                      }}>
                         {post.tags.slice(0, 3).map((tag, tagIndex) => (
                           <span key={tagIndex} style={{
-                            display: 'inline-block',
+                            padding: '4px 8px',
+                            borderRadius: '999px',
                             background: '#f5f5f5',
-                            padding: '4px 10px',
-                            margin: '0 6px 6px 0',
-                            borderRadius: '15px',
-                            fontSize: '11px',
-                            color: '#666'
+                            fontSize: '10px',
+                            color: '#666',
+                            fontWeight: '500'
                           }}>
                             {tag}
                           </span>
@@ -474,19 +573,36 @@ export default function BlogIndex({ posts }) {
                       </div>
                     )}
 
-                    <button style={{
-                      background: '#000',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '10px 20px',
-                      borderRadius: '4px',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      width: '100%'
-                    }}>
+                    {/* CTA Button */}
+                    <button 
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '12px 16px',
+                        borderRadius: '8px',
+                        background: '#0d0d0d',
+                        color: '#fff',
+                        textDecoration: 'none',
+                        border: 'none',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s ease',
+                        width: '100%'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#333';
+                        e.stopPropagation();
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = '#0d0d0d';
+                        e.stopPropagation();
+                      }}
+                    >
                       Read More →
                     </button>
-                  </div>
+                  </footer>
                 </article>
               ))}
             </div>
