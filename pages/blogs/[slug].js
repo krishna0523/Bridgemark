@@ -137,7 +137,7 @@ export default function BlogPost({ frontMatter, mdxSource }) {
                   src="/Bridge-transparent-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
-                    height: '48px',
+                    height: '24px',
                     width: 'auto',
                     objectFit: 'contain'
                   }}
@@ -270,7 +270,7 @@ export default function BlogPost({ frontMatter, mdxSource }) {
                   src="/Bridge-transparent-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
-                    height: '63px',
+                    height: '32px',
                     width: 'auto',
                     objectFit: 'contain'
                   }}

@@ -167,10 +167,14 @@ export default function Home() {
   const [unicornStudioVisible, setUnicornStudioVisible] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
   const videoRef = useRef()
   const heroSectionRef = useRef()
   const observerRef = useRef()
   const statsRef = useRef()
+  const hamburgerRef = useRef()
+  const mobileMenuRef = useRef()
+  const menuLinksRef = useRef([])
   const statsItemsRef = useRef([])
   const servicesRef = useRef()
   const projectsRef = useRef()
@@ -685,10 +689,21 @@ export default function Home() {
       setIsMobile(window.innerWidth <= 768)
     }
     
+    const checkReducedMotion = () => {
+      setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    }
+    
     checkMobile()
+    checkReducedMotion()
     window.addEventListener('resize', checkMobile)
     
-    return () => window.removeEventListener('resize', checkMobile)
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    mediaQuery.addEventListener('change', checkReducedMotion)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile)
+      mediaQuery.removeEventListener('change', checkReducedMotion)
+    }
   }, [])
 
   // Project Box Hover Animation Handler
@@ -723,6 +738,174 @@ export default function Home() {
     }
   }
 
+  // Mobile menu functions
+  const toggleMobileMenu = () => {
+    // Safety check to ensure we're on the client side and DOM is ready
+    if (typeof window === 'undefined') return
+    
+    if (mobileMenuOpen) {
+      closeMobileMenu()
+    } else {
+      openMobileMenu()
+    }
+  }
+
+  const openMobileMenu = () => {
+    setMobileMenuOpen(true)
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = 'hidden' // Prevent background scroll
+    }
+    
+    // Animate hamburger to X with proper null checks
+    try {
+      if (hamburgerRef.current && hamburgerRef.current.children.length >= 3) {
+        const lines = Array.from(hamburgerRef.current.children)
+        
+        if (!reducedMotion && lines[0] && lines[1] && lines[2]) {
+          // Animated version
+          const timeline = gsap.timeline()
+          timeline
+            .to(lines[0], { rotation: 45, y: 6, backgroundColor: '#ffffff', duration: 0.25, ease: 'power2.out' })
+            .to(lines[1], { opacity: 0, duration: 0.15 }, 0.1)
+            .to(lines[2], { rotation: -45, y: -6, backgroundColor: '#ffffff', duration: 0.25, ease: 'power2.out' }, 0)
+        } else if (lines[0] && lines[1] && lines[2]) {
+          // Reduced motion fallback
+          lines[0].style.transform = 'rotate(45deg) translateY(6px)'
+          lines[0].style.backgroundColor = '#ffffff'
+          lines[1].style.opacity = '0'
+          lines[2].style.transform = 'rotate(-45deg) translateY(-6px)'
+          lines[2].style.backgroundColor = '#ffffff'
+        }
+      }
+    } catch (error) {
+      console.warn('Hamburger animation error:', error)
+    }
+    
+    // Animate menu overlay with delay to ensure it's rendered
+    setTimeout(() => {
+      try {
+        if (mobileMenuRef.current && !reducedMotion) {
+          gsap.fromTo(mobileMenuRef.current, 
+            { opacity: 0, scale: 0.95 }, 
+            { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' }
+          )
+        }
+        
+        // Stagger animate menu links
+        const validLinks = menuLinksRef.current.filter(link => link !== null && link !== undefined)
+        if (validLinks.length > 0 && !reducedMotion) {
+          gsap.fromTo(validLinks,
+            { opacity: 0, y: 20 },
+            { 
+              opacity: 1, 
+              y: 0, 
+              duration: 0.3,
+              stagger: 0.07,
+              delay: 0.1,
+              ease: 'power2.out'
+            }
+          )
+        }
+      } catch (error) {
+        console.warn('Menu animation error:', error)
+      }
+    }, 16) // One frame delay
+  }
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '' // Restore scroll
+    }
+    
+    // Animate hamburger back to lines with proper null checks
+    try {
+      if (hamburgerRef.current && hamburgerRef.current.children.length >= 3) {
+        const lines = Array.from(hamburgerRef.current.children)
+        
+        if (!reducedMotion && lines[0] && lines[1] && lines[2]) {
+          // Animated version
+          const timeline = gsap.timeline()
+          timeline
+            .to(lines[0], { rotation: 0, y: 0, backgroundColor: '#000000', duration: 0.25, ease: 'power2.out' })
+            .to(lines[1], { opacity: 1, duration: 0.15 }, 0.1)
+            .to(lines[2], { rotation: 0, y: 0, backgroundColor: '#000000', duration: 0.25, ease: 'power2.out' }, 0)
+        } else if (lines[0] && lines[1] && lines[2]) {
+          // Reduced motion fallback
+          lines[0].style.transform = 'rotate(0deg) translateY(0px)'
+          lines[0].style.backgroundColor = '#000000'
+          lines[1].style.opacity = '1'
+          lines[2].style.transform = 'rotate(0deg) translateY(0px)'
+          lines[2].style.backgroundColor = '#000000'
+        }
+      }
+    } catch (error) {
+      console.warn('Hamburger close animation error:', error)
+    }
+    
+    // Animate menu overlay out
+    try {
+      if (mobileMenuRef.current && !reducedMotion) {
+        gsap.to(mobileMenuRef.current, 
+          { opacity: 0, scale: 0.95, duration: 0.22, ease: 'power2.in' }
+        )
+      }
+    } catch (error) {
+      console.warn('Menu close animation error:', error)
+    }
+  }
+
+  // Handle ESC key to close menu
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        closeMobileMenu()
+      }
+    }
+    
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [mobileMenuOpen])
+
+  // Initialize menu links ref array
+  useEffect(() => {
+    menuLinksRef.current = []
+  }, [])
+
+  // Focus trap for mobile menu accessibility
+  useEffect(() => {
+    if (mobileMenuOpen && mobileMenuRef.current) {
+      const focusableElements = mobileMenuRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+      
+      // Focus first element when menu opens
+      firstElement?.focus()
+      
+      const handleTabKey = (e) => {
+        if (e.key === 'Tab') {
+          if (e.shiftKey) {
+            if (document.activeElement === firstElement) {
+              lastElement?.focus()
+              e.preventDefault()
+            }
+          } else {
+            if (document.activeElement === lastElement) {
+              firstElement?.focus()
+              e.preventDefault()
+            }
+          }
+        }
+      }
+      
+      document.addEventListener('keydown', handleTabKey)
+      return () => document.removeEventListener('keydown', handleTabKey)
+    }
+  }, [mobileMenuOpen])
+
   // Show intro slides only if main content isn't ready and slides haven't been skipped
   if (!showMainContent && !skipSlides) {
     return (
@@ -742,8 +925,8 @@ export default function Home() {
         <div style={{
           position: 'absolute',
           top: '25%',
-          left: '10%',
-          fontSize: '4rem',
+          left: isMobile ? '5%' : '10%',
+          fontSize: isMobile ? '2.5rem' : '4rem',
           opacity: 0.4,
           transform: `translateY(${currentSlide * -20}px) rotate(${currentSlide * 10}deg) scale(${1 + currentSlide * 0.05})`,
           transition: 'all 2.0s cubic-bezier(0.165, 0.84, 0.44, 1)',
@@ -755,10 +938,10 @@ export default function Home() {
         <div style={{
           position: 'absolute',
           bottom: '20%',
-          right: '10%',
-          fontSize: '3.5rem',
+          right: isMobile ? '5%' : '10%',
+          fontSize: isMobile ? '2rem' : '3.5rem',
           opacity: 0.5,
-          transform: `translateX(${currentSlide * 30}px) rotate(${currentSlide * -12}deg) scale(${1 + currentSlide * 0.08})`,
+          transform: `translateX(${currentSlide * (isMobile ? 15 : 30)}px) rotate(${currentSlide * -12}deg) scale(${1 + currentSlide * 0.08})`,
           transition: 'all 2.2s cubic-bezier(0.165, 0.84, 0.44, 1)',
           animation: 'float 8s ease-in-out infinite reverse'
         }}>
@@ -781,11 +964,11 @@ export default function Home() {
         <div style={{
           position: 'absolute',
           bottom: '25%',
-          left: '12%',
-          width: '150px',
+          left: isMobile ? '8%' : '12%',
+          width: isMobile ? '100px' : '150px',
           height: '1px',
           background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
-          transform: `translateX(${currentSlide * 25}px)`,
+          transform: `translateX(${currentSlide * (isMobile ? 15 : 25)}px)`,
           transition: 'all 2.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
           opacity: 0.15
         }} />
@@ -794,9 +977,9 @@ export default function Home() {
         <div style={{ 
           textAlign: 'left',
           color: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
-          maxWidth: '800px',
-          padding: '0 2rem',
-          transform: `translateX(${currentSlide * -20}px)`,
+          maxWidth: isMobile ? '90%' : '800px',
+          padding: isMobile ? (currentSlide >= 2 ? '0 1rem 0 2rem' : '0 1rem') : '0 2rem',
+          transform: `translateX(${currentSlide * (isMobile ? -10 : -20)}px)`,
           transition: 'all 2s cubic-bezier(0.165, 0.84, 0.44, 1)',
           zIndex: 2
         }}>
@@ -1067,7 +1250,7 @@ export default function Home() {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 1000,
+          zIndex: 1001,
           padding: '1rem 2rem',
           background: isMobile ? '#ffffff' : (navVisible ? '#ffffff' : 'transparent'),
           backdropFilter: 'none',
@@ -1078,7 +1261,7 @@ export default function Home() {
         }}
       >
         {isMobile ? (
-          // Mobile Navigation Layout
+          // New Mobile Navigation with Hamburger
           <div style={{
             maxWidth: '100%',
             margin: '0 auto',
@@ -1101,114 +1284,115 @@ export default function Home() {
                 src="/Bridge-transparent-logo.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
-                  height: '48px',
+                  height: '24px',
                   width: 'auto',
                   objectFit: 'contain'
                 }}
               />
             </div>
 
-            {/* Mobile Navigation */}
+            {/* Right side: CTA + Hamburger */}
             <div style={{
               display: 'flex',
-              justifyContent: 'space-between',
               alignItems: 'center',
-              flex: 1,
-              marginLeft: '1rem',
-              gap: 'clamp(0.25rem, 2vw, 1rem)'
+              gap: '1rem'
             }}>
-
-              {/* Mobile Services */}
-              <button
-                onClick={() => scrollToSection(servicesRef)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
-                  fontWeight: '400',
-                  letterSpacing: '0.05em',
-                  color: '#666666',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit',
-                  whiteSpace: 'nowrap',
-                  flex: '1',
-                  textAlign: 'center'
-                }}
-              >
-                Services
-              </button>
-
-              {/* Mobile Projects */}
-              <button
-                onClick={() => scrollToSection(projectsRef)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
-                  fontWeight: '400',
-                  letterSpacing: '0.05em',
-                  color: '#666666',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit',
-                  whiteSpace: 'nowrap',
-                  flex: '1',
-                  textAlign: 'center'
-                }}
-              >
-                Projects
-              </button>
-
-              {/* Mobile Blogs */}
-              <Link href="/blogs">
-                <button style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
-                  fontWeight: '400',
-                  letterSpacing: '0.05em',
-                  color: '#666666',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit',
-                  whiteSpace: 'nowrap',
-                  flex: '1',
-                  textAlign: 'center'
-                }}>
-                  Blogs
-                </button>
-              </Link>
-
-              {/* Mobile Contact Button */}
+              {/* Contact Button */}
               <Link href="/contact">
-                <button style={{
-                  background: '#007bff',
-                  color: '#ffffff',
-                  border: 'none',
-                  padding: 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)',
-                  borderRadius: '6px',
-                  fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
-                  fontWeight: '500',
-                  letterSpacing: '0.05em',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit',
-                  whiteSpace: 'nowrap',
-                  flex: '1',
-                  textAlign: 'center'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = '#0056b3'
-                  e.target.style.transform = 'translateY(-1px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = '#007bff'
-                  e.target.style.transform = 'translateY(0)'
-                }}>
+                <button
+                  style={{
+                    background: '#007bff',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.525rem 1.05rem', // Keep button size the same
+                    borderRadius: '6px',
+                    fontSize: '0.875rem', // Increased back to original size
+                    fontWeight: '500',
+                    letterSpacing: '0.05em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    whiteSpace: 'nowrap'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#0056b3'
+                    e.target.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#007bff'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.boxShadow = '0 0 0 2px #007bff'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.boxShadow = 'none'
+                  }}
+                >
                   Contact
                 </button>
               </Link>
+
+              {/* Hamburger Button */}
+              <button
+                ref={hamburgerRef}
+                onClick={toggleMobileMenu}
+                style={{
+                  background: mobileMenuOpen ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.9)', // Better contrast and visibility
+                  border: mobileMenuOpen ? '1px solid rgba(255, 255, 255, 0.4)' : '1px solid rgba(0, 0, 0, 0.1)',
+                  cursor: 'pointer',
+                  padding: '0.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '40px',
+                  height: '40px',
+                  gap: '4px',
+                  outline: 'none',
+                  borderRadius: '6px',
+                  transition: 'all 0.3s ease',
+                  position: 'relative',
+                  zIndex: 1002, // Ensure it's above everything
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  boxShadow: mobileMenuOpen ? '0 4px 12px rgba(255, 255, 255, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.1)'
+                }}
+                onFocus={(e) => {
+                  e.target.style.boxShadow = '0 0 0 2px #007bff'
+                }}
+                onBlur={(e) => {
+                  e.target.style.boxShadow = 'none'
+                }}
+                aria-label="Toggle menu"
+                aria-expanded={mobileMenuOpen}
+              >
+                <div style={{
+                  width: '24px',
+                  height: '2px',
+                  background: mobileMenuOpen ? '#ffffff' : '#000000',
+                  transition: 'all 0.25s ease',
+                  transformOrigin: 'center center',
+                  boxShadow: mobileMenuOpen ? '0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.4)' : 'none'
+                }} />
+                <div style={{
+                  width: '24px',
+                  height: '2px',
+                  background: mobileMenuOpen ? '#ffffff' : '#000000',
+                  transition: 'all 0.25s ease',
+                  transformOrigin: 'center center',
+                  boxShadow: mobileMenuOpen ? '0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.4)' : 'none'
+                }} />
+                <div style={{
+                  width: '24px',
+                  height: '2px',
+                  background: mobileMenuOpen ? '#ffffff' : '#000000',
+                  transition: 'all 0.25s ease',
+                  transformOrigin: 'center center',
+                  boxShadow: mobileMenuOpen ? '0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.4)' : 'none'
+                }} />
+              </button>
             </div>
           </div>
         ) : (
@@ -1233,7 +1417,7 @@ export default function Home() {
                 src="/Bridge-transparent-logo.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
-                  height: '63px',
+                  height: '32px',
                   width: 'auto',
                   objectFit: 'contain'
                 }}
@@ -1385,93 +1569,240 @@ export default function Home() {
 
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && isMobile && (
-          <div style={{
-            position: 'fixed',
-            top: '0',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(255, 255, 255, 0.98)',
-            backdropFilter: 'none',
-            WebkitBackdropFilter: 'none',
-            boxShadow: '0 4px 32px rgba(0,0,0,0.15)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '2rem',
-            zIndex: 999,
-            animation: 'fadeIn 0.3s ease-in-out'
-          }}>
-            {[
-              { name: 'Home', key: 'home', ref: heroSectionRef },
-              { name: 'Services', key: 'services', ref: servicesRef },
-              { name: 'Projects', key: 'projects', ref: projectsRef }
-            ].map((item) => (
-              <button
-                key={item.key}
-                onClick={() => {
-                  scrollToSection(item.ref)
-                  setMobileMenuOpen(false)
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '1.5rem',
-                  fontWeight: '400',
-                  letterSpacing: '0.05em',
-                  color: '#000000',
-                  cursor: 'pointer',
-                  padding: '1rem 2rem',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit'
-                }}
-              >
-                {item.name}
-              </button>
-            ))}
-            
-            <Link href="/blogs">
-              <button 
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '1.5rem',
-                  fontWeight: '400',
-                  letterSpacing: '0.05em',
-                  color: '#000000',
-                  cursor: 'pointer',
-                  padding: '1rem 2rem',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit'
-                }}
-              >
-                Blogs
-              </button>
-            </Link>
+          <div 
+            ref={mobileMenuRef}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.95)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 999,
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+              padding: '2rem'
+            }}
+            onClick={closeMobileMenu} // Close menu when clicking backdrop
+          >
+            <div 
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                maxWidth: '400px',
+                width: '100%',
+                gap: '2.5rem'
+              }}
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking menu content
+            >
+              {/* Navigation Group */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '1.5rem'
+              }}>
+                {[
+                  { name: 'Home', key: 'home', ref: heroSectionRef },
+                  { name: 'Services', key: 'services', ref: servicesRef },
+                  { name: 'Projects', key: 'projects', ref: projectsRef }
+                ].map((item, index) => (
+                  <button
+                    key={item.key}
+                    ref={(el) => (menuLinksRef.current[index] = el)}
+                    onClick={() => {
+                      scrollToSection(item.ref)
+                      closeMobileMenu()
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '1.5rem', // Inter 20–24px equivalent
+                      fontWeight: '400',
+                      letterSpacing: '0.02em',
+                      color: '#ffffff',
+                      cursor: 'pointer',
+                      padding: '1rem 0',
+                      transition: 'all 0.3s ease',
+                      fontFamily: 'inherit',
+                      lineHeight: '1.6', // Generous line-height
+                      textAlign: 'center',
+                      width: '100%',
+                      outline: 'none'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.boxShadow = '0 0 0 2px #007bff'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.boxShadow = 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = '#007bff'
+                      e.target.style.transform = 'translateX(10px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = '#ffffff'
+                      e.target.style.transform = 'translateX(0)'
+                    }}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+                
+                {/* External Links */}
+                <Link href="/blogs" style={{ width: '100%' }}>
+                  <button 
+                    ref={(el) => (menuLinksRef.current[3] = el)}
+                    onClick={() => closeMobileMenu()}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '1.5rem',
+                      fontWeight: '400',
+                      letterSpacing: '0.02em',
+                      color: '#ffffff',
+                      cursor: 'pointer',
+                      padding: '1rem 0',
+                      transition: 'all 0.3s ease',
+                      fontFamily: 'inherit',
+                      lineHeight: '1.6',
+                      textAlign: 'center',
+                      width: '100%',
+                      outline: 'none'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.boxShadow = '0 0 0 2px #007bff'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.boxShadow = 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = '#007bff'
+                      e.target.style.transform = 'translateX(10px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = '#ffffff'
+                      e.target.style.transform = 'translateX(0)'
+                    }}
+                  >
+                    Blogs
+                  </button>
+                </Link>
 
-            <Link href="/contact">
-              <button 
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  background: '#000000',
-                  color: '#ffffff',
-                  border: 'none',
-                  padding: '1rem 2rem',
-                  borderRadius: '6px',
-                  fontSize: '1.25rem',
-                  fontWeight: '500',
-                  letterSpacing: '0.05em',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  fontFamily: 'inherit',
-                  marginTop: '1rem'
-                }}
-              >
-                Contact
-              </button>
-            </Link>
+                <Link href="/contact" style={{ width: '100%' }}>
+                  <button 
+                    ref={(el) => (menuLinksRef.current[4] = el)}
+                    onClick={() => closeMobileMenu()}
+                    style={{
+                      background: '#007bff',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '1.25rem 2rem',
+                      borderRadius: '12px',
+                      fontSize: '1.25rem',
+                      fontWeight: '500',
+                      letterSpacing: '0.02em',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      fontFamily: 'inherit',
+                      marginTop: '1rem',
+                      width: '100%',
+                      outline: 'none'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.boxShadow = '0 0 0 2px #ffffff'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.boxShadow = 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#0056b3'
+                      e.target.style.transform = 'scale(1.05)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = '#007bff'
+                      e.target.style.transform = 'scale(1)'
+                    }}
+                  >
+                    Get in Touch
+                  </button>
+                </Link>
+              </div>
+
+              {/* Social + Contact at Bottom */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '1rem',
+                marginTop: '2rem',
+                paddingTop: '2rem',
+                borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+                width: '100%'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1.5rem'
+                }}>
+                  <a 
+                    href="tel:+919996999770"
+                    style={{
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      fontSize: '1.5rem',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = '#007bff'
+                      e.target.style.transform = 'scale(1.1)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = '#ffffff'
+                      e.target.style.transform = 'scale(1)'
+                    }}
+                    aria-label="Call us"
+                  >
+                    ☎
+                  </a>
+                  <a 
+                    href="mailto:hello@bridgesoftwaresolutions.com"
+                    style={{
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      fontSize: '1.5rem',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = '#007bff'
+                      e.target.style.transform = 'scale(1.1)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = '#ffffff'
+                      e.target.style.transform = 'scale(1)'
+                    }}
+                    aria-label="Email us"
+                  >
+                    ✉
+                  </a>
+                </div>
+                <div style={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: '0.875rem',
+                  textAlign: 'center'
+                }}>
+                  Bridge Software Solutions<br />
+                  Hyderabad, India
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </nav>

@@ -68,7 +68,7 @@ export default function AdminLogin() {
               src="/Bridge-transparent-logo.png" 
               alt="Bridge Software Solutions" 
               style={{
-                height: '75px',
+                height: '38px',
                 width: 'auto',
                 objectFit: 'contain'
               }}

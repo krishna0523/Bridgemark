@@ -215,7 +215,7 @@ export default function BlogIndex() {
                   src="/Bridge-transparent-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
-                    height: isMobile ? '48px' : '63px',
+                    height: isMobile ? '24px' : '32px',
                     width: 'auto',
                     objectFit: 'contain'
                   }}
