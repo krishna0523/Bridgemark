@@ -12,9 +12,6 @@
   "functions": {
     "pages/api/blog-bot.ts": {
       "maxDuration": 300
-    },
-    "lib/seo/og.tsx": {
-      "runtime": "edge"
     }
   },
   "redirects": [
