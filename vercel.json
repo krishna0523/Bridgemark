@@ -1,5 +1,4 @@
 {
-  "_comment": "Blog automation cron configuration",
   "crons": [
     {
       "path": "/api/blog-bot",
