@@ -19,6 +19,11 @@
       "source": "/blog/:path*",
       "destination": "/blogs/:path*",
       "permanent": true
+    },
+    {
+      "source": "/blogs/organic-seo-content-traffic",
+      "destination": "/blogs/why-organic-seo-content-is-your-best-investment-for-long-term-traffic",
+      "permanent": true
     }
   ]
 }
