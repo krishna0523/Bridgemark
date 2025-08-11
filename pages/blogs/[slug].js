@@ -78,7 +78,7 @@ export default function BlogPost({ frontMatter, mdxSource }) {
                 "name": "Bridge Software Solutions",
                 "logo": {
                   "@type": "ImageObject",
-                  "url": "https://bridgesoftwaresolutions.com/BRIDGE%20new%20logo.png"
+                  "url": "https://bridgesoftwaresolutions.com/BRIDGE-new-logo.png"
                 }
               },
               "datePublished": frontMatter.date,
@@ -134,7 +134,7 @@ export default function BlogPost({ frontMatter, mdxSource }) {
                 onClick={() => router.push('/')}
               >
                 <img 
-                  src="/BRIDGE new logo.png" 
+                  src="/BRIDGE-new-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
                     height: '32px',
@@ -267,7 +267,7 @@ export default function BlogPost({ frontMatter, mdxSource }) {
                 onClick={() => router.push('/')}
               >
                 <img 
-                  src="/BRIDGE new logo.png" 
+                  src="/BRIDGE-new-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
                     height: '42px',

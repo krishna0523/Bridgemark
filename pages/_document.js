@@ -71,7 +71,7 @@ export default function Document() {
               "@type": "Organization",
               "name": "Bridge Software Solutions",
               "url": "https://bridgesoftwaresolutions.com",
-              "logo": "https://bridgesoftwaresolutions.com/BRIDGE%20new%20logo.png",
+              "logo": "https://bridgesoftwaresolutions.com/BRIDGE-new-logo.png",
               "description": "Professional web development, mobile app development, brand identity design, and SEO services in Hyderabad",
               "address": {
                 "@type": "PostalAddress",

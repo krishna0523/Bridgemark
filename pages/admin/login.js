@@ -65,7 +65,7 @@ export default function AdminLogin() {
           {/* Logo */}
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <img 
-              src="/BRIDGE new logo.png" 
+              src="/BRIDGE-new-logo.png" 
               alt="Bridge Software Solutions" 
               style={{
                 height: '50px',

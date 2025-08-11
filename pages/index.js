@@ -972,7 +972,7 @@ export default function Home() {
           "name": "Bridge Software Solutions",
           "description": "Professional web development, mobile app development, brand identity design, and SEO services in Hyderabad",
           "url": "https://bridgesoftwaresolutions.com",
-          "logo": "https://bridgesoftwaresolutions.com/BRIDGE%20new%20logo.png",
+          "logo": "https://bridgesoftwaresolutions.com/BRIDGE-new-logo.png",
           "image": "https://bridgesoftwaresolutions.com/og-image.jpg",
           "address": {
             "@type": "PostalAddress",
@@ -1098,7 +1098,7 @@ export default function Home() {
               onClick={() => scrollToSection(heroSectionRef)}
             >
               <img 
-                src="/BRIDGE new logo.png" 
+                src="/BRIDGE-new-logo.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
                   height: '32px',
@@ -1230,7 +1230,7 @@ export default function Home() {
               onClick={() => scrollToSection(heroSectionRef)}
             >
               <img 
-                src="/BRIDGE new logo.png" 
+                src="/BRIDGE-new-logo.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
                   height: '42px',
