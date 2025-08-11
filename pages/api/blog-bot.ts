@@ -53,29 +53,21 @@ class BlogBot {
 
   async updateKeywords(keywords: KeywordRow[]): Promise<void> {
     try {
-      // Skip CSV updates in production (read-only file system)
-      if (process.env.VERCEL_ENV === 'production') {
-        console.log('Skipping CSV update in production environment');
-        return;
-      }
-
       const headers = Object.keys(keywords[0] || {});
       const data = keywords.map(keyword => headers.map(header => (keyword as any)[header] || ''));
       const csvContent = stringify([headers, ...data]);
       
-      // Only write locally in development
+      // Write locally in development
       if (process.env.NODE_ENV === 'development') {
         fs.writeFileSync(this.csvPath, csvContent);
+        console.log('Updated keywords CSV locally');
       }
       
-      // Always try to commit to GitHub if possible
+      // Always commit to GitHub (required for production and persistence)
       await this.commitCsvToGitHub(csvContent);
     } catch (error) {
       console.error('Error updating keywords CSV:', error);
-      // Don't throw error in production to avoid blocking blog generation
-      if (process.env.VERCEL_ENV !== 'production') {
-        throw error;
-      }
+      throw error;
     }
   }
 
@@ -184,8 +176,9 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
       const token = process.env.GITHUB_TOKEN;
 
       if (!token) {
-        console.log('GitHub token not found, skipping CSV commit');
-        return;
+        const errorMsg = 'GitHub token not found - CSV updates will not persist';
+        console.error(errorMsg);
+        throw new Error(errorMsg);
       }
 
       const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/content/keywords/keywords.csv`;
@@ -203,6 +196,8 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
       if (getResponse.ok) {
         const fileData = await getResponse.json();
         sha = fileData.sha;
+      } else {
+        throw new Error(`Failed to get current CSV file: ${getResponse.statusText}`);
       }
 
       const response = await fetch(apiUrl, {
@@ -216,17 +211,20 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
           message: 'Update keywords status via blog generation',
           content: encodedContent,
           branch: 'main',
-          ...(sha && { sha })
+          sha
         })
       });
 
       if (!response.ok) {
-        console.error('Failed to commit CSV to GitHub:', response.statusText);
+        const errorText = await response.text();
+        console.error('Failed to commit CSV to GitHub:', response.statusText, errorText);
+        throw new Error(`GitHub CSV commit failed: ${response.statusText}`);
       } else {
         console.log('Successfully committed CSV to GitHub');
       }
     } catch (error) {
       console.error('Error committing CSV to GitHub:', error);
+      throw error;
     }
   }
 
@@ -251,10 +249,15 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
 
   async processNextKeyword(): Promise<{ success: boolean; message: string; keyword?: string }> {
     try {
+      console.log('Starting blog generation process...');
       const keywords = await this.readKeywords();
+      console.log(`Total keywords loaded: ${keywords.length}`);
+      
       const queuedKeywords = keywords.filter(k => k.status === 'queued');
+      console.log(`Queued keywords found: ${queuedKeywords.length}`);
       
       if (queuedKeywords.length === 0) {
+        console.log('No queued keywords available');
         return { success: false, message: 'No queued keywords found' };
       }
 
@@ -265,23 +268,30 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
       });
 
       const nextKeyword = queuedKeywords[0];
+      console.log(`Selected keyword: "${nextKeyword.keyword}" (priority: ${nextKeyword.priority})`);
       
       // Mark as generating
       const keywordIndex = keywords.findIndex(k => k.keyword === nextKeyword.keyword);
       keywords[keywordIndex].status = 'generating';
       keywords[keywordIndex].last_generated = new Date().toISOString();
+      console.log('Marking keyword as generating...');
       await this.updateKeywords(keywords);
 
       try {
         // Generate the blog post
+        console.log('Generating blog post...');
         const blogUrl = await this.generateBlogPost(nextKeyword);
+        console.log(`Blog post generated successfully: ${blogUrl}`);
         
         // Update status to published
         keywords[keywordIndex].status = 'published';
         keywords[keywordIndex].url = blogUrl;
+        keywords[keywordIndex].title = `Generated blog for ${nextKeyword.keyword}`;
+        console.log('Marking keyword as published...');
         await this.updateKeywords(keywords);
 
         // Trigger revalidation
+        console.log('Triggering revalidation...');
         await this.triggerRevalidation();
 
         return {
@@ -290,6 +300,7 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
           keyword: nextKeyword.keyword
         };
       } catch (error) {
+        console.error('Error during blog generation:', error);
         // Mark as failed
         keywords[keywordIndex].status = 'failed';
         await this.updateKeywords(keywords);
