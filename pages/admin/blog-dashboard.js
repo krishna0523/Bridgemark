@@ -25,6 +25,11 @@ export default function BlogDashboard() {
     priority: 'medium'
   });
   const [keywordResult, setKeywordResult] = useState(null);
+  
+  // Sync and delete state
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(null); // stores slug being deleted
 
   // Check authentication on component mount
   useEffect(() => {
@@ -140,6 +145,70 @@ export default function BlogDashboard() {
       });
     } finally {
       setIsAddingKeyword(false);
+    }
+  };
+
+  const handleSyncKeywords = async () => {
+    setIsSyncing(true);
+    setSyncResult(null);
+
+    try {
+      const token = sessionStorage.getItem('admin_token');
+      const response = await fetch('/api/admin/sync-keywords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const result = await response.json();
+      setSyncResult(result);
+      
+      if (result.success) {
+        // Reload keywords to show updated data
+        setTimeout(() => loadKeywords(), 1000);
+        setTimeout(() => setSyncResult(null), 5000);
+      }
+    } catch (error) {
+      setSyncResult({
+        success: false,
+        message: `Error: ${error.message}`
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleDeleteBlog = async (slug, keyword) => {
+    if (!confirm(`Are you sure you want to delete the blog post "${keyword}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setIsDeleting(slug);
+
+    try {
+      const token = sessionStorage.getItem('admin_token');
+      const response = await fetch(`/api/admin/delete-blog?slug=${slug}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Reload keywords to show updated status
+        loadKeywords();
+        alert('Blog post deleted successfully!');
+      } else {
+        alert(`Failed to delete blog post: ${result.message}`);
+      }
+    } catch (error) {
+      alert(`Error deleting blog post: ${error.message}`);
+    } finally {
+      setIsDeleting(null);
     }
   };
 
@@ -368,6 +437,55 @@ export default function BlogDashboard() {
             {lastResult.keyword && (
               <div style={{ marginTop: '0.5rem', fontWeight: '500' }}>
                 Generated for: "{lastResult.keyword}"
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Sync Keywords */}
+      <div style={{ 
+        background: '#ffffff', 
+        border: '1px solid #e9ecef', 
+        borderRadius: '8px', 
+        padding: '2rem',
+        marginBottom: '2rem' 
+      }}>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Sync Keywords Dashboard</h2>
+        <p style={{ color: '#666666', marginBottom: '1.5rem' }}>
+          Synchronize the keywords dashboard with published blog posts to ensure all data is up-to-date.
+        </p>
+        
+        <button
+          onClick={handleSyncKeywords}
+          disabled={isSyncing}
+          style={{
+            background: isSyncing ? '#6c757d' : '#28a745',
+            color: '#ffffff',
+            border: 'none',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '6px',
+            fontSize: '1rem',
+            cursor: isSyncing ? 'not-allowed' : 'pointer',
+            marginBottom: '1rem'
+          }}
+        >
+          {isSyncing ? 'Syncing...' : '🔄 Sync Keywords'}
+        </button>
+
+        {syncResult && (
+          <div style={{
+            background: syncResult.success ? '#d4edda' : '#f8d7da',
+            color: syncResult.success ? '#155724' : '#721c24',
+            border: `1px solid ${syncResult.success ? '#c3e6cb' : '#f5c6cb'}`,
+            padding: '0.75rem 1rem',
+            borderRadius: '4px',
+            marginTop: '1rem'
+          }}>
+            {syncResult.message}
+            {syncResult.updated !== undefined && (
+              <div style={{ marginTop: '0.5rem', fontWeight: '500' }}>
+                Updated: {syncResult.updated} keyword{syncResult.updated !== 1 ? 's' : ''}
               </div>
             )}
           </div>
@@ -628,6 +746,35 @@ export default function BlogDashboard() {
                         >
                           View
                         </a>
+                        <button
+                          onClick={() => {
+                            const slug = keyword.url.replace('/blogs/', '');
+                            handleDeleteBlog(slug, keyword.keyword);
+                          }}
+                          disabled={isDeleting === keyword.url.replace('/blogs/', '')}
+                          style={{
+                            background: isDeleting === keyword.url.replace('/blogs/', '') ? '#6c757d' : '#dc3545',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            cursor: isDeleting === keyword.url.replace('/blogs/', '') ? 'not-allowed' : 'pointer',
+                            transition: 'background 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isDeleting) {
+                              e.target.style.background = '#c82333';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isDeleting) {
+                              e.target.style.background = '#dc3545';
+                            }
+                          }}
+                        >
+                          {isDeleting === keyword.url.replace('/blogs/', '') ? 'Deleting...' : 'Delete'}
+                        </button>
                       </div>
                     ) : (
                       <span style={{ color: '#666', fontSize: '0.75rem' }}>
