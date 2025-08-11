@@ -9,6 +9,19 @@ import { serialize } from 'next-mdx-remote/serialize';
 
 export default function BlogPost({ frontMatter, mdxSource }) {
   const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   if (router.isFallback) {
     return <div style={{ padding: '50px', textAlign: 'center' }}>Loading...</div>;
@@ -89,48 +102,327 @@ export default function BlogPost({ frontMatter, mdxSource }) {
       }}>
         {/* Navigation */}
         <nav style={{
-          padding: '20px',
-          borderBottom: '1px solid #eee',
-          background: '#fff',
-          position: 'sticky',
+          position: 'fixed',
           top: 0,
-          zIndex: 100
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          padding: '1rem 2rem',
+          background: '#ffffff',
+          backdropFilter: 'none',
+          borderBottom: '1px solid rgba(0,0,0,0.1)',
+          transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)'
         }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <button 
-              onClick={() => router.push('/')}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '24px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                color: '#000'
-              }}
-            >
-              Bridge Software Solutions
-            </button>
-            <button 
-              onClick={() => router.push('/')}
-              style={{
-                padding: '8px 16px',
-                background: '#000',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              ← Back to Home
-            </button>
-          </div>
+          {isMobile ? (
+            // Mobile Navigation Layout
+            <div style={{
+              maxWidth: '100%',
+              margin: '0 auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%'
+            }}>
+              {/* Mobile Logo */}
+              <div 
+                style={{
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexShrink: 0
+                }}
+                onClick={() => router.push('/')}
+              >
+                <img 
+                  src="/BRIDGE.png" 
+                  alt="Bridge Software Solutions Logo" 
+                  style={{
+                    height: '32px',
+                    width: 'auto',
+                    objectFit: 'contain'
+                  }}
+                />
+              </div>
+
+              {/* Mobile Navigation */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flex: 1,
+                marginLeft: '1rem',
+                gap: 'clamp(0.25rem, 2vw, 1rem)'
+              }}>
+                {/* Mobile Services */}
+                <button
+                  onClick={() => router.push('/#services')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}
+                >
+                  Services
+                </button>
+
+                {/* Mobile Projects */}
+                <button
+                  onClick={() => router.push('/#projects')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '400',
+                    letterSpacing: '0.05em',
+                    color: '#666666',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}
+                >
+                  Projects
+                </button>
+
+                {/* Mobile Blogs - Active */}
+                <button
+                  onClick={() => router.push('/blogs')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '500',
+                    letterSpacing: '0.05em',
+                    color: '#000000',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}
+                >
+                  Blogs
+                </button>
+
+                {/* Mobile Contact Button */}
+                <button
+                  onClick={() => router.push('/contact')}
+                  style={{
+                    background: '#007bff',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: 'clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.6rem, 2.5vw, 1.5rem)',
+                    borderRadius: '6px',
+                    fontSize: 'clamp(0.65rem, 3vw, 0.875rem)',
+                    fontWeight: '500',
+                    letterSpacing: '0.05em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    flex: '1',
+                    textAlign: 'center'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#0056b3'
+                    e.target.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#007bff'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                >
+                  Contact
+                </button>
+              </div>
+            </div>
+          ) : (
+            // Desktop Navigation Layout
+            <div style={{
+              maxWidth: '1200px',
+              margin: '0 auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              {/* Desktop Logo */}
+              <div 
+                style={{
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+                onClick={() => router.push('/')}
+              >
+                <img 
+                  src="/BRIDGE.png" 
+                  alt="Bridge Software Solutions Logo" 
+                  style={{
+                    height: '42px',
+                    width: 'auto',
+                    objectFit: 'contain'
+                  }}
+                />
+              </div>
+              
+              {/* Desktop Navigation Links */}
+              <div style={{
+                display: 'flex',
+                gap: '2rem',
+                alignItems: 'center'
+              }}>
+                {/* Home Button */}
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  position: 'relative',
+                  transform: 'scale(1)'
+                }}
+                onClick={() => router.push('/')}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#666666'
+                  e.target.style.transform = 'scale(1)'
+                }}>
+                  Home
+                </button>
+
+                {/* Services Button */}
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  position: 'relative',
+                  transform: 'scale(1)'
+                }}
+                onClick={() => router.push('/#services')}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#666666'
+                  e.target.style.transform = 'scale(1)'
+                }}>
+                  Services
+                </button>
+
+                {/* Projects Button */}
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.05em',
+                  color: '#666666',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  position: 'relative',
+                  transform: 'scale(1)'
+                }}
+                onClick={() => router.push('/#projects')}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000000'
+                  e.target.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#666666'
+                  e.target.style.transform = 'scale(1)'
+                }}>
+                  Projects
+                </button>
+
+                {/* Blogs Link - Active */}
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.05em',
+                  color: '#000000',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontFamily: 'inherit',
+                  position: 'relative',
+                  transform: 'scale(1)'
+                }}
+                onClick={() => router.push('/blogs')}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)'
+                }}
+                >
+                  Blogs
+                </button>
+                
+                {/* Contact Button */}
+                <button
+                  onClick={() => router.push('/contact')}
+                  style={{
+                    background: '#007bff',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    letterSpacing: '0.05em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: 'inherit'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#0056b3'
+                    e.target.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#007bff'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                >
+                  Contact
+                </button>
+              </div>
+            </div>
+          )}
         </nav>
 
         {/* Blog Content */}
         <article style={{ 
           maxWidth: '800px', 
           margin: '0 auto', 
-          padding: '40px 20px',
+          padding: '120px 20px 40px',
           lineHeight: '1.7'
         }}>
           {/* Header */}
