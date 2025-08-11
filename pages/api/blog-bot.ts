@@ -53,13 +53,29 @@ class BlogBot {
 
   async updateKeywords(keywords: KeywordRow[]): Promise<void> {
     try {
+      // Skip CSV updates in production (read-only file system)
+      if (process.env.VERCEL_ENV === 'production') {
+        console.log('Skipping CSV update in production environment');
+        return;
+      }
+
       const headers = Object.keys(keywords[0] || {});
       const data = keywords.map(keyword => headers.map(header => (keyword as any)[header] || ''));
       const csvContent = stringify([headers, ...data]);
-      fs.writeFileSync(this.csvPath, csvContent);
+      
+      // Only write locally in development
+      if (process.env.NODE_ENV === 'development') {
+        fs.writeFileSync(this.csvPath, csvContent);
+      }
+      
+      // Always try to commit to GitHub if possible
+      await this.commitCsvToGitHub(csvContent);
     } catch (error) {
       console.error('Error updating keywords CSV:', error);
-      throw error;
+      // Don't throw error in production to avoid blocking blog generation
+      if (process.env.VERCEL_ENV !== 'production') {
+        throw error;
+      }
     }
   }
 
@@ -102,13 +118,15 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
 
       // Save the blog post
       const fileName = `${blogContent.slug}.mdx`;
-      const filePath = path.join(this.postsPath, fileName);
-      fs.writeFileSync(filePath, frontmatter);
-
-      // Commit to GitHub (if GitHub token is available)
-      if (process.env.GITHUB_TOKEN) {
-        await this.commitToGitHub(fileName, frontmatter, blogContent.title);
+      
+      // Only write locally in development
+      if (process.env.NODE_ENV === 'development') {
+        const filePath = path.join(this.postsPath, fileName);
+        fs.writeFileSync(filePath, frontmatter);
       }
+
+      // Always commit to GitHub (required for production)
+      await this.commitToGitHub(fileName, frontmatter, blogContent.title);
 
       return `/blogs/${blogContent.slug}`;
     } catch (error) {
@@ -119,13 +137,14 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
 
   async commitToGitHub(fileName: string, content: string, title: string): Promise<void> {
     try {
-      const owner = process.env.GITHUB_OWNER;
-      const repo = process.env.GITHUB_REPO;
+      const owner = process.env.GITHUB_OWNER || 'krishna0523';
+      const repo = process.env.GITHUB_REPO || 'Bridgemark';
       const token = process.env.GITHUB_TOKEN;
 
-      if (!owner || !repo || !token) {
-        console.log('GitHub credentials not found, skipping commit');
-        return;
+      if (!token) {
+        const errorMsg = 'GitHub token not found - cannot save blog post in production';
+        console.error(errorMsg);
+        throw new Error(errorMsg);
       }
 
       const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/content/posts/${fileName}`;
@@ -146,12 +165,68 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
       });
 
       if (!response.ok) {
-        console.error('Failed to commit to GitHub:', response.statusText);
+        const errorText = await response.text();
+        console.error('Failed to commit to GitHub:', response.statusText, errorText);
+        throw new Error(`GitHub commit failed: ${response.statusText}`);
       } else {
         console.log('Successfully committed to GitHub:', fileName);
       }
     } catch (error) {
       console.error('Error committing to GitHub:', error);
+      throw error;
+    }
+  }
+
+  async commitCsvToGitHub(csvContent: string): Promise<void> {
+    try {
+      const owner = process.env.GITHUB_OWNER || 'krishna0523';
+      const repo = process.env.GITHUB_REPO || 'Bridgemark';
+      const token = process.env.GITHUB_TOKEN;
+
+      if (!token) {
+        console.log('GitHub token not found, skipping CSV commit');
+        return;
+      }
+
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/content/keywords/keywords.csv`;
+      const encodedContent = Buffer.from(csvContent).toString('base64');
+
+      // First, get the current file to get its SHA
+      const getResponse = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+
+      let sha;
+      if (getResponse.ok) {
+        const fileData = await getResponse.json();
+        sha = fileData.sha;
+      }
+
+      const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({
+          message: 'Update keywords status via blog generation',
+          content: encodedContent,
+          branch: 'main',
+          ...(sha && { sha })
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Failed to commit CSV to GitHub:', response.statusText);
+      } else {
+        console.log('Successfully committed CSV to GitHub');
+      }
+    } catch (error) {
+      console.error('Error committing CSV to GitHub:', error);
     }
   }
 

@@ -15,6 +15,16 @@ export default function BlogDashboard() {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastResult, setLastResult] = useState(null);
+  
+  // Keyword creation state
+  const [isAddingKeyword, setIsAddingKeyword] = useState(false);
+  const [newKeyword, setNewKeyword] = useState({
+    keyword: '',
+    stage: 'MOFU',
+    intent: 'informational',
+    priority: 'medium'
+  });
+  const [keywordResult, setKeywordResult] = useState(null);
 
   // Check authentication on component mount
   useEffect(() => {
@@ -84,6 +94,52 @@ export default function BlogDashboard() {
       });
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleAddKeyword = async () => {
+    if (!newKeyword.keyword.trim()) {
+      setKeywordResult({ success: false, message: 'Please enter a keyword' });
+      return;
+    }
+
+    setIsAddingKeyword(true);
+    setKeywordResult(null);
+
+    try {
+      const token = sessionStorage.getItem('admin_token');
+      const response = await fetch('/api/admin/keywords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newKeyword)
+      });
+
+      const result = await response.json();
+      setKeywordResult(result);
+      
+      if (result.success) {
+        // Reset form
+        setNewKeyword({
+          keyword: '',
+          stage: 'MOFU',
+          intent: 'informational',
+          priority: 'medium'
+        });
+        
+        // Reload keywords to show the new one
+        setTimeout(() => loadKeywords(), 1000);
+        setTimeout(() => setKeywordResult(null), 3000);
+      }
+    } catch (error) {
+      setKeywordResult({
+        success: false,
+        message: `Error: ${error.message}`
+      });
+    } finally {
+      setIsAddingKeyword(false);
     }
   };
 
@@ -318,6 +374,135 @@ export default function BlogDashboard() {
         )}
       </div>
 
+      {/* Add New Keyword */}
+      <div style={{ 
+        background: '#ffffff', 
+        border: '1px solid #e9ecef', 
+        borderRadius: '8px', 
+        padding: '2rem',
+        marginBottom: '2rem' 
+      }}>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Add New Keyword</h2>
+        <p style={{ color: '#666666', marginBottom: '1.5rem' }}>
+          Add a new keyword to the blog generation queue. It will be picked up during the next scheduled run or manual generation.
+        </p>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+              Keyword *
+            </label>
+            <input
+              type="text"
+              value={newKeyword.keyword}
+              onChange={(e) => setNewKeyword(prev => ({ ...prev, keyword: e.target.value }))}
+              placeholder="e.g., mobile app development hyderabad"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+            />
+          </div>
+          
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+              Stage
+            </label>
+            <select
+              value={newKeyword.stage}
+              onChange={(e) => setNewKeyword(prev => ({ ...prev, stage: e.target.value }))}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+            >
+              <option value="TOFU">TOFU (Top of Funnel)</option>
+              <option value="MOFU">MOFU (Middle of Funnel)</option>
+              <option value="BOFU">BOFU (Bottom of Funnel)</option>
+            </select>
+          </div>
+          
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+              Intent
+            </label>
+            <select
+              value={newKeyword.intent}
+              onChange={(e) => setNewKeyword(prev => ({ ...prev, intent: e.target.value }))}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+            >
+              <option value="informational">Informational</option>
+              <option value="transactional">Transactional</option>
+              <option value="commercial">Commercial</option>
+              <option value="comparison">Comparison</option>
+            </select>
+          </div>
+          
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+              Priority
+            </label>
+            <select
+              value={newKeyword.priority}
+              onChange={(e) => setNewKeyword(prev => ({ ...prev, priority: e.target.value }))}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+            >
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          onClick={handleAddKeyword}
+          disabled={isAddingKeyword}
+          style={{
+            background: isAddingKeyword ? '#6c757d' : '#17a2b8',
+            color: '#ffffff',
+            border: 'none',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '6px',
+            fontSize: '1rem',
+            cursor: isAddingKeyword ? 'not-allowed' : 'pointer',
+            marginBottom: '1rem'
+          }}
+        >
+          {isAddingKeyword ? 'Adding...' : 'Add Keyword'}
+        </button>
+
+        {keywordResult && (
+          <div style={{
+            background: keywordResult.success ? '#d4edda' : '#f8d7da',
+            color: keywordResult.success ? '#155724' : '#721c24',
+            border: `1px solid ${keywordResult.success ? '#c3e6cb' : '#f5c6cb'}`,
+            padding: '0.75rem 1rem',
+            borderRadius: '4px',
+            marginTop: '1rem'
+          }}>
+            {keywordResult.message}
+          </div>
+        )}
+      </div>
+
       {/* Keywords Table */}
       <div style={{ 
         background: '#ffffff', 
@@ -339,6 +524,7 @@ export default function BlogDashboard() {
                 <th style={{ padding: '1rem', textAlign: 'left', borderBottom: '1px solid #dee2e6' }}>Stage</th>
                 <th style={{ padding: '1rem', textAlign: 'left', borderBottom: '1px solid #dee2e6' }}>Last Generated</th>
                 <th style={{ padding: '1rem', textAlign: 'left', borderBottom: '1px solid #dee2e6' }}>URL</th>
+                <th style={{ padding: '1rem', textAlign: 'left', borderBottom: '1px solid #dee2e6' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -389,6 +575,65 @@ export default function BlogDashboard() {
                         View Post →
                       </a>
                     ) : '-'}
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    {keyword.status === 'published' && keyword.url ? (
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => {
+                            // Extract slug from URL like /blogs/slug-name
+                            const slug = keyword.url.replace('/blogs/', '');
+                            router.push(`/admin/blog-editor?slug=${slug}`);
+                          }}
+                          style={{
+                            background: '#17a2b8',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.background = '#138496';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.background = '#17a2b8';
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <a 
+                          href={keyword.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{
+                            background: '#28a745',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            textDecoration: 'none',
+                            display: 'inline-block',
+                            transition: 'background 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.background = '#218838';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.background = '#28a745';
+                          }}
+                        >
+                          View
+                        </a>
+                      </div>
+                    ) : (
+                      <span style={{ color: '#666', fontSize: '0.75rem' }}>
+                        {keyword.status === 'published' ? 'No URL' : 'Not published'}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
