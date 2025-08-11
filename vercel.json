@@ -24,6 +24,16 @@
       "source": "/blogs/organic-seo-content-traffic",
       "destination": "/blogs/why-organic-seo-content-is-your-best-investment-for-long-term-traffic",
       "permanent": true
+    },
+    {
+      "source": "/blogs/ai-advancements-2024-business",
+      "destination": "/blogs/how-ai-advancements-in-2024-are-transforming-small-business-marketing",
+      "permanent": true
+    },
+    {
+      "source": "/blogs/complete-seo-guide-hyderabad",
+      "destination": "/blogs/complete-seo-guide-for-hyderabad-businesses-in-2024",
+      "permanent": true
     }
   ]
 }
