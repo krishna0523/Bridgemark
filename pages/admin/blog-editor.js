@@ -293,6 +293,32 @@ export default function BlogEditor() {
                 />
               </div>
 
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+                  Tags
+                </label>
+                <input
+                  type="text"
+                  value={Array.isArray(frontMatter.tags) ? frontMatter.tags.join(', ') : (frontMatter.tags || '')}
+                  onChange={(e) => {
+                    const tagsString = e.target.value;
+                    const tagsArray = tagsString.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+                    handleFrontMatterChange('tags', tagsArray);
+                  }}
+                  placeholder="e.g., web development, SEO, digital marketing"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '1rem'
+                  }}
+                />
+                <small style={{ color: '#666', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
+                  Separate tags with commas
+                </small>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>

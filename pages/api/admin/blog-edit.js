@@ -5,6 +5,66 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
+// Commit file to GitHub
+async function commitToGitHub(fileName, content, title) {
+  try {
+    const owner = process.env.GITHUB_OWNER || 'krishna0523';
+    const repo = process.env.GITHUB_REPO || 'Bridgemark';
+    const token = process.env.GITHUB_TOKEN;
+
+    if (!token) {
+      const errorMsg = 'GitHub token not found - cannot save blog post in production';
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/content/posts/${fileName}`;
+    const encodedContent = Buffer.from(content).toString('base64');
+
+    // First, get the current file to get its SHA (required for updates)
+    const getResponse = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    let sha;
+    if (getResponse.ok) {
+      const fileData = await getResponse.json();
+      sha = fileData.sha;
+    } else {
+      throw new Error(`Failed to get file SHA: ${getResponse.statusText}`);
+    }
+
+    const response = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify({
+        message: `Update blog post: ${title}`,
+        content: encodedContent,
+        branch: 'main',
+        sha: sha
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Failed to commit to GitHub:', response.statusText, errorText);
+      throw new Error(`GitHub commit failed: ${response.statusText}`);
+    } else {
+      console.log('Successfully updated blog post in GitHub:', fileName);
+    }
+  } catch (error) {
+    console.error('Error committing to GitHub:', error);
+    throw error;
+  }
+}
+
 // Verify admin authentication
 function verifyAuth(req) {
   const authHeader = req.headers.authorization;
@@ -21,7 +81,7 @@ function verifyAuth(req) {
   }
 }
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   // Verify authentication
   if (!verifyAuth(req)) {
     return res.status(401).json({ success: false, message: 'Unauthorized' });
@@ -80,8 +140,13 @@ export default function handler(req, res) {
       // Create the updated file content
       const updatedFileContent = matter.stringify(content, frontMatter);
       
-      // Write the updated content back to the file
-      fs.writeFileSync(filePath, updatedFileContent, 'utf8');
+      // Save locally in development only
+      if (process.env.NODE_ENV === 'development') {
+        fs.writeFileSync(filePath, updatedFileContent, 'utf8');
+      }
+
+      // Always try to commit to GitHub (required for production)
+      await commitToGitHub(`${slug}.mdx`, updatedFileContent, frontMatter.title || 'Updated Post');
       
       res.status(200).json({
         success: true,
@@ -89,7 +154,7 @@ export default function handler(req, res) {
       });
     } catch (error) {
       console.error('Error updating post:', error);
-      res.status(500).json({ success: false, message: 'Failed to update post' });
+      res.status(500).json({ success: false, message: `Failed to update post: ${error.message}` });
     }
   } else {
     res.status(405).json({ success: false, message: 'Method not allowed' });
