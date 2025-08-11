@@ -302,7 +302,7 @@ Bridge Software Solutions has been serving the Hyderabad market for years, helpi
           "name": "Bridge Software Solutions",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://bridgesoftwaresolutions.com/BRIDGE-new-logo.png"
+            "url": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png"
           }
         },
         "datePublished": new Date().toISOString(),

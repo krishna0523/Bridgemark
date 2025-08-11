@@ -314,6 +314,78 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
       };
     }
   }
+
+  async processSpecificKeyword(targetKeyword: string): Promise<{ success: boolean; message: string; keyword?: string }> {
+    try {
+      console.log(`Starting blog generation for specific keyword: "${targetKeyword}"`);
+      const keywords = await this.readKeywords();
+      console.log(`Total keywords loaded: ${keywords.length}`);
+      
+      // Find the specific keyword
+      const keywordIndex = keywords.findIndex(k => k.keyword === targetKeyword);
+      
+      if (keywordIndex === -1) {
+        console.log(`Keyword "${targetKeyword}" not found`);
+        return { success: false, message: `Keyword "${targetKeyword}" not found in the list` };
+      }
+
+      const selectedKeyword = keywords[keywordIndex];
+      
+      if (selectedKeyword.status === 'published') {
+        console.log(`Keyword "${targetKeyword}" is already published`);
+        return { success: false, message: `Keyword "${targetKeyword}" is already published` };
+      }
+
+      if (selectedKeyword.status === 'generating') {
+        console.log(`Keyword "${targetKeyword}" is currently being generated`);
+        return { success: false, message: `Keyword "${targetKeyword}" is currently being generated` };
+      }
+
+      console.log(`Selected keyword: "${selectedKeyword.keyword}" (priority: ${selectedKeyword.priority}, status: ${selectedKeyword.status})`);
+      
+      // Mark as generating
+      keywords[keywordIndex].status = 'generating';
+      keywords[keywordIndex].last_generated = new Date().toISOString();
+      console.log('Marking keyword as generating...');
+      await this.updateKeywords(keywords);
+
+      try {
+        // Generate the blog post
+        console.log('Generating blog post...');
+        const blogUrl = await this.generateBlogPost(selectedKeyword);
+        console.log(`Blog post generated successfully: ${blogUrl}`);
+        
+        // Update status to published
+        keywords[keywordIndex].status = 'published';
+        keywords[keywordIndex].url = blogUrl;
+        keywords[keywordIndex].title = `Generated blog for ${selectedKeyword.keyword}`;
+        console.log('Marking keyword as published...');
+        await this.updateKeywords(keywords);
+
+        // Trigger revalidation
+        console.log('Triggering revalidation...');
+        await this.triggerRevalidation();
+
+        return {
+          success: true,
+          message: `Successfully generated blog post for "${selectedKeyword.keyword}"`,
+          keyword: selectedKeyword.keyword
+        };
+      } catch (error) {
+        console.error('Error during blog generation:', error);
+        // Mark as failed
+        keywords[keywordIndex].status = 'failed';
+        await this.updateKeywords(keywords);
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error processing specific keyword:', error);
+      return {
+        success: false,
+        message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      };
+    }
+  }
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -328,7 +400,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const blogBot = new BlogBot();
-    const result = await blogBot.processNextKeyword();
+    const { keyword } = req.body || {};
+    
+    // If specific keyword is provided, process that keyword
+    // Otherwise, process the next keyword in queue
+    const result = keyword 
+      ? await blogBot.processSpecificKeyword(keyword)
+      : await blogBot.processNextKeyword();
     
     if (result.success) {
       res.status(200).json(result);

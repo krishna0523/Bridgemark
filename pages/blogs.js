@@ -159,7 +159,7 @@ export default function BlogIndex() {
           "publisher": {
             "@type": "Organization",
             "name": "Bridge Software Solutions",
-            "logo": "https://bridgesoftwaresolutions.com/BRIDGE-new-logo.png"
+            "logo": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png"
           },
           "mainEntityOfPage": {
             "@type": "WebPage",
@@ -212,10 +212,10 @@ export default function BlogIndex() {
                 alignItems: 'center'
               }}>
                 <img 
-                  src="/BRIDGE-new-logo.png" 
+                  src="/Bridge-transparent-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
-                    height: isMobile ? '32px' : '42px',
+                    height: isMobile ? '48px' : '63px',
                     width: 'auto',
                     objectFit: 'contain'
                   }}

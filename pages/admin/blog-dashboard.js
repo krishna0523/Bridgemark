@@ -26,6 +26,9 @@ export default function BlogDashboard() {
   });
   const [keywordResult, setKeywordResult] = useState(null);
   
+  // Manual generation keyword selection
+  const [selectedKeywordForGeneration, setSelectedKeywordForGeneration] = useState('');
+  
   // Sync and delete state
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState(null);
@@ -67,11 +70,26 @@ export default function BlogDashboard() {
 
   const loadKeywords = async () => {
     try {
-      const response = await fetch('/api/keywords-status');
+      // Add cache-busting timestamp to ensure fresh data
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/keywords-status?t=${timestamp}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setKeywords(data.keywords);
         setStats(data.stats);
+        console.log('Keywords data refreshed:', {
+          total: data.keywords.length,
+          stats: data.stats,
+          lastUpdated: data.lastUpdated
+        });
+      } else {
+        console.error('Failed to load keywords - HTTP status:', response.status);
       }
     } catch (error) {
       console.error('Failed to load keywords:', error);
@@ -83,19 +101,34 @@ export default function BlogDashboard() {
     setLastResult(null);
     
     try {
+      const requestBody = {};
+      
+      // If a specific keyword is selected, include it in the request
+      if (selectedKeywordForGeneration && selectedKeywordForGeneration.trim() !== '') {
+        requestBody.keyword = selectedKeywordForGeneration.trim();
+      }
+      
       const response = await fetch('/api/blog-bot', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET || 'blog-automation-secret-key-2025'}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(requestBody)
       });
       
       const result = await response.json();
       setLastResult(result);
       
-      // Reload keywords to see updated status
-      setTimeout(() => loadKeywords(), 1000);
+      // Clear selected keyword after successful generation
+      if (result.success && selectedKeywordForGeneration) {
+        setSelectedKeywordForGeneration('');
+      }
+      
+      // Reload keywords to see updated status with longer delays to ensure backend updates complete
+      setTimeout(() => loadKeywords(), 3000);
+      // Additional reload after 6 seconds to catch any delayed updates
+      setTimeout(() => loadKeywords(), 6000);
     } catch (error) {
       setLastResult({
         success: false,
@@ -445,8 +478,46 @@ export default function BlogDashboard() {
       }}>
         <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Manual Generation</h2>
         <p style={{ color: '#666666', marginBottom: '1.5rem' }}>
-          Test the blog generation system or create a post outside the scheduled time.
+          Generate a blog post manually. You can either select a specific keyword or let the system choose the next queued keyword automatically.
         </p>
+        
+        <div style={{ marginBottom: '1.5rem' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+            Select Keyword (Optional)
+          </label>
+          <select
+            value={selectedKeywordForGeneration}
+            onChange={(e) => setSelectedKeywordForGeneration(e.target.value)}
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              padding: '0.75rem',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              fontSize: '1rem',
+              marginBottom: '1rem'
+            }}
+          >
+            <option value="">-- Auto-select next keyword --</option>
+            {keywords
+              .filter(kw => kw.status === 'queued' || kw.status === 'failed')
+              .map((keyword, index) => (
+                <option key={index} value={keyword.keyword}>
+                  {keyword.keyword} ({keyword.status} - {keyword.priority} priority)
+                </option>
+              ))
+            }
+          </select>
+          {selectedKeywordForGeneration && (
+            <div style={{ 
+              fontSize: '0.875rem', 
+              color: '#666',
+              marginBottom: '0.5rem'
+            }}>
+              Selected: "{selectedKeywordForGeneration}"
+            </div>
+          )}
+        </div>
         
         <button
           onClick={triggerGeneration}
@@ -462,7 +533,11 @@ export default function BlogDashboard() {
             marginBottom: '1rem'
           }}
         >
-          {isGenerating ? 'Generating...' : 'Generate Blog Post'}
+          {isGenerating ? 'Generating...' : 
+            selectedKeywordForGeneration 
+              ? `Generate for "${selectedKeywordForGeneration}"`
+              : 'Generate Blog Post'
+          }
         </button>
 
         {lastResult && (

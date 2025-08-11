@@ -208,10 +208,10 @@ export default function Contact() {
               alignItems: 'center'
             }}>
               <img 
-                src="/BRIDGE-new-logo.png" 
+                src="/Bridge-transparent-logo.png" 
                 alt="Bridge Software Solutions Logo" 
                 style={{
-                  height: isMobile ? '32px' : '42px',
+                  height: isMobile ? '48px' : '63px',
                   width: 'auto',
                   objectFit: 'contain'
                 }}
@@ -749,15 +749,18 @@ export default function Contact() {
                   gap: '0.5rem',
                   opacity: 0.9,
                   transition: 'all 0.3s ease',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transformOrigin: 'center center'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.opacity = '1'
                   e.target.style.transform = 'translate(-50%, -50%) scale(1.05)'
+                  e.target.style.transformOrigin = 'center center'
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.opacity = '0.9'
                   e.target.style.transform = 'translate(-50%, -50%) scale(1)'
+                  e.target.style.transformOrigin = 'center center'
                 }}
                 >
                   <span>📍</span>

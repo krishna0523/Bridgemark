@@ -113,10 +113,10 @@ export default function BlogIndex({ posts }) {
                 onClick={() => router.push('/')}
               >
                 <img 
-                  src="/BRIDGE-new-logo.png" 
+                  src="/Bridge-transparent-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
-                    height: '32px',
+                    height: '48px',
                     width: 'auto',
                     objectFit: 'contain'
                   }}
@@ -246,10 +246,10 @@ export default function BlogIndex({ posts }) {
                 onClick={() => router.push('/')}
               >
                 <img 
-                  src="/BRIDGE-new-logo.png" 
+                  src="/Bridge-transparent-logo.png" 
                   alt="Bridge Software Solutions Logo" 
                   style={{
-                    height: '42px',
+                    height: '63px',
                     width: 'auto',
                     objectFit: 'contain'
                   }}
