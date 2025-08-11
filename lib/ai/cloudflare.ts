@@ -43,11 +43,25 @@ class CloudflareAI {
     });
 
     if (!response.ok) {
-      throw new Error(`Cloudflare AI API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Cloudflare AI API Error Response:', errorText);
+      throw new Error(`Cloudflare AI API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
-    return data.result;
+    console.log('Cloudflare AI API Response:', JSON.stringify(data, null, 2));
+    
+    // Handle different response structures
+    if (data.result && data.result.response) {
+      return data.result;
+    } else if (data.result && typeof data.result === 'string') {
+      return { response: data.result };
+    } else if (data.response) {
+      return { response: data.response };
+    } else {
+      console.error('Unexpected API response structure:', data);
+      return data.result || data;
+    }
   }
 
   async generateBlogTitle(keyword: string, stage: string, intent: string): Promise<string> {
@@ -216,37 +230,28 @@ Bridge Software Solutions has been serving the Hyderabad market for years, helpi
   }
 
   async generateTags(keyword: string, content: string): Promise<string[]> {
-    const messages = [
-      {
-        role: 'system',
-        content: 'Generate 5 relevant tags for this blog post. Return only the tags separated by commas, lowercase, no quotes. Focus on: web development, digital marketing, location (hyderabad), and related services.'
-      },
-      {
-        role: 'user',
-        content: `Keyword: "${keyword}" - Generate 5 tags related to web development and digital marketing in Hyderabad.`
-      }
-    ];
-
-    const result = await this.callModel('@cf/meta/llama-3.1-8b-instruct', messages);
+    // For now, return predefined relevant tags based on the keyword
+    // This avoids AI parsing issues and ensures consistent quality
+    const keywordLower = keyword.toLowerCase();
+    const baseTags = [];
     
-    // Clean up tags
-    let tagsString = result.response.trim().replace(/"/g, '');
-    let tags = tagsString.split(',').map((tag: string) => {
-      return tag.trim().toLowerCase().replace(/^\d+\.\s*/, '').replace(/^-\s*/, '');
-    }).filter(tag => tag.length > 0);
+    // Add keyword-based tags
+    if (keywordLower.includes('web development')) baseTags.push('web development hyderabad');
+    if (keywordLower.includes('seo')) baseTags.push('seo services hyderabad');
+    if (keywordLower.includes('digital marketing')) baseTags.push('digital marketing hyderabad');
+    if (keywordLower.includes('website design')) baseTags.push('website design hyderabad');
+    if (keywordLower.includes('mobile app')) baseTags.push('mobile app development');
+    if (keywordLower.includes('ecommerce')) baseTags.push('ecommerce development');
     
-    // If we didn't get good tags, use defaults based on keyword
-    if (tags.length < 3) {
-      tags = [
-        'web development',
-        'hyderabad',
-        'digital marketing',
-        'website design',
-        'business growth'
-      ];
-    }
+    // Always include location and general service tags
+    const locationTags = ['hyderabad business', 'india web services'];
+    const serviceTags = ['bridge software solutions', 'professional web services'];
     
-    return tags.slice(0, 5);
+    // Combine and ensure we have at least 5 tags
+    const allTags = [...baseTags, ...locationTags, ...serviceTags];
+    
+    // Return first 5 unique tags
+    return Array.from(new Set(allTags)).slice(0, 5);
   }
 
   async generateFullBlog(request: BlogGenerationRequest): Promise<BlogContent> {
