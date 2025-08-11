@@ -30,6 +30,10 @@ export default function BlogDashboard() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState(null);
   const [isDeleting, setIsDeleting] = useState(null); // stores slug being deleted
+  
+  // Remove keyword state
+  const [isRemoving, setIsRemoving] = useState(null); // stores keyword being removed
+  const [removeResult, setRemoveResult] = useState(null);
 
   // Check authentication on component mount
   useEffect(() => {
@@ -209,6 +213,43 @@ export default function BlogDashboard() {
       alert(`Error deleting blog post: ${error.message}`);
     } finally {
       setIsDeleting(null);
+    }
+  };
+
+  const handleRemoveKeyword = async (keywordToRemove) => {
+    if (!confirm(`Are you sure you want to remove the keyword "${keywordToRemove}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setIsRemoving(keywordToRemove);
+    setRemoveResult(null);
+
+    try {
+      const token = sessionStorage.getItem('admin_token');
+      const response = await fetch('/api/admin/remove-keyword', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ keyword: keywordToRemove })
+      });
+
+      const result = await response.json();
+      setRemoveResult(result);
+      
+      if (result.success) {
+        // Reload keywords to show updated list
+        loadKeywords();
+        setTimeout(() => setRemoveResult(null), 3000);
+      }
+    } catch (error) {
+      setRemoveResult({
+        success: false,
+        message: `Error: ${error.message}`
+      });
+    } finally {
+      setIsRemoving(null);
     }
   };
 
@@ -621,6 +662,88 @@ export default function BlogDashboard() {
         )}
       </div>
 
+      {/* Remove Keyword */}
+      <div style={{ 
+        background: '#ffffff', 
+        border: '1px solid #e9ecef', 
+        borderRadius: '8px', 
+        padding: '2rem',
+        marginBottom: '2rem' 
+      }}>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Remove Keyword</h2>
+        <p style={{ color: '#666666', marginBottom: '1.5rem' }}>
+          Remove a keyword from the queue. This will permanently delete the keyword and cannot be undone.
+        </p>
+        
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'end', marginBottom: '1rem' }}>
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+              Select Keyword to Remove
+            </label>
+            <select
+              id="keywordToRemove"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+            >
+              <option value="">-- Select a keyword --</option>
+              {keywords.map((keyword, index) => (
+                <option key={index} value={keyword.keyword}>
+                  {keyword.keyword} ({keyword.status})
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <button
+            onClick={() => {
+              const select = document.getElementById('keywordToRemove');
+              const selectedKeyword = select.value;
+              if (selectedKeyword) {
+                handleRemoveKeyword(selectedKeyword);
+              } else {
+                alert('Please select a keyword to remove');
+              }
+            }}
+            disabled={isRemoving}
+            style={{
+              background: isRemoving ? '#6c757d' : '#dc3545',
+              color: '#ffffff',
+              border: 'none',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '6px',
+              fontSize: '1rem',
+              cursor: isRemoving ? 'not-allowed' : 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {isRemoving ? 'Removing...' : 'Remove Keyword'}
+          </button>
+        </div>
+
+        {removeResult && (
+          <div style={{
+            background: removeResult.success ? '#d4edda' : '#f8d7da',
+            color: removeResult.success ? '#155724' : '#721c24',
+            border: `1px solid ${removeResult.success ? '#c3e6cb' : '#f5c6cb'}`,
+            padding: '0.75rem 1rem',
+            borderRadius: '4px',
+            marginTop: '1rem'
+          }}>
+            {removeResult.message}
+            {removeResult.remainingCount !== undefined && (
+              <div style={{ marginTop: '0.5rem', fontWeight: '500' }}>
+                Remaining keywords: {removeResult.remainingCount}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Keywords Table */}
       <div style={{ 
         background: '#ffffff', 
@@ -777,9 +900,37 @@ export default function BlogDashboard() {
                         </button>
                       </div>
                     ) : (
-                      <span style={{ color: '#666', fontSize: '0.75rem' }}>
-                        {keyword.status === 'published' ? 'No URL' : 'Not published'}
-                      </span>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => handleRemoveKeyword(keyword.keyword)}
+                          disabled={isRemoving === keyword.keyword}
+                          style={{
+                            background: isRemoving === keyword.keyword ? '#6c757d' : '#dc3545',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            cursor: isRemoving === keyword.keyword ? 'not-allowed' : 'pointer',
+                            transition: 'background 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (isRemoving !== keyword.keyword) {
+                              e.target.style.background = '#c82333';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (isRemoving !== keyword.keyword) {
+                              e.target.style.background = '#dc3545';
+                            }
+                          }}
+                        >
+                          {isRemoving === keyword.keyword ? 'Removing...' : 'Remove'}
+                        </button>
+                        <span style={{ color: '#666', fontSize: '0.75rem', alignSelf: 'center' }}>
+                          {keyword.status === 'published' ? 'No URL' : 'Not published'}
+                        </span>
+                      </div>
                     )}
                   </td>
                 </tr>
