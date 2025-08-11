@@ -90,23 +90,47 @@ class CloudflareAI {
     const messages = [
       {
         role: 'system',
-        content: `Create a comprehensive blog outline for Bridge Software Solutions. The outline should:
-        - Have 6-8 main sections
+        content: `Create a comprehensive blog outline for Bridge Software Solutions. Return ONLY the section headings as H2 markdown headers (##). Each heading should:
+        - Be a proper ## H2 markdown header
         - Include practical, actionable content
         - Address pain points of small businesses in Hyderabad
-        - Include local examples and case studies
-        - End with a strong CTA section
+        - Incorporate the keyword naturally
         - Be optimized for ${stage} funnel stage
-        - Include relevant H2 headings that incorporate the keyword naturally`
+        
+        Example format:
+        ## Understanding Web Development Costs in Hyderabad
+        ## Factors That Affect Website Design Pricing
+        ## Comparing Web Development Packages
+        
+        Return 6-8 headings ONLY, one per line.`
       },
       {
         role: 'user',
-        content: `Create an outline for: "${title}" targeting keyword "${keyword}"`
+        content: `Create an outline for: "${title}" targeting keyword "${keyword}". Return ONLY the ## headings, nothing else.`
       }
     ];
 
     const result = await this.callModel('@cf/meta/llama-3.1-8b-instruct', messages);
-    return result.response.split('\n').filter((line: string) => line.trim() && line.includes('#'));
+    
+    // Parse and clean the outline
+    let outline = result.response.split('\n')
+      .map(line => line.trim())
+      .filter(line => line.startsWith('##'))
+      .slice(0, 8); // Limit to 8 sections
+    
+    // If no proper headings found, create default ones
+    if (outline.length === 0) {
+      outline = [
+        `## Understanding ${keyword} in 2025`,
+        `## Benefits of Professional ${keyword}`,
+        `## How to Choose the Right Service Provider`,
+        `## Success Stories from Hyderabad Businesses`,
+        `## Getting Started with ${keyword}`,
+        `## Why Choose Bridge Software Solutions`
+      ];
+    }
+    
+    return outline;
   }
 
   async generateBlogSection(sectionHeading: string, keyword: string, context: string): Promise<string> {
@@ -116,25 +140,55 @@ class CloudflareAI {
         content: `You are writing for Bridge Software Solutions blog. Write engaging, informative content that:
         - Uses a professional but conversational tone
         - Includes specific examples relevant to Hyderabad businesses
-        - Naturally incorporates SEO keywords
+        - Naturally incorporates SEO keywords without keyword stuffing
         - Provides actionable insights and tips
-        - Uses bullet points and subheadings for readability
-        - Includes local references when relevant
+        - Uses bullet points and subheadings when appropriate
+        - Includes local references to Hyderabad market
         - Maintains a helpful, expert voice
-        Write 300-400 words per section.`
+        - Write 250-350 words per section
+        - Focus on providing real value to small business owners
+        - Include specific benefits and practical advice
+        
+        DO NOT repeat the heading in your response - start directly with the content.`
       },
       {
         role: 'user',
-        content: `Write content for section: "${sectionHeading}" 
-        Keyword focus: "${keyword}"
-        Context: ${context}
+        content: `Write detailed content for the section "${sectionHeading}". 
         
-        Make it specific to Hyderabad market and include practical examples.`
+        Target keyword: "${keyword}"
+        Business context: ${context}
+        
+        Make it specific to Hyderabad market with practical examples. Write 250-350 words of valuable content that helps small businesses understand this topic.`
       }
     ];
 
     const result = await this.callModel('@cf/meta/llama-3.1-8b-instruct', messages);
-    return result.response;
+    
+    // Clean up the response - remove any heading repetition
+    let content = result.response.trim();
+    
+    // Remove if it starts with the heading
+    if (content.startsWith(sectionHeading)) {
+      content = content.substring(sectionHeading.length).trim();
+    }
+    
+    // Ensure minimum content length
+    if (content.length < 100) {
+      content = `In the competitive Hyderabad market, understanding ${keyword} is crucial for business success. Local businesses are increasingly recognizing the importance of professional digital services to stay ahead of the competition.
+
+Small and medium enterprises in areas like HITEC City, Banjara Hills, and Jubilee Hills are investing more in quality digital solutions. The growing tech ecosystem in Hyderabad provides unique opportunities for businesses to leverage cutting-edge technologies.
+
+When considering ${keyword}, Hyderabad businesses should focus on:
+- Quality and reliability of service providers
+- Local market expertise and understanding
+- Competitive pricing that fits their budget
+- Long-term partnership potential
+- Technical support and maintenance
+
+Bridge Software Solutions has been serving the Hyderabad market for years, helping local businesses achieve their digital transformation goals through expert guidance and innovative solutions.`;
+    }
+    
+    return content;
   }
 
   async generateMetaDescription(title: string, keyword: string): Promise<string> {
