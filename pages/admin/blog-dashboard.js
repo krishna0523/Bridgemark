@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 export default function BlogDashboard() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [keywords, setKeywords] = useState([]);
   const [stats, setStats] = useState({
     queued: 0,
@@ -12,9 +16,35 @@ export default function BlogDashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastResult, setLastResult] = useState(null);
 
+  // Check authentication on component mount
   useEffect(() => {
-    loadKeywords();
-  }, []);
+    const checkAuth = () => {
+      const token = sessionStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin/login');
+        return;
+      }
+
+      // Basic token validation (decode without verification for client-side)
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp * 1000 < Date.now()) {
+          sessionStorage.removeItem('admin_token');
+          router.push('/admin/login');
+          return;
+        }
+        setIsAuthenticated(true);
+        loadKeywords();
+      } catch (error) {
+        sessionStorage.removeItem('admin_token');
+        router.push('/admin/login');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const loadKeywords = async () => {
     try {
@@ -57,20 +87,142 @@ export default function BlogDashboard() {
     }
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('admin_token');
+    router.push('/admin/login');
+  };
+
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Inter, sans-serif',
+        background: '#f8f9fa'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🔄</div>
+          <div style={{ color: '#666' }}>Verifying access...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show nothing if not authenticated (redirect is handling this)
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ fontFamily: 'Inter, sans-serif' }}>
       <Head>
         <title>Blog Automation Dashboard - Bridge Software Solutions</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Head>
 
-      <div style={{ marginBottom: '3rem' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: '200', marginBottom: '0.5rem' }}>
-          Blog Automation Dashboard
-        </h1>
-        <p style={{ color: '#666666', fontSize: '1.125rem' }}>
-          Monitor and manage your automated blog generation
-        </p>
-      </div>
+      {/* Navigation */}
+      <nav style={{
+        background: '#fff',
+        borderBottom: '1px solid #eee',
+        padding: '1rem 2rem',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100
+      }}>
+        <div style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto',
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center' 
+        }}>
+          <h1 style={{ 
+            fontSize: '1.5rem', 
+            fontWeight: '600', 
+            margin: 0,
+            color: '#000'
+          }}>
+            Admin Dashboard
+          </h1>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <a 
+              href="/blogs" 
+              style={{
+                color: '#666',
+                textDecoration: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#f5f5f5';
+                e.target.style.color = '#000';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'transparent';
+                e.target.style.color = '#666';
+              }}
+            >
+              View Blog
+            </a>
+            <a 
+              href="/" 
+              style={{
+                color: '#666',
+                textDecoration: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#f5f5f5';
+                e.target.style.color = '#000';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'transparent';
+                e.target.style.color = '#666';
+              }}
+            >
+              Back to Site
+            </a>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: '#dc3545',
+                color: '#fff',
+                border: 'none',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '6px',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'background 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#c82333';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = '#dc3545';
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ marginBottom: '3rem' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: '200', marginBottom: '0.5rem', color: '#000' }}>
+            Blog Automation Dashboard
+          </h2>
+          <p style={{ color: '#666666', fontSize: '1.125rem' }}>
+            Monitor and manage your automated blog generation
+          </p>
+        </div>
 
       {/* Stats Cards */}
       <div style={{ 
