@@ -11,7 +11,7 @@ export interface OGImageProps {
   date?: string;
 }
 
-export default function generateOGImage({
+export default async function generateOGImage({
   title,
   excerpt,
   category = "Blog",
