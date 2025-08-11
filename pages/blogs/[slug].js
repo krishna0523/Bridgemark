@@ -152,7 +152,11 @@ export default function BlogPost({ frontMatter, mdxSource }) {
               marginBottom: '20px',
               fontSize: '14px'
             }}>
-              <span>📅 {new Date(frontMatter.date).toLocaleDateString()}</span>
+              <span>📅 {new Date(frontMatter.date).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+              })}</span>
               <span>⏱️ {frontMatter.readingTime} min read</span>
               <span>🏷️ {frontMatter.stage}</span>
             </div>

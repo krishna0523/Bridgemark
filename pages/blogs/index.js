@@ -126,7 +126,11 @@ export default function BlogIndex({ posts }) {
                       fontSize: '12px',
                       marginBottom: '15px'
                     }}>
-                      <span>📅 {new Date(post.date).toLocaleDateString()}</span>
+                      <span>📅 {new Date(post.date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })}</span>
                       <span>⏱️ {post.readingTime} min read</span>
                       <span style={{
                         background: '#f0f0f0',
