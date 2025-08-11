@@ -1,0 +1,27 @@
+{
+  "crons": [
+    {
+      "path": "/api/blog-bot",
+      "schedule": "0 6 * * MON"
+    },
+    {
+      "path": "/api/revalidate",
+      "schedule": "0 7 * * *"
+    }
+  ],
+  "functions": {
+    "pages/api/blog-bot.ts": {
+      "maxDuration": 300
+    },
+    "lib/seo/og.tsx": {
+      "runtime": "edge"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/blog/:path*",
+      "destination": "/blogs/:path*",
+      "permanent": true
+    }
+  ]
+}
