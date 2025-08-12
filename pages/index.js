@@ -1154,9 +1154,9 @@ export default function Home() {
           "@type": "Organization",
           "name": "Bridge Software Solutions",
           "description": "Professional web development, mobile app development, brand identity design, and SEO services in Hyderabad",
-          "url": "https://bridgesoftwaresolutions.com",
-          "logo": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png",
-          "image": "https://bridgesoftwaresolutions.com/og-image.jpg",
+          "url": "https://www.bridgedm.com",
+          "logo": "https://www.bridgedm.com/Bridge-transparent-logo.png",
+          "image": "https://www.bridgedm.com/og-image.jpg",
           "address": {
             "@type": "PostalAddress",
             "addressLocality": "Hyderabad",
@@ -1169,7 +1169,7 @@ export default function Home() {
             "longitude": "78.486671"
           },
           "telephone": "+91 9996 999 770",
-          "email": "hello@bridgesoftwaresolutions.com",
+          "email": "hello@bridgedm.com",
           "sameAs": [
             "https://www.linkedin.com/company/bridge-software-solutions",
             "https://twitter.com/bridgesoftware",
@@ -1773,7 +1773,7 @@ export default function Home() {
                     ☎
                   </a>
                   <a 
-                    href="mailto:hello@bridgesoftwaresolutions.com"
+                    href="mailto:hello@bridgedm.com"
                     style={{
                       color: '#ffffff',
                       textDecoration: 'none',
@@ -3419,7 +3419,7 @@ export default function Home() {
               lineHeight: '1.6'
             }}>
               Hyderabad, Telangana<br />
-              hello@bridgesoftwaresolutions.com<br />
+              hello@bridgedm.com<br />
               +91 9996 999 770
             </div>
           </div>

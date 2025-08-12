@@ -295,21 +295,21 @@ Bridge Software Solutions has been serving the Hyderabad market for years, helpi
         "author": {
           "@type": "Organization",
           "name": "Bridge Software Solutions",
-          "url": "https://bridgesoftwaresolutions.com"
+          "url": "https://www.bridgedm.com"
         },
         "publisher": {
           "@type": "Organization",
           "name": "Bridge Software Solutions",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png"
+            "url": "https://www.bridgedm.com/Bridge-transparent-logo.png"
           }
         },
         "datePublished": new Date().toISOString(),
         "dateModified": new Date().toISOString(),
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": `https://bridgesoftwaresolutions.com/blogs/${slug}`
+          "@id": `https://www.bridgedm.com/blogs/${slug}`
         },
         "keywords": tags,
         "wordCount": wordCount,

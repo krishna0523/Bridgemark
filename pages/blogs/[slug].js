@@ -58,7 +58,7 @@ export default function BlogPost({ frontMatter, mdxSource }) {
         <meta name="twitter:title" content={frontMatter.title} />
         <meta name="twitter:description" content={frontMatter.excerpt} />
         {frontMatter.cover && <meta property="og:image" content={frontMatter.cover} />}
-        <link rel="canonical" href={`https://bridgesoftwaresolutions.com/blogs/${frontMatter.slug}`} />
+        <link rel="canonical" href={`https://www.bridgedm.com/blogs/${frontMatter.slug}`} />
         
         {/* Schema.org structured data */}
         <script
@@ -78,14 +78,14 @@ export default function BlogPost({ frontMatter, mdxSource }) {
                 "name": "Bridge Software Solutions",
                 "logo": {
                   "@type": "ImageObject",
-                  "url": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png"
+                  "url": "https://www.bridgedm.com/Bridge-transparent-logo.png"
                 }
               },
               "datePublished": frontMatter.date,
               "dateModified": frontMatter.date,
               "mainEntityOfPage": {
                 "@type": "WebPage",
-                "@id": `https://bridgesoftwaresolutions.com/blogs/${frontMatter.slug}`
+                "@id": `https://www.bridgedm.com/blogs/${frontMatter.slug}`
               },
               "keywords": frontMatter.tags?.join(', '),
               "wordCount": frontMatter.wordCount,

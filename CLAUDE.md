@@ -8,11 +8,18 @@ A premium digital marketing website for Bridge Software Solutions featuring:
 - Interactive animations and effects throughout
 
 ## Technical Stack
-- Next.js 14 with React 18
-- React Hooks (useState, useRef, useEffect)
-- CSS-in-JS with inline styling
-- Intersection Observer API for scroll animations
-- Video element manipulation and timeline control
+- **Next.js 14.2.31** with React 18
+- **React Hooks**: useState, useRef, useEffect, useLayoutEffect
+- **GSAP 3.x** with ScrollTrigger plugin for advanced animations
+- **Lenis** for smooth scrolling experience
+- **CSS-in-JS** with inline styling and styled-jsx
+- **Intersection Observer API** for scroll-triggered animations
+- **Video element manipulation** and timeline control
+- **MDX** with next-mdx-remote for blog content
+- **Gray-matter** for frontmatter parsing
+- **React-intersection-observer** for component visibility detection
+- **Font**: Inter from Google Fonts
+- **Responsive Design**: Mobile-first approach with 768px breakpoint
 
 ## Key Features Implemented
 
@@ -25,17 +32,24 @@ A premium digital marketing website for Bridge Software Solutions featuring:
 - **Smooth Transitions**: Seamless transition from horizontal to vertical scroll
 
 ### 2. Multi-Section Landing Page
-- **Intro Slides**: 4 artistic slides with geometric animations
+- **Intro Slides**: 4 artistic slides with geometric animations and mobile-responsive positioning
+- **Mobile Navigation**: Hamburger menu with GSAP-powered overlay and animations
 - **Services Accordion**: Interactive accordion with minimalist design
 - **Stats Section**: Intersection observer-based reveal animations
 - **Testimonials**: Auto-rotating testimonial carousel
-- **Process Section**: Three-column process explanation
+- **Process Section**: Three-column process explanation with hover effects
 - **Case Studies**: Featured work preview cards
+- **Blog System**: Dynamic blog pages with MDX content support
 
 ### 3. Advanced Animations
+- **GSAP Timeline Animations**: Complex multi-step animations with precise timing
 - **Parallax Effects**: Video backgrounds with different scroll speeds
 - **Intersection Observers**: Trigger animations when sections become visible
 - **Staggered Reveals**: Sequential animation timing for visual appeal
+- **Smooth Scrolling**: Lenis integration for buttery smooth page scrolling
+- **Mobile Menu Animations**: Hamburger-to-X morphing with backdrop blur
+- **Hover Effects**: Scale and transform animations on interactive elements
+- **Reduced Motion Support**: Respects user accessibility preferences
 - **Smooth Transitions**: Cubic-bezier easing throughout
 
 ### 4. Performance Optimizations
@@ -49,10 +63,23 @@ A premium digital marketing website for Bridge Software Solutions featuring:
 /Users/mksrikanth/bridge-marketing/
 ├── pages/
 │   ├── index.js (main homepage component)
+│   ├── contact.js (contact form page)
+│   ├── blogs.js (standalone blog page)
+│   ├── blogs/
+│   │   ├── index.js (blog listing page)
+│   │   └── [slug].js (dynamic blog post pages)
+│   ├── admin/
+│   │   └── login.js (admin authentication)
 │   └── _app.js (Next.js app wrapper)
+├── components/
+│   ├── SEO.js (SEO metadata component)
+│   └── KeywordBelts.js (keyword animation component)
 ├── public/
-│   └── videos/
-│       └── Bridge Video.mp4 (main background video)
+│   ├── videos/
+│   │   └── Bridge Video.mp4 (main background video)
+│   └── Bridge-transparent-logo.png (company logo)
+├── content/
+│   └── posts/ (MDX blog posts directory)
 ├── VIDEO_SETUP.md (video implementation documentation)
 └── CLAUDE.md (this file)
 ```
@@ -88,11 +115,18 @@ A premium digital marketing website for Bridge Software Solutions featuring:
 
 ## Current Status
 ✅ Video-controlled hero section working perfectly
-✅ Staggered text reveals at 3s and 5s implemented
+✅ Staggered text reveals at 3s and 5s implemented  
 ✅ All sections responsive and animated
 ✅ Fast Refresh compatibility restored
 ✅ Stats section intersection observer working
-🔄 **IN PROGRESS**: Redesigning CTA section with horizontal scrolling text
+✅ Mobile navigation with hamburger menu implemented
+✅ GSAP animations with accessibility support
+✅ Blog system with MDX content support
+✅ Contact form with Web3Forms integration
+✅ SEO optimization and structured data
+✅ Mobile intro slides spacing optimized
+✅ Logo sizes standardized across all pages
+✅ Hamburger X button visibility and clickability fixed
 
 ## Development Commands
 - `npm run dev` - Start development server

@@ -14,35 +14,35 @@ export function generateBlogPostSchema(post: BlogPostSchema): object {
     "@type": "BlogPosting",
     "headline": post.title,
     "description": post.excerpt,
-    "image": `https://bridgesoftwaresolutions.com/images/og/${post.slug}.png`,
+    "image": `https://www.bridgedm.com/images/og/${post.slug}.png`,
     "author": {
       "@type": "Organization",
       "name": post.author || "Bridge Software Solutions",
-      "url": "https://bridgesoftwaresolutions.com"
+      "url": "https://www.bridgedm.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Bridge Software Solutions",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png",
+        "url": "https://www.bridgedm.com/Bridge-transparent-logo.png",
         "width": 200,
         "height": 60
       },
-      "url": "https://bridgesoftwaresolutions.com"
+      "url": "https://www.bridgedm.com"
     },
     "datePublished": post.date,
     "dateModified": post.date,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://bridgesoftwaresolutions.com/blogs/${post.slug}`
+      "@id": `https://www.bridgedm.com/blogs/${post.slug}`
     },
     "keywords": post.tags,
     "timeRequired": `PT${post.readingTime}M`,
     "inLanguage": "en-US",
     "isPartOf": {
       "@type": "Blog",
-      "@id": "https://bridgesoftwaresolutions.com/blogs",
+      "@id": "https://www.bridgedm.com/blogs",
       "name": "Bridge Software Solutions Blog",
       "description": "Expert insights on web development, SEO, digital marketing, and technology trends from Hyderabad's leading software company."
     }
@@ -54,10 +54,10 @@ export function generateWebsiteSchema(): object {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Bridge Software Solutions",
-    "url": "https://bridgesoftwaresolutions.com",
+    "url": "https://www.bridgedm.com",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png",
+      "url": "https://www.bridgedm.com/Bridge-transparent-logo.png",
       "width": 200,
       "height": 60
     },
@@ -97,7 +97,7 @@ export function generateWebsiteSchema(): object {
     ],
     "priceRange": "$$",
     "telephone": "+91 9996 999 770",
-    "email": "hello@bridgesoftwaresolutions.com",
+    "email": "hello@bridgedm.com",
     "sameAs": [
       "https://www.linkedin.com/company/bridge-software-solutions",
       "https://twitter.com/bridgesoftware",
@@ -131,7 +131,7 @@ export function generateServiceSchema(service: {
     "description": service.description,
     "provider": {
       "@type": "Organization",
-      "@id": "https://bridgesoftwaresolutions.com/#organization"
+      "@id": "https://www.bridgedm.com/#organization"
     },
     "areaServed": {
       "@type": "City",

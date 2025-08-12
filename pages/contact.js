@@ -136,9 +136,9 @@ export default function Contact() {
     {
       icon: "✉",
       title: "Email Us",
-      primary: "hello@bridgesoftwaresolutions.com",
+      primary: "hello@bridgedm.com",
       secondary: "Response within 24 hours",
-      action: "mailto:hello@bridgesoftwaresolutions.com"
+      action: "mailto:hello@bridgedm.com"
     },
     {
       icon: "📞",

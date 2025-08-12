@@ -19,7 +19,7 @@ Allow: /_next/static/chunks/pages/
 Allow: /_next/static/media/
 
 # Sitemap location
-Sitemap: https://bridgesoftwaresolutions.com/sitemap.xml
+Sitemap: https://www.bridgedm.com/sitemap.xml
 
 # Crawl delay for better server performance
 Crawl-delay: 1

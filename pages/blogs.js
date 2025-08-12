@@ -155,15 +155,15 @@ export default function BlogIndex() {
           "@type": "Blog",
           "name": "Bridge Software Solutions Blog",
           "description": "Expert insights on web development, SEO, digital marketing, and design to help your business grow online",
-          "url": "https://bridgesoftwaresolutions.com/blogs",
+          "url": "https://www.bridgedm.com/blogs",
           "publisher": {
             "@type": "Organization",
             "name": "Bridge Software Solutions",
-            "logo": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png"
+            "logo": "https://www.bridgedm.com/Bridge-transparent-logo.png"
           },
           "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https://bridgesoftwaresolutions.com/blogs"
+            "@id": "https://www.bridgedm.com/blogs"
           }
         }}
       />

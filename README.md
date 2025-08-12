@@ -155,7 +155,7 @@ npm run export  # For static export
 
 ## 📞 Support
 
-- **Email**: hello@bridgesoftwaresolutions.com
+- **Email**: hello@bridgedm.com
 - **Phone**: +91-XXXXXXXXXX
 - **Location**: Hyderabad, Telangana, India
 

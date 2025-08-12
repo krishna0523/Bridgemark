@@ -8,19 +8,19 @@
   
   <!-- Homepage -->
   <url>
-    <loc>https://bridgesoftwaresolutions.com/</loc>
+    <loc>https://www.bridgedm.com/</loc>
     <lastmod>2024-12-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://bridgesoftwaresolutions.com/og-image.jpg</image:loc>
+      <image:loc>https://www.bridgedm.com/og-image.jpg</image:loc>
       <image:title>Bridge Software Solutions - Web Development Company</image:title>
     </image:image>
   </url>
 
   <!-- Contact Page -->
   <url>
-    <loc>https://bridgesoftwaresolutions.com/contact</loc>
+    <loc>https://www.bridgedm.com/contact</loc>
     <lastmod>2024-12-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -28,7 +28,7 @@
 
   <!-- Services Page -->
   <url>
-    <loc>https://bridgesoftwaresolutions.com/services</loc>
+    <loc>https://www.bridgedm.com/services</loc>
     <lastmod>2024-12-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -36,7 +36,7 @@
 
   <!-- About Page -->
   <url>
-    <loc>https://bridgesoftwaresolutions.com/about</loc>
+    <loc>https://www.bridgedm.com/about</loc>
     <lastmod>2024-12-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -44,7 +44,7 @@
 
   <!-- Blog Index -->
   <url>
-    <loc>https://bridgesoftwaresolutions.com/blogs</loc>
+    <loc>https://www.bridgedm.com/blogs</loc>
     <lastmod>2024-12-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -52,7 +52,7 @@
 
   <!-- Blog Posts -->
   <url>
-    <loc>https://bridgesoftwaresolutions.com/blogs/complete-seo-guide-hyderabad</loc>
+    <loc>https://www.bridgedm.com/blogs/complete-seo-guide-hyderabad</loc>
     <lastmod>2024-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -67,7 +67,7 @@
   </url>
 
   <url>
-    <loc>https://bridgesoftwaresolutions.com/blogs/organic-seo-content-traffic</loc>
+    <loc>https://www.bridgedm.com/blogs/organic-seo-content-traffic</loc>
     <lastmod>2024-12-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -82,7 +82,7 @@
   </url>
 
   <url>
-    <loc>https://bridgesoftwaresolutions.com/blogs/ai-advancements-2024-business</loc>
+    <loc>https://www.bridgedm.com/blogs/ai-advancements-2024-business</loc>
     <lastmod>2024-12-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

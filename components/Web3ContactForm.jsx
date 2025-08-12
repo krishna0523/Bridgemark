@@ -724,7 +724,7 @@ export default function Web3ContactForm() {
             gap: '0.75rem'
           }}>
             <span style={{ fontSize: '1.25rem' }}>✗</span>
-            Something went wrong. Please try again or contact us directly at hello@bridgesoftwaresolutions.com
+            Something went wrong. Please try again or contact us directly at hello@bridgedm.com
           </div>
         )}
 

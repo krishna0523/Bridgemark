@@ -36,9 +36,9 @@ export default function Document() {
         />
         
         {/* Hreflang for international SEO */}
-        <link rel="alternate" hrefLang="en" href="https://bridgesoftwaresolutions.com" />
-        <link rel="alternate" hrefLang="en-IN" href="https://bridgesoftwaresolutions.com" />
-        <link rel="alternate" hrefLang="x-default" href="https://bridgesoftwaresolutions.com" />
+        <link rel="alternate" hrefLang="en" href="https://www.bridgedm.com" />
+        <link rel="alternate" hrefLang="en-IN" href="https://www.bridgedm.com" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.bridgedm.com" />
         
         {/* Preload critical resources */}
         <link rel="preload" href="/videos/Bridge%20Video.mp4" as="video" type="video/mp4" />
@@ -70,8 +70,8 @@ export default function Document() {
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "Bridge Software Solutions",
-              "url": "https://bridgesoftwaresolutions.com",
-              "logo": "https://bridgesoftwaresolutions.com/Bridge-transparent-logo.png",
+              "url": "https://www.bridgedm.com",
+              "logo": "https://www.bridgedm.com/Bridge-transparent-logo.png",
               "description": "Professional web development, mobile app development, brand identity design, and SEO services in Hyderabad",
               "address": {
                 "@type": "PostalAddress",
@@ -90,7 +90,7 @@ export default function Document() {
                 "@type": "ContactPoint",
                 "telephone": "+91-9996-999-770",
                 "contactType": "customer support",
-                "email": "hello@bridgesoftwaresolutions.com",
+                "email": "hello@bridgedm.com",
                 "availableLanguage": ["English", "Hindi", "Telugu"]
               },
               "sameAs": [
