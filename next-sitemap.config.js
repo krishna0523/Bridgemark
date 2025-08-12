@@ -13,9 +13,6 @@ module.exports = {
     '/500'
   ],
   robotsTxtOptions: {
-    additionalSitemaps: [
-      'https://www.bridgedm.com/sitemap.xml'
-    ],
     policies: [
       {
         userAgent: '*',
