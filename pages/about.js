@@ -1,7 +1,21 @@
+import Head from 'next/head'
+
 export default function About() {
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1 style={{ color: '#2563eb' }}>About Bridge Software Solutions</h1>
+    <>
+      <Head>
+        <title>About Bridge Software Solutions - Web Development Company in Hyderabad</title>
+        <meta name="description" content="Leading web development company in Hyderabad specializing in React, Three.js, SEO services & digital marketing. Learn about our mission to help businesses eliminate dependence on subscription-based lead generation platforms." />
+        <meta name="keywords" content="web development company Hyderabad, React developers Hyderabad, Three.js websites, SEO services Hyderabad, digital marketing agency" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href="https://www.bridgedm.com/about" />
+        <meta property="og:title" content="About Bridge Software Solutions - Web Development Company in Hyderabad" />
+        <meta property="og:description" content="Leading web development company in Hyderabad specializing in React, Three.js, SEO services & digital marketing." />
+        <meta property="og:url" content="https://www.bridgedm.com/about" />
+        <meta property="og:type" content="website" />
+      </Head>
+      <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+        <h1 style={{ color: '#2563eb' }}>About Bridge Software Solutions</h1>
       <p>Leading web development company in Hyderabad specializing in React, Three.js, SEO services & digital marketing.</p>
       
       <h2>Our Mission</h2>
@@ -22,6 +36,7 @@ export default function About() {
         <a href="/services" style={{ marginRight: '1rem', color: '#2563eb' }}>Services</a>
         <a href="/contact" style={{ color: '#2563eb' }}>Contact</a>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

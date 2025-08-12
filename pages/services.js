@@ -1,7 +1,21 @@
+import Head from 'next/head'
+
 export default function Services() {
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1 style={{ color: '#2563eb' }}>Our Services</h1>
+    <>
+      <Head>
+        <title>Web Development Services in Hyderabad - React, Three.js, SEO | Bridge Software Solutions</title>
+        <meta name="description" content="Professional web development services in Hyderabad including React development, Three.js 3D websites, SEO services, and digital marketing. Get a free consultation today." />
+        <meta name="keywords" content="React development Hyderabad, Three.js websites, SEO services Hyderabad, web development services, digital marketing agency Hyderabad, Next.js developers" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href="https://www.bridgedm.com/services" />
+        <meta property="og:title" content="Web Development Services in Hyderabad - React, Three.js, SEO" />
+        <meta property="og:description" content="Professional web development services including React development, Three.js 3D websites, SEO services, and digital marketing." />
+        <meta property="og:url" content="https://www.bridgedm.com/services" />
+        <meta property="og:type" content="website" />
+      </Head>
+      <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+        <h1 style={{ color: '#2563eb' }}>Our Services</h1>
       <p>Comprehensive web development, SEO, and digital marketing services.</p>
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '2rem' }}>
@@ -65,6 +79,7 @@ export default function Services() {
         <a href="/about" style={{ marginRight: '1rem', color: '#2563eb' }}>About</a>
         <a href="/contact" style={{ color: '#2563eb' }}>Contact</a>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

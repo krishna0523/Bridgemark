@@ -9,18 +9,24 @@ export default function Document() {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://client.crisp.chat" />
+        <link rel="preconnect" href="https://settings.crisp.chat" />
         
-        {/* Google Fonts */}
+        {/* Google Fonts - Optimized Loading */}
         <link 
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" 
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
           rel="stylesheet" 
+          media="print" 
+          onLoad="this.media='all'"
         />
+        <noscript>
+          <link 
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+            rel="stylesheet" 
+          />
+        </noscript>
         
-        {/* Global Site Tag (gtag.js) - Google Analytics */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID || 'GA_MEASUREMENT_ID'}`}
-        />
+        {/* Google Analytics - Deferred Loading */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -43,10 +49,7 @@ export default function Document() {
         {/* Preload critical resources */}
         <link rel="preload" href="/videos/Bridge%20Video.mp4" as="video" type="video/mp4" />
         
-        {/* Security headers */}
-        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
-        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+        {/* Referrer policy */}
         <meta name="referrer" content="strict-origin-when-cross-origin" />
         
         {/* Theme color for mobile browsers */}
