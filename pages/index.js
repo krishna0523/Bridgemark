@@ -955,7 +955,7 @@ export default function Home() {
           right: '15%',
           width: '1px',
           height: '200px',
-          background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          background: currentSlide % 2 === 0 ? '#ffffff' : '#1a1a1a',
           transform: `translateY(${currentSlide * -20}px) rotate(${currentSlide * 8}deg)`,
           transition: 'all 2.5s cubic-bezier(0.165, 0.84, 0.44, 1)',
           opacity: 0.2
@@ -967,7 +967,7 @@ export default function Home() {
           left: isMobile ? '8%' : '12%',
           width: isMobile ? '100px' : '150px',
           height: '1px',
-          background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          background: currentSlide % 2 === 0 ? '#ffffff' : '#1a1a1a',
           transform: `translateX(${currentSlide * (isMobile ? 15 : 25)}px)`,
           transition: 'all 2.3s cubic-bezier(0.165, 0.84, 0.44, 1)',
           opacity: 0.15
@@ -976,7 +976,7 @@ export default function Home() {
         {/* Main Content */}
         <div style={{ 
           textAlign: 'left',
-          color: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+          color: currentSlide % 2 === 0 ? '#ffffff' : '#1a1a1a',
           maxWidth: isMobile ? '90%' : '800px',
           padding: isMobile ? (currentSlide >= 2 ? '0 1rem 0 2rem' : '0 1rem') : '0 2rem',
           transform: `translateX(${currentSlide * (isMobile ? -10 : -20)}px)`,
@@ -1014,7 +1014,7 @@ export default function Home() {
           <div style={{
             width: '60px',
             height: '1px',
-            background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+            background: currentSlide % 2 === 0 ? '#ffffff' : '#1a1a1a',
             marginBottom: '2rem',
             animation: 'expandWidth 1.5s ease-out',
             animationDelay: '1s',
@@ -1063,7 +1063,7 @@ export default function Home() {
             <div key={index} style={{
               width: currentSlide === index ? '40px' : '20px',
               height: '1px',
-              background: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+              background: currentSlide % 2 === 0 ? '#ffffff' : '#1a1a1a',
               opacity: currentSlide === index ? 1 : 0.3,
               transition: 'all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)',
               transitionDelay: `${index * 0.1}s`
@@ -1452,7 +1452,17 @@ export default function Home() {
               onMouseLeave={(e) => {
                 e.target.style.color = activeSection === 'home' ? '#000000' : '#666666'
                 e.target.style.transform = 'scale(1)'
-              }}>
+              }}
+              onFocus={(e) => {
+                e.target.style.outline = '2px solid #007bff'
+                e.target.style.outlineOffset = '2px'
+                e.target.style.color = '#000000'
+              }}
+              onBlur={(e) => {
+                e.target.style.outline = 'none'
+                e.target.style.color = activeSection === 'home' ? '#000000' : '#666666'
+              }}
+              aria-label="Navigate to Home section">
                 Home
               </button>
 
@@ -1478,7 +1488,17 @@ export default function Home() {
               onMouseLeave={(e) => {
                 e.target.style.color = activeSection === 'services' ? '#000000' : '#666666'
                 e.target.style.transform = 'scale(1)'
-              }}>
+              }}
+              onFocus={(e) => {
+                e.target.style.outline = '2px solid #007bff'
+                e.target.style.outlineOffset = '2px'
+                e.target.style.color = '#000000'
+              }}
+              onBlur={(e) => {
+                e.target.style.outline = 'none'
+                e.target.style.color = activeSection === 'services' ? '#000000' : '#666666'
+              }}
+              aria-label="Navigate to Services section">
                 Services
               </button>
 
@@ -1807,8 +1827,8 @@ export default function Home() {
         )}
       </nav>
 
-      
-      {/* Hero Section with Scroll-Controlled Video */}
+      <main role="main">
+        {/* Hero Section with Scroll-Controlled Video */}
       <section 
         ref={heroSectionRef}
         style={{
@@ -3390,6 +3410,7 @@ export default function Home() {
           />
         ))}
       </section>
+      </main>
 
       {/* Footer */}
       <footer style={{
