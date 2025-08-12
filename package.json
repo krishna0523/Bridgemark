@@ -10,6 +10,7 @@
     "test-blog-bot": "node test-blog-bot.js"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "@vercel/og": "^0.6.2",
     "crisp-sdk-web": "^1.0.25",
     "csv-string": "^4.1.1",
