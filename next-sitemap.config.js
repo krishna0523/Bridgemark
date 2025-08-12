@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: 'https://www.bridgedm.com',
@@ -39,6 +42,28 @@ module.exports = {
         crawlDelay: 1
       }
     ]
+  },
+  additionalPaths: async (config) => {
+    const result = [];
+    
+    // Add blog posts
+    const postsDirectory = path.join(process.cwd(), 'content/posts');
+    if (fs.existsSync(postsDirectory)) {
+      const filenames = fs.readdirSync(postsDirectory);
+      const blogPosts = filenames
+        .filter(name => name.endsWith('.mdx'))
+        .map(name => name.replace('.mdx', ''));
+      
+      // Add blogs index page
+      result.push('/blogs');
+      
+      // Add individual blog posts
+      blogPosts.forEach(slug => {
+        result.push(`/blogs/${slug}`);
+      });
+    }
+    
+    return result;
   },
   transform: async (config, path) => {
     // Custom transform for better SEO
