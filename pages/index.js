@@ -922,7 +922,7 @@ export default function Home() {
       }}>
         
         {/* Animated Icons */}
-        <div style={{
+        <div aria-hidden="true" style={{
           position: 'absolute',
           top: '25%',
           left: isMobile ? '5%' : '10%',
@@ -935,7 +935,7 @@ export default function Home() {
           {heroStatements[currentSlide]?.leftIcon || ''}
         </div>
 
-        <div style={{
+        <div aria-hidden="true" style={{
           position: 'absolute',
           bottom: '20%',
           right: isMobile ? '5%' : '10%',
@@ -949,7 +949,7 @@ export default function Home() {
         </div>
 
         {/* Subtle geometric lines */}
-        <div style={{
+        <div aria-hidden="true" style={{
           position: 'absolute',
           top: '15%',
           right: '15%',
@@ -961,7 +961,7 @@ export default function Home() {
           opacity: 0.2
         }} />
 
-        <div style={{
+        <div aria-hidden="true" style={{
           position: 'absolute',
           bottom: '25%',
           left: isMobile ? '8%' : '12%',
@@ -989,7 +989,8 @@ export default function Home() {
             fontWeight: '400',
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
-            opacity: 0.6,
+            opacity: currentSlide % 2 === 0 ? 0.8 : 0.7,
+            color: currentSlide % 2 === 0 ? '#e0e0e0' : '#333333',
             marginBottom: '1rem',
             animation: 'fadeInUp 1.5s ease-out',
             animationDelay: '0.5s',
@@ -1011,7 +1012,7 @@ export default function Home() {
             {heroStatements[currentSlide]?.main || ''}
           </h1>
           
-          <div style={{
+          <div aria-hidden="true" style={{
             width: '60px',
             height: '1px',
             background: currentSlide % 2 === 0 ? '#ffffff' : '#1a1a1a',
@@ -1134,6 +1135,32 @@ export default function Home() {
 
   return (
     <>
+      {/* Skip Navigation Link for Keyboard Users */}
+      <a 
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          zIndex: 9999,
+          padding: '8px 16px',
+          background: '#000000',
+          color: '#ffffff',
+          textDecoration: 'none',
+          fontSize: '14px',
+          borderRadius: '4px',
+          transition: 'left 0.3s ease'
+        }}
+        onFocus={(e) => {
+          e.target.style.left = '16px'
+          e.target.style.top = '16px'
+        }}
+        onBlur={(e) => {
+          e.target.style.left = '-9999px'
+        }}
+      >
+        Skip to main content
+      </a>
+
       <SEO 
         title="Bridge Software Solutions - Web Development Company in Hyderabad | SEO Services | React & Three.js Experts"
         description="Professional web development, mobile app development, brand identity design, and SEO services in Hyderabad. We create digital experiences that drive growth for businesses across Telangana and India."
@@ -1827,7 +1854,7 @@ export default function Home() {
         )}
       </nav>
 
-      <main role="main">
+      <main role="main" id="main-content">
         {/* Hero Section with Scroll-Controlled Video */}
       <section 
         ref={heroSectionRef}
