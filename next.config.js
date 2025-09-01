@@ -63,11 +63,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.crisp.chat https://client.crisp.chat https://settings.crisp.chat https://storage.crisp.chat https://widget.crisp.chat https://image.crisp.chat https://rest.crisp.chat",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.crisp.chat https://client.crisp.chat https://settings.crisp.chat https://storage.crisp.chat https://widget.crisp.chat https://image.crisp.chat https://rest.crisp.chat https://cdn.jsdelivr.net",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://client.crisp.chat",
               "img-src 'self' data: https: blob: https://www.googletagmanager.com https://www.google-analytics.com https://client.crisp.chat https://image.crisp.chat",
               "font-src 'self' https://fonts.gstatic.com https://client.crisp.chat",
-              "connect-src 'self' https://www.google-analytics.com https://client.crisp.chat https://rest.crisp.chat wss://client.crisp.chat",
+              "connect-src 'self' https://www.google-analytics.com https://client.crisp.chat https://rest.crisp.chat wss://client.crisp.chat wss://client.relay.crisp.chat",
               "media-src 'self' blob: https://client.crisp.chat https://storage.crisp.chat",
               "object-src 'none'",
               "base-uri 'self'",
