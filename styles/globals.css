@@ -79,9 +79,17 @@ body {
 }
 
 /* Ensure Crisp chat widget is always visible */
-[class*="crisp"] {
-  z-index: 9999 !important;
+[class*="crisp"], [id*="crisp"], crisp-client, .crisp-client {
+  z-index: 999999 !important;
   position: fixed !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure Crisp widget appears above WhatsApp button */
+[class*="crisp"] {
+  bottom: 80px !important;
 }
 
 h2 {
