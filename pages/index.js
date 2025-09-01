@@ -1072,6 +1072,79 @@ export default function Home() {
           ))}
         </div>
 
+        {/* Mobile Navigation Buttons */}
+        {isMobile && (
+          <div style={{
+            position: 'absolute',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            gap: '1rem',
+            zIndex: 10
+          }}>
+            <button
+              onClick={() => {
+                if (currentSlide > 0 && !isTransitioning) {
+                  setIsTransitioning(true)
+                  setCurrentSlide(prev => prev - 1)
+                  setTimeout(() => setIsTransitioning(false), 1400)
+                }
+              }}
+              disabled={currentSlide === 0}
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                border: `1px solid ${currentSlide % 2 === 0 ? '#ffffff' : '#000000'}`,
+                background: 'transparent',
+                color: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+                fontSize: '1.2rem',
+                cursor: currentSlide === 0 ? 'not-allowed' : 'pointer',
+                opacity: currentSlide === 0 ? 0.3 : 0.8,
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ←
+            </button>
+            <button
+              onClick={() => {
+                if (!isTransitioning) {
+                  setIsTransitioning(true)
+                  if (currentSlide < heroStatements.length - 1) {
+                    setCurrentSlide(prev => prev + 1)
+                    setTimeout(() => setIsTransitioning(false), 1400)
+                  } else {
+                    sessionStorage.setItem('slidesShown', 'true')
+                    setShowMainContent(true)
+                    setTimeout(() => setIsTransitioning(false), 1400)
+                  }
+                }
+              }}
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                border: `1px solid ${currentSlide % 2 === 0 ? '#ffffff' : '#000000'}`,
+                background: 'transparent',
+                color: currentSlide % 2 === 0 ? '#ffffff' : '#000000',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                opacity: 0.8,
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {currentSlide < heroStatements.length - 1 ? '→' : '✓'}
+            </button>
+          </div>
+        )}
+
         {/* Scroll Indicator */}
         <div style={{
           position: 'absolute',
