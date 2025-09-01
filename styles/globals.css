@@ -70,12 +70,18 @@ img {
 }
 
 body {
-  overflow: hidden;
+  overflow-x: hidden;
 	min-height: 100vh;
 	background-color: black;
 	display: flex;
 	flex-wrap: wrap;
 	color: white;
+}
+
+/* Ensure Crisp chat widget is always visible */
+[class*="crisp"] {
+  z-index: 9999 !important;
+  position: fixed !important;
 }
 
 h2 {

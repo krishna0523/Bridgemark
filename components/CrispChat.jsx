@@ -18,6 +18,18 @@ export default function CrispChat() {
     // Optional: Show a welcome message
     // Crisp.message.show('text', "👋 Hi! How can we help you today?")
     
+    // Fix z-index and visibility issues
+    const ensureCrispVisibility = () => {
+      const crispElements = document.querySelectorAll('[class*="crisp"]')
+      crispElements.forEach(element => {
+        element.style.zIndex = '9999'
+        element.style.position = 'fixed'
+      })
+    }
+    
+    // Run after Crisp initializes
+    setTimeout(ensureCrispVisibility, 1000)
+    
   }, [])
 
   // This component doesn't render anything visible
