@@ -8,11 +8,22 @@ export default function Services() {
         <meta name="description" content="Professional web development services in Hyderabad including React development, Three.js 3D websites, SEO services, and digital marketing. Get a free consultation today." />
         <meta name="keywords" content="React development Hyderabad, Three.js websites, SEO services Hyderabad, web development services, digital marketing agency Hyderabad, Next.js developers" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="bingbot" content="index, follow" />
         <link rel="canonical" href="https://www.bridgedm.com/services" />
+        
+        {/* Open Graph */}
         <meta property="og:title" content="Web Development Services in Hyderabad - React, Three.js, SEO" />
         <meta property="og:description" content="Professional web development services including React development, Three.js 3D websites, SEO services, and digital marketing." />
         <meta property="og:url" content="https://www.bridgedm.com/services" />
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Bridge Software Solutions" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Web Development Services in Hyderabad - React, Three.js, SEO" />
+        <meta name="twitter:description" content="Professional web development services including React development, Three.js 3D websites, SEO services, and digital marketing." />
       </Head>
       <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
         <h1 style={{ color: '#2563eb' }}>Our Services</h1>

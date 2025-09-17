@@ -51,14 +51,50 @@ export default function BlogPost({ frontMatter, mdxSource }) {
       <Head>
         <title>{frontMatter.title} | Bridge Software Solutions</title>
         <meta name="description" content={frontMatter.excerpt} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="bingbot" content="index, follow" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
         <meta property="og:title" content={frontMatter.title} />
         <meta property="og:description" content={frontMatter.excerpt} />
-        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://www.bridgedm.com/blogs/${frontMatter.slug}`} />
+        <meta property="og:site_name" content="Bridge Software Solutions" />
+        <meta property="article:published_time" content={frontMatter.date} />
+        <meta property="article:modified_time" content={frontMatter.date} />
+        <meta property="article:author" content="Bridge Software Solutions" />
+        {frontMatter.tags && frontMatter.tags.map(tag => (
+          <meta key={tag} property="article:tag" content={tag} />
+        ))}
+        
+        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={frontMatter.title} />
         <meta name="twitter:description" content={frontMatter.excerpt} />
-        {frontMatter.cover && <meta property="og:image" content={frontMatter.cover} />}
+        <meta name="twitter:url" content={`https://www.bridgedm.com/blogs/${frontMatter.slug}`} />
+        
+        {/* Images */}
+        {frontMatter.cover && (
+          <>
+            <meta property="og:image" content={`https://www.bridgedm.com${frontMatter.cover}`} />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+            <meta property="og:image:type" content="image/png" />
+            <meta name="twitter:image" content={`https://www.bridgedm.com${frontMatter.cover}`} />
+          </>
+        )}
+        
+        {/* Canonical URL */}
         <link rel="canonical" href={`https://www.bridgedm.com/blogs/${frontMatter.slug}`} />
+        
+        {/* Alternate URLs for mobile */}
+        <link rel="alternate" media="only screen and (max-width: 640px)" href={`https://www.bridgedm.com/blogs/${frontMatter.slug}`} />
+        
+        {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* Schema.org structured data */}
         <script

@@ -247,6 +247,27 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
     }
   }
 
+  async refreshSitemap(): Promise<void> {
+    try {
+      const sitemapUrl = `${process.env.VERCEL_URL || 'http://localhost:3000'}/api/sitemap-refresh`;
+      const response = await fetch(sitemapUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.CRON_SECRET}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        console.error('Failed to refresh sitemap:', response.statusText);
+      } else {
+        console.log('Sitemap refreshed successfully');
+      }
+    } catch (error) {
+      console.error('Error refreshing sitemap:', error);
+    }
+  }
+
   async processNextKeyword(): Promise<{ success: boolean; message: string; keyword?: string }> {
     try {
       console.log('Starting blog generation process...');
@@ -290,9 +311,12 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
         console.log('Marking keyword as published...');
         await this.updateKeywords(keywords);
 
-        // Trigger revalidation
+        // Trigger revalidation and sitemap refresh
         console.log('Triggering revalidation...');
         await this.triggerRevalidation();
+        
+        console.log('Refreshing sitemap...');
+        await this.refreshSitemap();
 
         return {
           success: true,
@@ -362,9 +386,12 @@ At Bridge Software Solutions, we help businesses in Hyderabad leverage the lates
         console.log('Marking keyword as published...');
         await this.updateKeywords(keywords);
 
-        // Trigger revalidation
+        // Trigger revalidation and sitemap refresh
         console.log('Triggering revalidation...');
         await this.triggerRevalidation();
+        
+        console.log('Refreshing sitemap...');
+        await this.refreshSitemap();
 
         return {
           success: true,
