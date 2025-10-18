@@ -146,6 +146,16 @@ function ProcessCard({ number, title, description, isMobile = false }) {
   )
 }
 
+// Helper function to get service colors - defined outside component to avoid hydration issues
+const getServiceColor = (id) => {
+  const colors = {
+    'seo': { rgb: '167, 139, 250', hex: '#A78BFA' }, // Brighter Purple
+    'web': { rgb: '56, 189, 248', hex: '#38BDF8' }, // Brighter Cyan
+    'brand': { rgb: '244, 114, 182', hex: '#F472B6' } // Brighter Pink
+  }
+  return colors[id] || colors['seo']
+}
+
 export default function Home() {
   const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -2030,7 +2040,7 @@ export default function Home() {
                   backgroundSize: 'cover',
                   backgroundPosition: 'center bottom',
                   backgroundRepeat: 'no-repeat',
-                  opacity: 0.15,
+                  opacity: 0.35,
                   zIndex: 0,
                   transform: 'translateY(0px)'
                 }}
@@ -2082,7 +2092,7 @@ export default function Home() {
                   backgroundSize: 'cover',
                   backgroundPosition: 'center bottom',
                   backgroundRepeat: 'no-repeat',
-                  opacity: 0.12,
+                  opacity: 0.32,
                   zIndex: 0,
                   transform: 'translateY(0px)'
                 }}
@@ -2327,28 +2337,44 @@ export default function Home() {
         overflow: 'hidden',
         scrollMarginTop: 'var(--header-height)'
       }}>
-        {/* Animated Background Elements */}
+        {/* Animated Background Elements - Colorful Glowing Orbs with BRIGHTER COLORS */}
         <div style={{
           position: 'absolute',
           top: '20%',
           left: '-10%',
-          width: '300px',
-          height: '300px',
-          background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(167, 139, 250, 0.2) 0%, rgba(167, 139, 250, 0.08) 40%, transparent 70%)',
           borderRadius: '50%',
-          animation: 'float 20s ease-in-out infinite',
+          animation: 'float 20s ease-in-out infinite, pulse 8s ease-in-out infinite',
+          filter: 'blur(40px)',
           zIndex: 1
         }} />
-        
+
         <div style={{
           position: 'absolute',
           bottom: '10%',
           right: '-10%',
-          width: '400px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)',
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0.08) 40%, transparent 70%)',
           borderRadius: '50%',
-          animation: 'float 25s ease-in-out infinite reverse',
+          animation: 'float 25s ease-in-out infinite reverse, pulse 10s ease-in-out infinite',
+          filter: 'blur(40px)',
+          zIndex: 1
+        }} />
+
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '450px',
+          height: '450px',
+          background: 'radial-gradient(circle, rgba(244, 114, 182, 0.18) 0%, rgba(244, 114, 182, 0.06) 40%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'float 30s ease-in-out infinite, pulse 12s ease-in-out infinite',
+          filter: 'blur(50px)',
           zIndex: 1
         }} />
 
@@ -2385,19 +2411,24 @@ export default function Home() {
           </div>
 
           <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            {services.map((service, index) => (
+            {services.map((service, index) => {
+              const serviceColor = getServiceColor(service.id)
+
+              return (
               <div key={service.id} style={{
                 marginBottom: '2rem',
                 position: 'relative'
               }}>
-                <div 
+                <div
                   className={`service-card ${activeAccordion === service.id ? 'active' : ''}`}
                   style={{
-                    background: activeAccordion === service.id 
-                      ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)'
+                    background: activeAccordion === service.id
+                      ? `linear-gradient(135deg, rgba(${serviceColor.rgb}, 0.08) 0%, rgba(255,255,255,0.02) 100%)`
                       : 'rgba(255,255,255,0.02)',
                     backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: activeAccordion === service.id
+                      ? `1px solid rgba(${serviceColor.rgb}, 0.3)`
+                      : '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '12px',
                     padding: isMobile ? '2rem' : '3rem',
                     cursor: 'pointer',
@@ -2405,8 +2436,8 @@ export default function Home() {
                     position: 'relative',
                     overflow: 'hidden',
                     transformOrigin: 'center',
-                    boxShadow: activeAccordion === service.id 
-                      ? '0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                    boxShadow: activeAccordion === service.id
+                      ? `0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(${serviceColor.rgb}, 0.2), inset 0 1px 0 rgba(255,255,255,0.1)`
                       : '0 8px 32px rgba(0,0,0,0.1)'
                   }}
                   onClick={() => setActiveAccordion(activeAccordion === service.id ? null : service.id)}
@@ -2418,7 +2449,9 @@ export default function Home() {
                     left: 0,
                     right: 0,
                     height: '1px',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                    background: activeAccordion === service.id
+                      ? `linear-gradient(90deg, transparent, rgba(${serviceColor.rgb}, 0.5), transparent)`
+                      : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
                     opacity: activeAccordion === service.id ? 1 : 0.5,
                     transition: 'opacity 0.3s ease'
                   }} />
@@ -2462,16 +2495,38 @@ export default function Home() {
                         transition: 'opacity 0.3s ease'
                       }}>
                         {service.keywords.map((keyword, i) => (
-                          <span key={i} style={{
-                            fontSize: '0.75rem',
-                            fontWeight: '300',
-                            padding: '0.25rem 0.75rem',
-                            background: 'rgba(255,255,255,0.1)',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            opacity: 0.8,
-                            transition: 'all 0.3s ease'
-                          }}>
+                          <span
+                            key={i}
+                            style={{
+                              fontSize: '0.75rem',
+                              fontWeight: '300',
+                              padding: '0.25rem 0.75rem',
+                              background: activeAccordion === service.id
+                                ? `linear-gradient(135deg, rgba(${serviceColor.rgb}, 0.2) 0%, rgba(${serviceColor.rgb}, 0.1) 100%)`
+                                : 'rgba(255,255,255,0.1)',
+                              borderRadius: '12px',
+                              border: activeAccordion === service.id
+                                ? `1px solid rgba(${serviceColor.rgb}, 0.3)`
+                                : '1px solid rgba(255,255,255,0.1)',
+                              opacity: 0.9,
+                              transition: 'all 0.3s ease',
+                              boxShadow: activeAccordion === service.id
+                                ? `0 0 10px rgba(${serviceColor.rgb}, 0.15)`
+                                : 'none'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (activeAccordion === service.id) {
+                                e.target.style.boxShadow = `0 0 15px rgba(${serviceColor.rgb}, 0.3)`
+                                e.target.style.transform = 'translateY(-1px)'
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (activeAccordion === service.id) {
+                                e.target.style.boxShadow = `0 0 10px rgba(${serviceColor.rgb}, 0.15)`
+                                e.target.style.transform = 'translateY(0)'
+                              }
+                            }}
+                          >
                             {keyword}
                           </span>
                         ))}
@@ -2563,7 +2618,7 @@ export default function Home() {
                   }} />
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         </div>
 
