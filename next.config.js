@@ -67,7 +67,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://client.crisp.chat",
               "img-src 'self' data: https: blob: https://www.googletagmanager.com https://www.google-analytics.com https://client.crisp.chat https://image.crisp.chat",
               "font-src 'self' https://fonts.gstatic.com https://client.crisp.chat",
-              "connect-src 'self' https://www.google-analytics.com https://client.crisp.chat https://rest.crisp.chat wss://client.crisp.chat wss://client.relay.crisp.chat",
+              "connect-src 'self' https://www.google-analytics.com https://client.crisp.chat https://rest.crisp.chat wss://client.crisp.chat wss://client.relay.crisp.chat https://api.web3forms.com https://storage.googleapis.com",
               "media-src 'self' blob: https://client.crisp.chat https://storage.crisp.chat",
               "object-src 'none'",
               "base-uri 'self'",

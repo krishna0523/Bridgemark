@@ -178,23 +178,25 @@ export default function Web3ContactForm() {
           countryCode: '+1',
           phone: ''
         })
-        
+
         // Clear success message after 5 seconds
         setTimeout(() => {
           setSubmitStatus('')
         }, 5000)
       } else {
         console.error('❌ Web3Forms API returned error:', data)
-        throw new Error(data.message || 'Web3Forms API returned an error')
+        const errorMessage = data.message || 'Unknown error from Web3Forms'
+        console.error('Error message:', errorMessage)
+        setSubmitStatus(`error: ${errorMessage}`)
       }
     } catch (error) {
       console.error('❌ Form submission error:', error)
-      setSubmitStatus('error')
-      
-      // Clear error message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus('')
-      }, 5000)
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
+      setSubmitStatus(`error: ${error.message || 'Network error - please check your connection'}`)
     } finally {
       setIsSubmitting(false)
     }
@@ -707,7 +709,7 @@ export default function Web3ContactForm() {
           </div>
         )}
 
-        {submitStatus === 'error' && (
+        {submitStatus && submitStatus.startsWith('error') && (
           <div className="status-message" style={{
             marginTop: '2rem',
             padding: '1.5rem',
@@ -715,16 +717,23 @@ export default function Web3ContactForm() {
             border: '2px solid #f5c6cb',
             borderRadius: '12px',
             color: '#721c24',
-            fontSize: '1rem',
+            fontSize: '0.95rem',
             fontWeight: '500',
-            textAlign: 'center',
+            textAlign: 'left',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.75rem'
+            flexDirection: 'column',
+            gap: '0.5rem'
           }}>
-            <span style={{ fontSize: '1.25rem' }}>✗</span>
-            Something went wrong. Please try again or contact us directly at hello@bridgedm.com
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '600' }}>
+              <span style={{ fontSize: '1.25rem' }}>✗</span>
+              Form Submission Failed
+            </div>
+            <div style={{ fontSize: '0.875rem', opacity: 0.9, marginLeft: '2rem' }}>
+              {submitStatus.replace('error: ', '')}
+            </div>
+            <div style={{ fontSize: '0.875rem', opacity: 0.8, marginTop: '0.5rem', marginLeft: '2rem' }}>
+              Please try again or contact us directly at hello@bridgedm.com
+            </div>
           </div>
         )}
 
